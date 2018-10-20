@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.yuhan.mapper.YuhanFileMapper">
+	<insert id="fileDBUp" parameterType="kr.yuhan.domain.YuhanFileVO">
+		insert into yuhan_homework_data_table (YUHAN_HOMEWORK_DATA_HOMEWORK_NUMBER, YUHAN_HOMEWORK_DATA_NAME, YUHAN_HOMEWORK_DATA_SIZE, YUHAN_HOMEWORK_DATA_URL, 
+		YUHAN_PROFESSOR_NUMBER, YUHAN_SUBJECT_NUMBER)
+		values (#{HomeWorkNO}, #{FileName}, #{FileSize}, #{FileSaveUrl}, #{professorNo}, #{subjectID})
+	</insert>
+
+	<select id="" resultType="kr.yuhan.domain.YuhanFileVO">
+		select * from yuhan_homework_data_table
+		where YUHAN_HOMEWORK_DATA_HOMEWORK_NUMBER = #{subjectID} and YUHAN_HOMEWORK_NUMBER = #{hwno}
+	</select>
+	
+	<select id="selectDataStatus" resultType="kr.yuhan.domain.YuhanFileVO">
+		select * from yuhan_homework_data_table
+		where YUHAN_HOMEWORK_DATA_HOMEWORK_NUMBER = #{hwno}
+	</select>
+	
+	<select id="fileCount" resultType="int">
+		select count(*) from yuhan_homework_data_table
+		where YUHAN_HOMEWORK_DATA_HOMEWORK_NUMBER = #{hwno}
+	</select>
+	
+	<select id="fileInfo" resultType="kr.yuhan.domain.YuhanFileVO">
+		select YUHAN_HOMEWORK_DATA_NAME as FileName, YUHAN_HOMEWORK_DATA_URL as FileSaveUrl
+		from yuhan_homework_data_table
+		where YUHAN_HOMEWORK_DATA_HOMEWORK_NUMBER = #{hwno}
+	</select>
+</mapper>

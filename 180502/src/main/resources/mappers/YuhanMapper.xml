@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.yuhan.mapper.YuhanMapper">
+	<select id="selectMember" resultType="String">
+		SELECT memberID
+		FROM yuhanmember
+		WHERE memberID = #{memberID}
+	</select>
+	
+	<select id="selectMemberClass" resultType="String">
+		SELECT memberClass
+		FROM yuhanmember
+		WHERE memberID = #{memberID}
+	</select>
+	
+	<insert id="insertMember">
+		INSERT INTO yuhanmember(memberHak, memberID, memberPW, memberName, memberGrade, memberClass)
+		VALUES (#{memberHak}, #{memberID}, #{memberPW}, #{memberName}, #{memberGrade}, #{memberClass})
+	</insert>
+	
+	<select id="selectIDPW" resultType="int">
+		SELECT COUNT(*)
+		FROM yuhanmember
+		WHERE memberID = #{memberID} 
+		AND memberPW = #{memberPW}
+	</select>
+	
+	<select id="select_Member" resultType="kr.yuhan.domain.YuhanMemberVO">
+		SELECT *
+		FROM yuhanmember
+		WHERE memberID = #{memberID}
+	</select>
+</mapper>
