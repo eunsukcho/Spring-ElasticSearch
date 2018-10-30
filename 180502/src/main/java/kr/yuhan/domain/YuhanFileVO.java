@@ -5,11 +5,25 @@ public class YuhanFileVO {
 	int FileNo;
 	int SubjectNO;
 	String FileName;
+	String saveFileName;
+	String filePath;
 	int FileSize;
 	String FileSaveUrl;
 	String professorNo;
 	String subjectID;
-	
+
+	public String getFilePath() {
+		return filePath;
+	}
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+	public String getSaveFileName() {
+		return saveFileName;
+	}
+	public void setSaveFileName(String saveFileName) {
+		this.saveFileName = saveFileName;
+	}
 	public String getHomeWorkNO() {
 		return HomeWorkNO;
 	}

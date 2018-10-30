@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.yuhan.mapper.TestLoginMapper">
+	
+	<select id="checkStudentLogin" resultType="int">
+		select count(*) from yuhanmember
+		where memberID = #{memberID} and memberPW = #{memberPW}
+	</select>
+	
+	<select id="StudentData" resultType="kr.yuhan.domain.TestLoginVO">
+		select memberHak, memberID, memberPW, memberName, memberGrade, memberClass, memberRating 
+		from yuhanmember 
+		where memberID = #{memberID} and memberPW = #{memberPW}
+	</select>
+	
+	<select id="checkProfessorLogin" resultType="int">
+		select count(*) from yuhan_professor
+		where proID = #{memberID} and proPW = #{memberPW}
+	</select>
+	
+	<select id="ProfessorData" resultType="kr.yuhan.domain.TestLoginVO">
+		select proNO, proID, proPW, proName, proRating 
+		from yuhan_professor
+		where proID = #{memberID} and proPW = #{memberPW}
+	</select>
+	
+</mapper>

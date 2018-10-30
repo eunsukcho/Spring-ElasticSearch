@@ -128,14 +128,14 @@ $(document).ready(function(){
 	{
 		var newFileList = Array.from(files);
 		//파일 길이만큼 반복해 FormData에 셋팅
-	   var megaByte = 1024*1024;
-	   for (var i = 0; i < files.length; i++) {
+	    var megaByte = 1024*1024;
+	    for (var i = 0; i < files.length; i++) {
 	        fd.append(files[i].name, files[i]);
 	        var tag = createFile(files[i].name, files[i].size,i);
 	        $('#fileTable').append(tag);
-	   }
+	    }
 	   
-	   $(".del-btn").click(function(){ //버튼 누르기	   
+	    $(".del-btn").click(function(){ //버튼 누르기	   
 	   		/* fd.delete(files[$(this).val()].name); */
 	   		fd = new FormData();
 		   	newFileList.splice($(this).val(),1);
@@ -144,8 +144,7 @@ $(document).ready(function(){
 	   		
 	   		for (var i = 0; i < files.length; i++) {
 		        fd.append(files[i].name, files[i]);
-		   }
-	   		
+		 	}	
    		});
 	  dataStatus = files.length;
 	}
@@ -274,7 +273,7 @@ $(document).ready(function(){
 			error : function(){
 				alert("글 등록 실패")
 			}
-		})
+		});
     }
 });
 
@@ -288,7 +287,7 @@ function cancle_onClick()
 	{
 		return;
 	}
-	}
+}
 </script>
 
 <!-- Page Container -->

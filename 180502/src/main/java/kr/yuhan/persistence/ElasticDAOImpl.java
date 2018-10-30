@@ -9,7 +9,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.apache.ibatis.session.SqlSession;
-//import net.sf.json.JSONObject;
 import org.springframework.stereotype.Repository;
 
 import com.google.gson.Gson;
@@ -19,7 +18,7 @@ import com.google.gson.reflect.TypeToken;
 
 import kr.yuhan.domain.ElasticVO;
 import kr.yuhan.domain.GetElasticSearchVo;
-import kr.yuhan.domain.GetSourceVo;
+import kr.yuhan.domain.SearchCriteria;
 import kr.yuhan.domain.YuhanHomeworkVO;
 import net.sf.json.JSONObject;
 
@@ -108,7 +107,7 @@ public class ElasticDAOImpl implements ElasticDAO{
 			urlconnection.setDoInput(true);
 			urlconnection.setDoOutput(true);
             
-			String query = "{\"query\": { \"bool\":{ \"must\" : [ {\"match\" : {\"professor\":\""+elvo.getProfessor()+ "\"}}, {\"match\" : {\"subject\":\""+elvo.getSubject()+ "\"}},{\"match\" : {\"subjectclass\":\""+elvo.getSubjectclass()+ "\"}}]}},\"sort\":[{\"DetailDate\" : {\"order\" : \"desc\"}}]}"; 
+			String query = "{\"query\": { \"bool\":{ \"must\" : [ {\"match\" : {\"professor\":\""+elvo.getProfessor().trim()+ "\"}}, {\"match\" : {\"subject\":\""+elvo.getSubject()+ "\"}},{\"match\" : {\"subjectclass\":\""+elvo.getSubjectclass()+ "\"}}]}},\"sort\":[{\"DetailDate\" : {\"order\" : \"desc\"}}]}"; 
             System.out.println(query);
             
 			os = urlconnection.getOutputStream();
@@ -152,6 +151,89 @@ public class ElasticDAOImpl implements ElasticDAO{
 		return sourceList;
 	}
 
+	@Override
+	public List<GetElasticSearchVo> getElasticCriteria(SearchCriteria criteria) {
+		List<GetElasticSearchVo> sourceList = new ArrayList<GetElasticSearchVo>();
+		GetElasticSearchVo elvo =  new GetElasticSearchVo();
+		Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
+		int totalCount;
+		String query = "";
+		String searchType = criteria.getSearchType();
+		System.out.println("dao SearchType : " + searchType);
+		String keyword = criteria.getKeyword();
+		
+		try {
+			url = new URL("http://35.189.154.102:32110/yuhan_homework/yuhan_homework/_search");
+			urlconnection = (HttpURLConnection) url.openConnection();
+			urlconnection.setRequestMethod("POST");
+			urlconnection.setRequestProperty("Accept", "application/json");
+			urlconnection.setRequestProperty("Content-Type", "application/json");
+			urlconnection.setRequestProperty("Content-Length", "length");
+			urlconnection.setDoInput(true);
+			urlconnection.setDoOutput(true);
+            
+			if(searchType == null) {
+				System.out.println("null query");
+				query = "{\"query\": { \"bool\":{ \"must\" : [{\"match\" : {\"professor\":\""+criteria.getElasticVO().getProfessor().trim()+"\"}},{\"match\" : {\"subject\":\""+criteria.getElasticVO().getSubject()+"\"}},{\"match\" : {\"subjectclass\":\""+criteria.getElasticVO().getSubjectclass()+"\"}}]}}, \"sort\":[{\"DetailDate\" : {\"order\" : \"desc\"}}], \"size\":\"" + criteria.getPerPageNum()+ "\", \"from\" : " + criteria.getPageStart() + "}";
+			}
+			else if(searchType.equals("title")) {
+				System.out.println("title query");
+				query = "{\"query\": { \"bool\":{ \"must\" : [{\"match\" : {\"professor\":\""+criteria.getElasticVO().getProfessor().trim()+"\"}}, {\"match\" : {\"subject\":\""+criteria.getElasticVO().getSubject()+"\"}}, {\"match\" : {\"subjectclass\":\""+criteria.getElasticVO().getSubjectclass()+"\"}},{\"match\" : {\"title\":\""+keyword+"\"}}]}}, \"sort\":[{\"DetailDate\" : {\"order\" : \"desc\"}}], \"size\" : \"" + criteria.getPerPageNum()+ "\" , \"from\" : " + criteria.getPageStart() + "}"; 
+			}
+			else if(searchType.equals("content")) {
+				System.out.println("content query");
+				query = "{\"query\": { \"bool\":{ \"must\" : [{\"match\" : {\"professor\":\""+criteria.getElasticVO().getProfessor().trim()+"\"}}, {\"match\" : {\"subject\":\""+criteria.getElasticVO().getSubject()+"\"}}, {\"match\" : {\"subjectclass\":\""+criteria.getElasticVO().getSubjectclass()+"\"}}, {\"match\" : {\"content\":\""+keyword+"\"}}]}}, \"sort\":[{\"DetailDate\" : {\"order\" : \"desc\"}}], \"size\" : \"" + criteria.getPerPageNum()+ "\" , \"from\" : " + criteria.getPageStart() + "}"; 
+			}
+
+			System.out.println("페이지 쿼리 : " + query);
+			os = urlconnection.getOutputStream();
+			os.write(query.getBytes("UTF-8"));
+			os.flush();
+			os.close();
+			
+			int responseCode = urlconnection.getResponseCode();
+            System.out.println(responseCode);
+            
+            if(responseCode == 200){
+                InputStream is = urlconnection.getInputStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                String line;
+                String resultLine = "";
+                
+                //System.out.println("조은숙조은숙조은숙");
+                while((line = br.readLine()) != null){
+                	resultLine += line;
+                	//System.out.println(line);
+                }
+               //System.out.println("조은숙조은숙조은숙");
+
+                totalCount = JSONObject.fromObject(JSONObject.fromObject(gson.fromJson(resultLine, Object.class)).get("hits")).getInt("total");
+                sourceList = gson.fromJson(gson.toJson(JSONObject.fromObject(JSONObject.fromObject(gson.fromJson(resultLine, Object.class)).get("hits")).getJSONArray("hits")), new TypeToken<List<GetElasticSearchVo>>() {}.getType());
+
+                elvo.setTotalCount(totalCount);
+                
+                sourceList.add(elvo);
+                
+                //System.out.println("제목 : " + sourceList.get(0).get_source().getTitle());
+                //System.out.println("개수 : " + sourceList.get(sourceList.size()-1).getTotalCount());
+            } else {
+				System.out.println("실패입니다.");
+				InputStream is = urlconnection.getInputStream();
+	            br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+	            String line;
+	
+	            while ((line = br.readLine()) != null) {
+	                //System.out.println(line);
+	            }
+			}
+		}catch (IOException e) {
+			System.out.println("Error : ");
+            e.printStackTrace();
+		}
+		
+		return sourceList;
+	}
+	
 	@Override
 	public List<GetElasticSearchVo> readElastic(String _id) {
 		List<GetElasticSearchVo> sourceList = new ArrayList<GetElasticSearchVo>();
@@ -200,7 +282,7 @@ public class ElasticDAOImpl implements ElasticDAO{
 	            String line;
 	
 	            while ((line = br.readLine()) != null) {
-	                //System.out.println(line);
+	                System.out.println(line);
 	            }
 			}
 		}catch (IOException e) {
@@ -252,7 +334,7 @@ public class ElasticDAOImpl implements ElasticDAO{
                 System.out.println("Update");
                 while((line = br.readLine()) != null){
                 	resultLine += line;
-                	System.out.println(line);
+                	//System.out.println(line);
                 }
                 
             } else {
@@ -314,6 +396,8 @@ public class ElasticDAOImpl implements ElasticDAO{
             e.printStackTrace();
 		}
 	}
+
+	
 }
 
 

@@ -1,8 +1,5 @@
 package kr.yuhan.controller;
 
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,10 +9,12 @@ import javax.inject.Inject;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -23,6 +22,7 @@ import com.google.gson.GsonBuilder;
 import kr.yuhan.domain.ElasticVO;
 import kr.yuhan.domain.GetElasticSearchVo;
 import kr.yuhan.domain.GetSourceVo;
+import kr.yuhan.domain.SearchCriteria;
 import kr.yuhan.domain.YuhanHomeworkVO;
 import kr.yuhan.service.ElasticService;
 import kr.yuhan.service.YuhanHomeworkService;
@@ -55,7 +55,7 @@ public class HomeworkDataController {
 		vo.setTotalEnd(end);
 		vo.setToday(today);
 		vo.setFormatToday(todayString); //vo에 setting
-		System.out.println("adfaf : " + vo.getSubjectClass());
+		//System.out.println("adfaf : " + vo.getSubjectClass());
 		
 		/********** Elastic Search에 필요한 데이터 변환  **********/
 		String proName = elservice.ProfessorName(vo); // 교수 이름
@@ -84,7 +84,7 @@ public class HomeworkDataController {
 	}
 	
 	@RequestMapping(value="/updatehw" , method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public ResponseEntity<?> updatehw(@RequestBody YuhanHomeworkVO vo) throws ParseException {
+	public ResponseEntity<?> updatehw(@RequestBody YuhanHomeworkVO vo , SearchCriteria cri, RedirectAttributes rttr) throws ParseException {
 		ResponseEntity<?> entity;
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH); // DB, 엘라스틱 서치에 올릴 시작 날짜, 끝날짜
@@ -111,11 +111,11 @@ public class HomeworkDataController {
 		
 		GetElasticSearchVo elvo = new GetElasticSearchVo(vo.get_id(), source);
 		
-		System.out.println("여기까지?");
+		//System.out.println("여기까지?");
 		try {
 			service.updateHomework(vo);
 			elservice.UpdateElastic(elvo);
-			System.out.println("성공");
+			//System.out.println("성공");
 			entity = new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 		}catch (Exception e) {
 			e.printStackTrace();

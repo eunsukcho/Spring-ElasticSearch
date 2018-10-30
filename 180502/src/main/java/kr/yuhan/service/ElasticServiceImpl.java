@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 
 import kr.yuhan.domain.ElasticVO;
+import kr.yuhan.domain.GetElasticCriteria;
 import kr.yuhan.domain.GetElasticSearchVo;
+import kr.yuhan.domain.SearchCriteria;
 import kr.yuhan.domain.YuhanHomeworkVO;
 import kr.yuhan.persistence.ElasticDAO;
 
@@ -44,6 +46,11 @@ public class ElasticServiceImpl implements ElasticService{
 	public List<GetElasticSearchVo> getElastic(ElasticVO elvo) {
 		return dao.getElastic(elvo);
 	}
+	
+	@Override
+	public List<GetElasticSearchVo> getElasticCriteria(SearchCriteria criteria) {
+		return dao.getElasticCriteria(criteria);
+	}
 
 	@Override
 	public List<GetElasticSearchVo> readElastic(String _id) {
@@ -59,5 +66,4 @@ public class ElasticServiceImpl implements ElasticService{
 	public void deleteElastic(String _id) {
 		dao.deleteElastic(_id);
 	}
-
 }

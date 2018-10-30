@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.yuhan.mapper.ElasticMapper">
+	<select id="professorName" resultType="String">
+		select proName 
+		from yuhan_professor
+		where proNo = #{professorno}
+	</select>
+	
+	<select id="subjectName" resultType="String">
+		select YUHAN_SUBJECT_NAME
+		from yuhan_subject_table
+		where YUHAN_SUBJECT_NUMBER = #{subjectID}
+	</select>
+</mapper>

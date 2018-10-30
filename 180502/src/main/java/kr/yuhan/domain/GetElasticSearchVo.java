@@ -2,15 +2,15 @@ package kr.yuhan.domain;
 
 public class GetElasticSearchVo {
 	String _id;
+	int totalCount;
 	GetSourceVo _source;
-	
-	public GetElasticSearchVo() {
-	}
 
 	public GetElasticSearchVo(String _id, GetSourceVo _source) {
 		this._id = _id;
 		this._source = _source;
 	}
+	
+	public GetElasticSearchVo() {}
 
 	public String get_id() {
 		return _id;
@@ -27,8 +27,13 @@ public class GetElasticSearchVo {
 	public void set_source(GetSourceVo _source) {
 		this._source = _source;
 	}
-	
-	
-	
+
+	public int getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
+	}
 	
 }

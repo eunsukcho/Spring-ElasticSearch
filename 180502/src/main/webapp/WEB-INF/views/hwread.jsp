@@ -7,26 +7,216 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="https://cdn.ckeditor.com/4.8.0/standard/ckeditor.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){
-    $("#list").click(function(){
-		alert("목록 가기")
-	});
-    
-});
-function hidden() {
-	document.getElementById('frm').submit();
-	return false;
-};
-
-</script>
 <style>
 html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif}
 </style>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdn.ckeditor.com/4.8.0/standard/ckeditor.js"></script>
+
+<script type="text/javascript">
+var StringBuffer = function() {
+    this.buffer = new Array();
+};
+StringBuffer.prototype.append = function(str) {
+    this.buffer[this.buffer.length] = str;
+};
+StringBuffer.prototype.toString = function() {
+    return this.buffer.join("");
+};
+</script>
+<script type="text/javascript">
+
+$(document).ready(function(){
+	var frm = $("form[role = 'form']"); 
+	console.log(frm);
+	firstLoad();
+	paging(1);
+	
+	$("#modify").on("click", function(){
+		alert("수정")
+		frm.attr("action", "/hwUpdate");
+		frm.attr("method", "get"); //수정은 get 방식으로한다.
+		frm.submit();
+	});
+	
+	$("#delete").on("click", function(){
+		frm.attr("action", "/hwDelete");
+		frm.attr("method", "get");
+		frm.submit(); //post방식 사용해줄것이기 때문에 메소드는 추가할 필요가없다.
+	});
+	
+	$("#list").on("click", function(){
+		frm.attr("method", "get");
+		frm.attr("action", "/hwList");
+		frm.submit();
+	}); 
+});
+function firstLoad(e){
+
+	var hwno = $("#hwno").val();
+	var page;
+	
+	if (e == null){
+		page = 1;
+	}else{
+		page = e;
+	} 
+	
+	alert("페이지 : " + e);
+
+	replyVO = new Object();
+	replyVO.hwno = hwno;
+	replyVO.repPage = page;
+	jsonData = JSON.stringify(replyVO);
+	
+	$.ajax({
+		type : "POST",
+		url : "/loadRep",
+		data : jsonData,
+		dataType : "json",
+		contentType : "application/json; charset=utf-8",
+		success : function(data){ 
+			$("#commentList").html("");
+			for (var i = 0; i < data.length; i++) {
+				var liTag = "<tr><td>"+ data[i].professorName+"</td><td>"+data[i].comment+"</td><td>"+data[i].repDate+"</td><td><button class='del-btn' value='"+data[i].repNo+"' onClick='repDel(this)'>X</button></td></tr><hr/>";
+				$("#commentList").append(liTag);
+			}
+		},
+		error : function(){
+			alert("댓글 로딩 실패")
+		}
+	});
+}
+function paging(e){
+	
+	var hwno = $("#hwno").val();
+	
+
+	replyVO = new Object();
+	replyVO.hwno = hwno;
+	jsonData = JSON.stringify(replyVO);
+	
+	$.ajax({
+		type : "POST",
+		url : "/totalRep",
+		data : jsonData,
+		dataType : "text",
+		contentType : "application/json; charset=utf-8",
+		success : function(data){ 
+			var startPage;
+			var endPage;
+			var total;
+			var page = e;
+			var perPageNum = 5;
+			var displayPageNum = 5;
+			
+			endPage = Math.ceil(page / displayPageNum) * displayPageNum;
+			startPage = endPage - displayPageNum + 1;
+			
+			var prev = startPage == 1 ? false:true;
+			var tempEndPage = Math.ceil(data/perPageNum);
+			
+			alert("end : " + endPage + " start : " + startPage + " tempEndPage : " + tempEndPage + " total : " + data);
+			
+			if(endPage > tempEndPage){
+				endPage = tempEndPage;
+			}
+			alert("2end : " + endPage + " start : " + startPage + " tempEndPage : " + tempEndPage + " total : " + data);
+			var next = endPage * 5 >= data ? false:true;
+			
+			$("#paging").html("");
+			
+			if(prev){
+				startPage = startPage - 1;
+				paging(e, startPage, endPage);
+			}
+			for (var i = startPage; i <= endPage; i++) {
+				console.log(i);
+				var tag = "<button id='moreRep' onclick='firstLoad("+i+")'>" + i + "</button>";
+				$("#paging").append(tag);
+			}
+		},
+		error : function(){
+			alert("댓글 로딩 실패")
+		}
+	});
+}
+function repAdd(){
+	replyVO = new Object();
+	var comment = $("#commentArea").val();
+	var hwno = $("#hwno").val();
+	var professorNo = $("#professorNo").val();
+	var proName = $("#proName").val();
+	if(comment == null || $.trim(comment) == ""){
+		alert("댓글을 입력해주세요");
+		return false;
+	}
+
+	replyVO.comment = comment;
+	replyVO.hwno = hwno;
+	replyVO.professorNO = professorNo;
+	replyVO.professorName = proName;
+	
+	jsonData = JSON.stringify(replyVO);
+	
+	$.ajax({
+		type : "POST",
+		url : "/addRep",
+		data : jsonData,
+		dataType : "json",
+		contentType : "application/json; charset=utf-8",
+		success : function(data){ 
+			console.log(data[0]);
+			$("#commentArea").val("");
+			$("#commentList").html("");
+			for (var i = 0; i < data.length; i++) {
+				var liTag = "<tr><td>"+ data[i].professorName+"</td><td>"+data[i].comment+"</td><td>"+data[i].repDate+"</td><td><button class='del-btn' value='"+data[i].repNo+"' onClick='repDel(this)'>X</button></td></tr><hr/>";
+				$("#commentList").append(liTag);
+			}
+			paging();
+		},
+		error : function(){
+			alert("댓글 로딩 실패")
+		}
+	});
+}
+
+function repDel(e){
+	var repNo = $(e).val();
+	alert(repNo);
+	
+	$.ajax({
+		type : "GET",
+		url : "/delRep/"+repNo,
+		dataType: "text",
+		success : function(data){
+			if(data=='SUCCESS'){
+				$("#commentList").html("");
+				firstLoad();
+				paging();
+			}
+		},
+		error : function(){
+			alert("댓글 삭제 실패")
+		}
+	});
+}
+
+</script>
 </head>
+<form role="form" method = "post" action="#">
+	    <input type = "hidden" name = "hwno" value = "${hwno}" id = "hwno">
+	    <input type = "hidden" name = "professorNo" value = "${professorNo }" id = "professorNo">
+	    <input type = "hidden" name = "proName" value = "${proName }" id = "proName">
+	    <input type = "hidden" name = "subjectID" value = "${subjectID }">
+	    <input type = "hidden" name = "_id" value = "${_id}">
+	    <input type = "hidden" name = "page" value = "${cri.page}">
+	    <input type = "hidden" name = "perPageNum" value = "${cri.perPageNum}">
+	    <input type = "hidden" name = "searchType" value = "${cri.searchType }">
+	    <input type = "hidden" name = "keyword" value = "${cri.keyword }">
+	    <input type = "hidden" name = "file" value = "${file}">
+</form>
 <!-- Page Container -->
 <div class="w3-content w3-margin-top" style="max-width:1400px;">
 
@@ -76,7 +266,7 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif}
 		    		<c:otherwise>
 		    		<td colspan="2"><span style="font-size: small;">참고자료</span> |
 		    			<c:forEach begin="0" end="${file.size()-1 }" var="idx">
-		    				 &nbsp <a href="/fileDownload?url=${file.get(idx).fileSaveUrl}&fileName=${file.get(idx).fileName}">${file.get(idx).fileName}</a>
+		    				 &nbsp <a href="/download.do?filePath=${file.get(idx).filePath}&fileName=${file.get(idx).fileName}&saveFileName=${file.get(idx).saveFileName}">${file.get(idx).fileName}</a>
 		    			</c:forEach>
 		    		</td>
 		    		</c:otherwise>
@@ -97,31 +287,37 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif}
 		  <hr>
 		  <div class="w3-container">
 		  	<p>댓글</p>
-		  	<p><b>교수님</b> : 아쥬 훌륭해요 ^^</p>
+		  	<p><b></b></p>
+		  	<div class="bs-docs-example">
+				<table id="commentList">
+		
+				</table>
+			</div>
+			<div>
+				<ul id="paging">
+				
+				</ul>
+			</div>
 		  	<div class="w3-container">
 		  		<div class="w3-left">
-		  		<textarea class="w3-input w3-border" cols="95"></textarea>
+		  		<textarea class="w3-input w3-border" cols="95" id="commentArea"></textarea>
 		  		</div>
 		  		<div class="w3-right">
-		  		<button class="w3-button w3-teal">작성</button>
+		  		<button class="w3-button w3-teal" id="commentBtn" onclick="repAdd()">작성</button>
 		  		</div>
 		  	</div>
 		  </div>
 		   <div class="w3-container">
-		    <p><button class="w3-button w3-teal">List</button>
-		   	<a href="/hwDelete?_id=${_id}&hwno=${hwno}&subjectID=${subjectID}"><button class="w3-button w3-right w3-teal">Delete</button></a>
-		   	<a href="/hwUpdate?_id=${_id}&hwno=${hwno}&subjectID=${subjectID}"><button class="w3-button w3-right w3-teal">Update</button></a></p>
+		    <p>
+			    <button class="w3-button w3-teal" id = "list">List</button>
+			   	<button class="w3-button w3-right w3-teal" id="delete">Delete</button>
+			   	<button class="w3-button w3-right w3-teal" id="modify">Update</button>
+		   	</p>
 		   </div>
         </div>
         
       </div>
-      
-     
       </div>
         </div>
         </div>
-
-	<form method="post" action="/hwUpdate" name="hiddenForm" id="frm">
-		<input type="hidden" value="${subjectID }" name="subjectID">
-	</form>
 </html>

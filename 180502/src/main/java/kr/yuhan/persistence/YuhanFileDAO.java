@@ -9,7 +9,7 @@ import kr.yuhan.domain.YuhanFileVO;
 import kr.yuhan.domain.YuhanHomeworkVO;
 
 public interface YuhanFileDAO {
-	public void fileServerUp(MultipartHttpServletRequest multipartRequest);
+	public void fileServerUp(String filePath, MultipartHttpServletRequest multipartRequest);
 	public void fileDownload(String fileSaveUrl, String fileName);
 	public List<String> fileDbUp(MultipartHttpServletRequest multipartRequest);
 	
@@ -18,4 +18,6 @@ public interface YuhanFileDAO {
 	
 	public int fileCount(int hwno);
 	public List<YuhanFileVO> selectFileInfo(int hwno);
+	
+	public void deleteFile(String saveFileName, String filePath);
 }

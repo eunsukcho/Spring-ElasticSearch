@@ -28,4 +28,5 @@
 	</bean>
 	<context:component-scan base-package="kr.yuhan.persistence"></context:component-scan>
 	<context:component-scan base-package="kr.yuhan.service"></context:component-scan>
+	
 </beans>

@@ -1,5 +1,7 @@
 package kr.yuhan.domain;
 
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.queryParam;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -9,16 +11,48 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class PageMaker 
 {
 	private int totalMessageCount;
+	private int totalCount;
 	private int endPage;
 	private int startPage;
 	private boolean prev;
 	private boolean next;
+	
 	private String memberHak;
 	private String YUHAN_MESSAGE_FROM_MEMBER_NUMBER;
 	
 	private int displayPageNum = 10;
 	private Criteria cri;
 	
+	/**댓글 페이징**/
+	private int repTotalCount;
+	private int repDisplayPageNum = 5;
+
+	public int getRepTotalCount() {
+		return repTotalCount;
+	}
+
+	public void setRepTotalCount(int repTotalCount) {
+		this.repTotalCount = repTotalCount;
+		//calcData3();
+	}
+
+	public int getRepDisplayPageNum() {
+		return repDisplayPageNum;
+	}
+
+	public void setRepDisplayPageNum(int repDisplayPageNum) {
+		this.repDisplayPageNum = repDisplayPageNum;
+	}
+
+	public int getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
+		calcData2();
+	}
+
 	public String getYUHAN_MESSAGE_FROM_MEMBER_NUMBER() 
 	{
 		return YUHAN_MESSAGE_FROM_MEMBER_NUMBER;
@@ -125,6 +159,37 @@ public class PageMaker
 		next = endPage * cri.getPerPageNum() >= totalMessageCount ? false : true;
 	}
 	
+	private void calcData2()
+	{
+		endPage = (int)(Math.ceil(cri.getPage() / (double)displayPageNum) * displayPageNum);
+		startPage = endPage - displayPageNum + 1;
+		int tempEndPage = (int)(Math.ceil(totalCount/(double)cri.getPerPageNum()));
+		
+		if(endPage > tempEndPage)
+		{
+			endPage = tempEndPage;
+		}
+		
+		prev = startPage == 1 ? false : true;
+		
+		next = endPage * cri.getPerPageNum() >= totalCount ? false : true;
+	}
+	
+//	private void calcData3() {
+//		endPage = (int)(Math.ceil(cri.getRepPage() / (double)repDisplayPageNum) * repDisplayPageNum);
+//		startPage = endPage - repDisplayPageNum + 1;
+//		int tempEndPage = (int)(Math.ceil(repTotalCount/(double)cri.getRepPerPageNum()));
+//		
+//		if(endPage > tempEndPage)
+//		{
+//			endPage = tempEndPage;
+//		}
+//		
+//		prev = startPage == 1 ? false : true;
+//		
+//		next = endPage * cri.getRepPerPageNum() >= repTotalCount ? false : true;
+//	}
+	
 	private String encoding(String keyword)
 	{
 		if(keyword==null || keyword.trim().length() == 0)
@@ -141,6 +206,15 @@ public class PageMaker
 			// TODO Auto-generated catch block
 			return "";
 		}
+	}
+	public String makeSearch(int page) {
+		UriComponents uriComponents = UriComponentsBuilder.newInstance()
+				.queryParam("page", page)
+				.queryParam("perPageNum", cri.getPerPageNum())
+				.queryParam("searchType", ((SearchCriteria) cri).getSearchType())
+				.queryParam("keyword", encoding(((SearchCriteria) cri).getKeyword()))
+				.build();
+		return uriComponents.toUriString();
 	}
 	
 	public String makeQuery(int page) 

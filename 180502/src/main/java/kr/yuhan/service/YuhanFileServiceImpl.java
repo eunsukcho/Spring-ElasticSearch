@@ -1,11 +1,13 @@
 package kr.yuhan.service;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import kr.yuhan.domain.YuhanFileVO;
@@ -19,9 +21,10 @@ public class YuhanFileServiceImpl implements YuhanFileService{
 	private YuhanFileDAO dao;
 	
 	@Override
-	public void FileServerUp(MultipartHttpServletRequest multipartRequest) {
-		dao.fileServerUp(multipartRequest);
+	public void FileServerUp(String filePath, MultipartHttpServletRequest multipartRequest) {
+		dao.fileServerUp(filePath, multipartRequest);
 	}
+
 	@Override
 	public void fileDownload(String fileSaveUrl, String fileName) {
 		dao.fileDownload(fileSaveUrl, fileName);
@@ -47,4 +50,10 @@ public class YuhanFileServiceImpl implements YuhanFileService{
 	public List<YuhanFileVO> selectFileInfo(int hwno) {
 		return dao.selectFileInfo(hwno);
 	}
+
+	@Override
+	public void deleteFile(String saveFileName, String filePath) {
+		dao.deleteFile(saveFileName, filePath);
+	}
+
 }

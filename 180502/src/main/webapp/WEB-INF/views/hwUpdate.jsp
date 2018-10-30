@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+	<%@ taglib uri = "http://java.sun.com/jsp/jstl/fmt" prefix = "fmt" %>
 <%@ include file = "./include/navbar.jsp" %>
 <style>
 			.ui-datepicker {
@@ -132,7 +134,7 @@ $(document).ready(function(){
 	   for (var i = 0; i < files.length; i++) {
 	        fd.append(files[i].name, files[i]);
 	        var tag = createFile(files[i].name, files[i].size,i);
-	        $('#fileTable').append(tag);
+	        $('#addFileTable').append(tag);
 	   }
 	   
 	   $(".del-btn").click(function(){ //버튼 누르기	   
@@ -224,8 +226,13 @@ $(document).ready(function(){
 		var content = $("#content").val();
 		var professorNo = parseInt($("#professorNo").val());
 		var subjectID = $("#subjectID").val();
+		var page = $("#page").val();
+		var perPageNum = $("#perPageNum").val();
+		var searchType = $("#searchType").val();
+		var keyword = $("#keyword").val();
 		var jsonData;
 		var file;
+		var hwno = "${hwno}";
 		alert(new Date($.now()));
 		
 		if(title == null || $.trim(title) == ""){
@@ -264,8 +271,11 @@ $(document).ready(function(){
 			contentType : "application/json; charset=utf-8",//보내는 타입
 			success : function(data){ //받는 데이터
 				if(data=='SUCCESS'){
+					if(file == 'Y'){
+						sendFileToServer(hwno, professorNo, subjectID);
+					}
 					alert("글 수정 성공")
-					self.location="/hwList?subjectID="+subjectID;
+					self.location="/hwList?subjectID="+subjectID+"&page="+page+"&perPageNum="+perPageNum+"&searchType="+searchType+"&keyword="+keyword;
 				}
 			},
 			error : function(){
@@ -285,6 +295,24 @@ function cancle_onClick()
 	{
 		return;
 	}
+}
+function FileDelete(e){
+	var file = $(e).val();
+	alert(file);
+	$.ajax({
+		type : "POST",
+		url : "/fileDelete",
+		data : file,
+		dataType: "text",
+		success : function(data){
+			if(data=='SUCCESS'){
+				$(e).parent().parent().remove();
+			}
+		},
+		error : function(){
+			alert("파일 삭제 실패")
+		}
+	})
 }
 </script>
 
@@ -312,11 +340,31 @@ function cancle_onClick()
 			<input class="w3-input w3-border" type = "text" name =	"enddayTime" id = "enddayTime" readonly="readonly" value="${endTime}">
 		</div>
   </div>
-  <div id="fileUpload" class="dragAndDropDiv">Drag & Drop Files Here</div>
+  			<div id="fileUpload" class="dragAndDropDiv">Drag & Drop Files Here</div>
 	    			<table id='fileTable' class="w3-right">
-			   			<tr>
-			   			</tr>
+		    			<c:set var = "file" value="${file}" />
+				    	<c:choose>
+				    		<c:when test="${file eq '첨부 파일이 없습니다.' }">
+				    			<tr><td colspan="2"></td></tr>
+				    		</c:when>
+				    		<c:otherwise>
+					    		<td colspan="2">
+					    			<c:forEach begin="0" end="${file.size()-1 }" var="idx"> 
+					    			<tr>
+										<td>${file.get(idx).fileName }</td>
+										<td>${file.get(idx).fileSize }</td>
+										<td><button class='w3-btn w3-teal' id="fileDelete" value="${file.get(idx).saveFileName}" onclick="FileDelete(this)">X</button></td>
+									</tr>
+									</c:forEach>
+					    		</td>
+				    		</c:otherwise>
+				    	</c:choose>
 		   			</table>
+		   			<table id = "addFileTable" class="ws-right">
+		   				<tr>
+		   				</tr>
+		   			</table>
+		   			
     		</div>
     		<div class="w3-row" style="margin-bottom:7px">
     		<textarea rows="5" cols="70" name = "content" id="content" onFocus="content()">${elastic.content}</textarea>
@@ -334,7 +382,14 @@ function cancle_onClick()
   </div>
   </div>
   </div>	
-			<input type="hidden" value="${subjectID}" name='subjectID' id='subjectID'>
+			<input type = "hidden" name = "hwno" value = "${hwno}" id = "hwno">
+			<input type = "hidden" name = "subjectID" value = "${subjectID }" id = "subjectID">
+			<input type = "hidden" name = "_id" value = "${_id}" id = "_id">
+			<input type = "hidden" name = "page" value = "${cri.page}" id = "page">
+			<input type = "hidden" name = "perPageNum" value = "${cri.perPageNum}" id = "perPageNum">
+			<input type = "hidden" name = "searchType" value = "${cri.searchType }" id = "searchType">
+			<input type = "hidden" name = "keyword" value = "${cri.keyword }" id = "keyword">
+
 			<input type="hidden" value=1999 name='professorNo' id='professorNo'>
 			
 <%@ include file = "./include/footer.jsp" %>
