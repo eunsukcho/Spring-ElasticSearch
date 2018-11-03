@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import kr.yuhan.domain.Criteria;
 import kr.yuhan.domain.ElasticVO;
+import kr.yuhan.domain.ReportVO;
 import kr.yuhan.domain.YuhanClass;
 import kr.yuhan.domain.YuhanFileVO;
 import kr.yuhan.domain.YuhanHomeworkVO;
@@ -102,6 +103,16 @@ public class YuhanHomeworkServiceImpl implements YuhanHomeworkService {
 	@Override
 	public void deleteHomework(int hwno) {
 		dao.deleteHomework(hwno);
+	}
+
+	@Override
+	public void insertReport(ReportVO vo) {
+		dao.insertReport(vo);
+	}
+
+	@Override
+	public ReportVO selectReportInfo(ReportVO vo) {
+		return dao.selectReportInfo(vo);
 	}
 
 

@@ -22,6 +22,7 @@ import com.google.gson.GsonBuilder;
 import kr.yuhan.domain.ElasticVO;
 import kr.yuhan.domain.GetElasticSearchVo;
 import kr.yuhan.domain.GetSourceVo;
+import kr.yuhan.domain.ReportVO;
 import kr.yuhan.domain.SearchCriteria;
 import kr.yuhan.domain.YuhanHomeworkVO;
 import kr.yuhan.service.ElasticService;
@@ -121,6 +122,40 @@ public class HomeworkDataController {
 			e.printStackTrace();
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
+		return entity;
+	}
+	
+	@RequestMapping(value="/addReport" , method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public ResponseEntity<?> addReort(@RequestBody ReportVO vo){
+		
+		ResponseEntity<?> entity;
+		Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
+
+		try {
+			service.insertReport(vo);
+			entity = new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		
+		return entity;
+	}
+	
+	@RequestMapping(value="/reportInfo" , method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public ResponseEntity<?> reportInfo(@RequestBody ReportVO vo){
+		
+		ResponseEntity<?> entity;
+		Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
+
+		System.out.println("과제 제출 정보");
+		try {
+			entity = new ResponseEntity<Object>(service.selectReportInfo(vo), HttpStatus.OK);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		
 		return entity;
 	}
 }

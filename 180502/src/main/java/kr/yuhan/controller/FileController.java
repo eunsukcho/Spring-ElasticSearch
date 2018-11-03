@@ -23,6 +23,7 @@ public class FileController {
 	
 	YuhanFileVO vo = new YuhanFileVO();
 	String filePath = "C:/YuhanFileTest";
+	String reportFilePath = "C:/YuhanReportFile";
 	
 	@RequestMapping(value = "/fileUpload",  method = RequestMethod.POST)
 	public String upload(MultipartHttpServletRequest multipartRequest, RedirectAttributes redir) {
@@ -47,4 +48,20 @@ public class FileController {
 		}
 		return entity;
 	}
+	
+	@RequestMapping(value = "/reportFileUpload", method = RequestMethod.POST)
+	public ResponseEntity<?> reportFileUpload(MultipartHttpServletRequest multipartRequest, RedirectAttributes redir) {
+		ResponseEntity<?> entity;
+		System.out.println(multipartRequest.getParameter("studentID"));
+		
+		try {
+			service.ReportFileServerUp(reportFilePath, multipartRequest);
+			entity = new ResponseEntity<Object>("SUCCESS", HttpStatus.OK);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
+	
 }

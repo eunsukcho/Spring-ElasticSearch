@@ -1,9 +1,6 @@
 package kr.yuhan.controller;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -19,7 +16,6 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -32,14 +28,15 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.CookieGenerator;
 
 import kr.yuhan.domain.YuhanMemberVO;
 import kr.yuhan.domain.YuhanNoticeVO;
+import kr.yuhan.domain.YuhanProfessorVO;
 import kr.yuhan.service.YuhanMemberCheckService;
 
 @Controller
@@ -78,9 +75,7 @@ public class YuhanMainController
 			}
 		}	
 	}
-		
-	
-	
+
 	public Map<String, String> getDivCookiee()
 	{
 		
@@ -125,6 +120,14 @@ public class YuhanMainController
 	{
 		vo.setMemberID(id);
 		vo.setMemberPW(password);
+		
+		//교수로그인처리
+		if(service.loginPro(vo) == 1){
+			session.setAttribute("sessionID", id);
+			session.setAttribute("Rate", "PS");
+			session.setAttribute("professorNum", service.professorNum(vo));
+			return "/main";
+		}
 
 		if(service.selectIDPW(vo) == 0)
 		{
@@ -307,12 +310,18 @@ public class YuhanMainController
 		}
 		else
 		{
+			String sessionID = (String ) session.getAttribute("sessionID").toString();
+			String memberClass = service.selectMemberClass(sessionID);
+			String Rate = service.selectRate(sessionID);
+			
 			model.addAttribute("loginMemberList", service.select_Member(session.getAttribute("sessionID").toString()));
-			model.addAttribute("memberClass", service.selectMemberClass(session.getAttribute("sessionID").toString()));
-			session.setAttribute("memberClass", service.selectMemberClass(session.getAttribute("sessionID").toString())); // 학생의 반을 저장해둔다.
+			model.addAttribute("memberClass", memberClass);
+			session.setAttribute("memberClass", memberClass); // 학생의 반을 저장해둔다.
+			session.setAttribute("Rate", Rate); // 학생인지 교수인지를 판별
 			
 			System.out.println(session.getAttribute("sessionID"));
-			System.out.println("memberClass : " + service.selectMemberClass(session.getAttribute("sessionID").toString()));
+			System.out.println("memberClass : " + memberClass);
+			System.out.println("Rate : " + Rate);
 	
 		}
 		/************************************************* 2018.10.09 이진주 */
@@ -646,4 +655,72 @@ public class YuhanMainController
 		return "/logout";
 		/************************************************* 2018.10.10 이진주 */
 	}
+	
+	/*******************************ZEON********************/
+	@RequestMapping(value = "/studentJoin_form", method=RequestMethod.GET)
+	public void studentJoin_form(YuhanMemberVO vo, String id, Model model)
+	{
+		System.out.println("엉엉..");
+		model.addAttribute("id", id);
+	}
+	
+	@RequestMapping(value = "/studentJoin_form", method=RequestMethod.POST)
+	public String studentJoin_form(YuhanMemberVO vo, Model model, HttpSession session)
+	{
+		service.insertMember(vo);
+		
+		model.addAttribute("joinCheck", "회원가입 되셨습니다.");
+		System.out.println("엉엉..2");
+		/* ==================== 濡쒓렇�씤 �꽭�뀡 遺�遺� ====================== */
+		
+		session.setAttribute("memberID", vo.getMemberID());
+		
+		/* ======================================================== */
+		
+		return "/main";
+	}
+	
+	
+	@RequestMapping(value = "/professor_form", method=RequestMethod.GET)
+	public void professor_form(YuhanProfessorVO vo, String id, Model model)
+	{
+		System.out.println("교슈..");
+		model.addAttribute("id", id);
+	}
+	
+	@RequestMapping(value = "/professor_form", method=RequestMethod.POST)
+	public String professor_form(YuhanProfessorVO vo, Model model, HttpSession session)
+	{
+		service.insertPro(vo);
+		
+		model.addAttribute("joinCheck", "회원가입 되셨습니다.");
+		System.out.println("엉엉..2");
+		/* ==================== 濡쒓렇�씤 �꽭�뀡 遺�遺� ====================== */
+		
+		session.setAttribute("memberID", vo.getProID());
+		
+		/* ======================================================== */
+		
+		return "/main";
+	}
+	
+	
+	@RequestMapping(value = "/professor_check", method=RequestMethod.GET)
+	public void professor_check(YuhanProfessorVO vo,  Model model) throws Exception
+	{
+		System.out.println("교슈..체쿠");
+		model.addAttribute("professor_check",service.professor_check());
+	}
+	
+	@RequestMapping(value = "/professor_check", method=RequestMethod.POST)
+	public String professor_check(YuhanProfessorVO vo, RedirectAttributes rttr )
+	{
+	
+		service.check_pro(vo);
+		rttr.addFlashAttribute("result","check_pro");
+
+		return "redirect:/professor_check";
+	}
+	
+	/*****************************************************/
 }

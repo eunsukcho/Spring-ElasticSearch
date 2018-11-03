@@ -33,4 +33,22 @@
 	<delete id="fileDelete">
 		delete from yuhan_homework_data_table where SAVE_FILE_NAME = #{saveFileName}
 	</delete>
+	
+	<!-- ReportFile -->
+	<insert id="reportfileDBUp" parameterType="kr.yuhan.domain.YuhanReportFileVO">
+		insert into yuhan_report_data_table (YUHAN_HOMEWORK_DATA_HOMEWORK_NUMBER, YUHAN_HOMEWORK_DATA_NAME, YUHAN_HOMEWORK_DATA_SIZE, YUHAN_HOMEWORK_DATA_URL, 
+		YUHAN_PROFESSOR_NUMBER, YUHAN_MEMBER_ID, YUHAN_SUBJECT_NUMBER, SAVE_FILE_NAME, FILE_PATH)
+		values (#{HomeWorkNO}, #{FileName}, #{FileSize}, #{FileSaveUrl}, #{professorNo}, #{memberID}, #{subjectID}, #{saveFileName}, #{filePath})
+	</insert>
+	
+	<select id="reportCount" resultType="int">
+		select count(*) from yuhan_report_data_table
+		where YUHAN_MEMBER_ID = #{studentID} and YUHAN_HOMEWORK_DATA_HOMEWORK_NUMBER = #{hwno}
+	</select>
+	
+	<select id="fileReportInfo" resultType="kr.yuhan.domain.YuhanReportFileVO">
+		select YUHAN_HOMEWORK_DATA_NAME as FileName, YUHAN_HOMEWORK_DATA_URL as FileSaveUrl, SAVE_FILE_NAME as saveFileName, FILE_PATH as filePath, YUHAN_HOMEWORK_DATA_SIZE as FileSize
+		from yuhan_report_data_table
+		where YUHAN_HOMEWORK_DATA_HOMEWORK_NUMBER = #{hwno} and YUHAN_MEMBER_ID = #{studentID}
+	</select>
 </mapper>

@@ -42,4 +42,9 @@ public class ReplyServiceImpl implements ReplyService{
 		return dao.totalRep(repVo);
 	}
 
+	@Override
+	public void updateRep(int repNo) {
+		dao.updateRep(repNo);
+	}
+
 }

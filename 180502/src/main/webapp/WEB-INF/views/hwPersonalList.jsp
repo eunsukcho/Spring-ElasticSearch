@@ -13,11 +13,11 @@
 			<div class="w3-container" style="display: inline-block; margin-left:auto; margin-right:auto">
 				<h1 class="w3-text-teal">수강과목 </h1>
 				<ul class="w3-ul w3-border">
-				  <c:forEach items = "${hw }" var = "vo"> 
-				  <li class="w3-hover-teal"><a href="/hwList?subjectID=${vo.subjectID }">${vo.subjectName }</a></li>
-				  </c:forEach>
+					<c:forEach items = "${hw }" var = "vo"> 
+						<li class="w3-hover-teal"><a href="/hwList?subjectID=${vo.subjectID }">${vo.subjectName }</a></li>
+					</c:forEach>
 				</ul>
-				</div>
-				</div>
-				</div>
+			</div>
+		</div>
+</div>
 <%@ include file = "./include/footer.jsp" %>

@@ -32,7 +32,6 @@
         
         <div class="w3-twothird">
     		<c:set var = "count" value = "${totalCount }" />
-    			
     		<c:if test="${empty count}">
     			<div>
     				등록된 글이 없습니다.
@@ -59,7 +58,7 @@
 						<th>title</th>
 						<th>regdate</th>
 					</tr>
-					<c:forEach begin="1" end="${elastic.size()-1 }" var="idx"> 
+					<c:forEach begin="1" end="${elastic.size() -1 }" var="idx"> 
 					<tr>
 						<td>${((totalCount-idx)-(maker.cri.page-1)*10)+1 }</td>
 						<td><a href="/hwread${maker.makeSearch(maker.cri.page) }&_id=${elastic.get(idx-1)._id }&hwno=${hw.get(idx-1).hwno}&subjectID=${subjectID}">${elastic.get(idx-1)._source.title}</a></td>

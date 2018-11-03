@@ -50,7 +50,7 @@ public class ElasticDAOImpl implements ElasticDAO{
 	public void putElastic(ElasticVO elvo, Gson gson){
 		
 		try {
-			url = new URL("http://35.189.154.102:32110/yuhan_homework/yuhan_homework");
+			url = new URL("http://124.5.189.204:32110/yuhan_homework/yuhan_homework");
 			urlconnection = (HttpURLConnection) url.openConnection();
 			urlconnection.setRequestMethod("POST");
 			
@@ -95,7 +95,7 @@ public class ElasticDAOImpl implements ElasticDAO{
 		Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
 		
 		try {
-			url = new URL("http://35.189.154.102:32110/yuhan_homework/yuhan_homework/_search");
+			url = new URL("http://124.5.189.204:32110/yuhan_homework/yuhan_homework/_search");
 			urlconnection = (HttpURLConnection) url.openConnection();
 			
 			urlconnection.setRequestMethod("POST");
@@ -163,7 +163,7 @@ public class ElasticDAOImpl implements ElasticDAO{
 		String keyword = criteria.getKeyword();
 		
 		try {
-			url = new URL("http://35.189.154.102:32110/yuhan_homework/yuhan_homework/_search");
+			url = new URL("http://124.5.189.204:32110/yuhan_homework/yuhan_homework/_search");
 			urlconnection = (HttpURLConnection) url.openConnection();
 			urlconnection.setRequestMethod("POST");
 			urlconnection.setRequestProperty("Accept", "application/json");
@@ -240,7 +240,7 @@ public class ElasticDAOImpl implements ElasticDAO{
 		Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
 		
 		try {
-			url = new URL("http://35.189.154.102:32110/yuhan_homework/yuhan_homework/_search");
+			url = new URL("http://124.5.189.204:32110/yuhan_homework/yuhan_homework/_search");
 			urlconnection = (HttpURLConnection) url.openConnection();
 			
 			urlconnection.setRequestMethod("POST");
@@ -297,7 +297,7 @@ public class ElasticDAOImpl implements ElasticDAO{
 	public String UpdateElastic(GetElasticSearchVo elaSearchVO) {
 		List<GetElasticSearchVo> sourceList = new ArrayList<GetElasticSearchVo>();
 		Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
-		String urlquery = "http://35.189.154.102:32110/yuhan_homework/yuhan_homework/"+ elaSearchVO.get_id() +"/_update";
+		String urlquery = "http://124.5.189.204:32110/yuhan_homework/yuhan_homework/"+ elaSearchVO.get_id() +"/_update";
 		System.out.println(urlquery);
 		
 		try {
@@ -357,7 +357,7 @@ public class ElasticDAOImpl implements ElasticDAO{
 
 	@Override
 	public void deleteElastic(String _id) {
-		String urlquery = "http://35.189.154.102:32110/yuhan_homework/yuhan_homework/"+_id;
+		String urlquery = "http://124.5.189.204:32110/yuhan_homework/yuhan_homework/"+_id;
 		System.out.println(urlquery);
 		
 		try {

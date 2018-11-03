@@ -7,6 +7,7 @@ import java.util.StringTokenizer;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
+import org.junit.Test;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ import kr.yuhan.service.YuhanMessageService;
 @Controller
 public class YuhanMessageController 
 {
+	
 	@Inject
 	private YuhanMessageService messageService;
 	

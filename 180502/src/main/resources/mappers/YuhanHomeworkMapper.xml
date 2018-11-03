@@ -45,7 +45,7 @@
 	
 	<select id="readStudentClass" resultType = "kr.yuhan.domain.YuhanClass">
 		select memberID, yuhan_subject_name as subjectName, yuhan_subject_number as subjectID
-		from yuhan_taking_class, yuhan_subject_table
+		from yuhan_taking_class, yuhan_subject_table												
 		where yuhan_subject_table.YUHAN_SUBJECT_NUMBER = yuhan_taking_class.SubjectNO
 		AND memberID = #{sessionID} 
 	</select>
@@ -90,8 +90,8 @@
 	
 	<select id="selectSubjectData" resultType="kr.yuhan.domain.YuhanSubjectVO">
 		SELECT YUHAN_SUBJECT_NUMBER, YUHAN_SUBJECT_NAME, YUHAN_SUBJECT_HAK, YUHAN_SUBJECT_PRO, proEmail, proName
-		FROM YUHAN_SUBJECT_TABLE, YUHAN_PROFESSOR
-		WHERE YUHAN_SUBJECT_TABLE.YUHAN_SUBJECT_PRO = YUHAN_PROFESSOR.proNo
+		FROM yuhan_subject_table, yuhan_professor
+		WHERE yuhan_subject_table.yuhan_subject_pro = yuhan_professor.proNo
 		AND YUHAN_SUBJECT_NUMBER = #{subjectID}
 	</select>
 	
@@ -111,4 +111,14 @@
 		update yuhan_homework_table set YUHAN_HOMEWORK_DELETE_STATUS = 'Y'
 		where yuhan_homework_number = #{hwno}
 	</update>
+	
+	<insert id="insertReport">
+		insert into yuhan_student_report(homeworkNo, studentID, content)
+		values(#{homeworkNo}, #{studentID}, #{content})
+	</insert>
+	
+	<select id="selectReportInfo" resultType="kr.yuhan.domain.ReportVO">
+		select content from yuhan_student_report
+		where homeworkNo = #{homeworkNo} and studentID = #{studentID}
+	</select>
 </mapper>

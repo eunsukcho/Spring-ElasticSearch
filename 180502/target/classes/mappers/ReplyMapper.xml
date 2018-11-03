@@ -35,4 +35,6 @@
 		select count(*) from yuhan_homework_comment_table 
 		where YUHAN_HOMEWORK_COMMENT_HOMEWORK_NUMBER = #{hwno}
 	</select>
+	
+	
 </mapper>

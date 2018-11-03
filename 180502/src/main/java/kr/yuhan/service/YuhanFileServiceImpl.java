@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import kr.yuhan.domain.YuhanFileVO;
 import kr.yuhan.domain.YuhanHomeworkVO;
+import kr.yuhan.domain.YuhanReportFileVO;
 import kr.yuhan.persistence.YuhanFileDAO;
 
 @Service
@@ -54,6 +55,21 @@ public class YuhanFileServiceImpl implements YuhanFileService{
 	@Override
 	public void deleteFile(String saveFileName, String filePath) {
 		dao.deleteFile(saveFileName, filePath);
+	}
+
+	@Override
+	public void ReportFileServerUp(String reportFilePath, MultipartHttpServletRequest multipartRequest) {
+		dao.ReportFileServerUp(reportFilePath, multipartRequest);;
+	}
+
+	@Override
+	public int ReportCount(int hwno, String studentID) {
+		return dao.ReportCount(hwno, studentID);
+	}
+
+	@Override
+	public List<YuhanReportFileVO> selectReportFileInfo(int hwno, String studentID) {
+		return dao.selectReportFileInfo(hwno, studentID);
 	}
 
 }

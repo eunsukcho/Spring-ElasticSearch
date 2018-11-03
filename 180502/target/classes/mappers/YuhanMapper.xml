@@ -15,6 +15,12 @@
 		WHERE memberID = #{memberID}
 	</select>
 	
+	<select id="selectRate" resultType="String">
+		SELECT memberStatus as memberGrade
+		FROM yuhanmember
+		WHERE memberID = #{memberID}
+	</select>
+	
 	<insert id="insertMember">
 		INSERT INTO yuhanmember(memberHak, memberID, memberPW, memberName, memberGrade, memberClass)
 		VALUES (#{memberHak}, #{memberID}, #{memberPW}, #{memberName}, #{memberGrade}, #{memberClass})
@@ -31,5 +37,33 @@
 		SELECT *
 		FROM yuhanmember
 		WHERE memberID = #{memberID}
+	</select>
+	
+	<insert id="insertPro">
+		INSERT INTO yuhan_professor(proNo, proID, ProPW, proName, proEmail)
+		VALUES (#{proNo}, #{proID}, #{ProPW}, #{proName}, #{proEmail} )
+	</insert>
+	
+	<select id="professor_check" resultType="kr.yuhan.domain.YuhanProfessorVO">
+		SELECT proNo, proID, ProPW, proName,proEmail
+		FROM yuhan_professor
+		WHERE proRating='p'
+	</select>
+	
+	<update id ="check_pro">
+  		UPDATE yuhan_professor set proRating = 'PS' 
+  		WHERE proNo = #{proNo}
+  	</update>
+  	
+  	<select id="loginPro" resultType="int">
+		SELECT COUNT(*)
+		FROM yuhan_professor
+		WHERE proID = #{memberID}
+		AND proPW = #{memberPW}
+		AND proRating = 'p'
+	</select>
+	
+	<select id="professorNum" resultType="String">
+		select proNo from yuhan_professor WHERE proID = #{memberID}
 	</select>
 </mapper>

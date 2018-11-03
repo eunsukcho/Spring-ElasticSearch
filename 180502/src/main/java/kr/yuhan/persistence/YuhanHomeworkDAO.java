@@ -6,6 +6,7 @@ import java.util.Map;
 
 import kr.yuhan.domain.Criteria;
 import kr.yuhan.domain.ElasticVO;
+import kr.yuhan.domain.ReportVO;
 import kr.yuhan.domain.YuhanClass;
 import kr.yuhan.domain.YuhanFileVO;
 import kr.yuhan.domain.YuhanHomeworkVO;
@@ -31,4 +32,7 @@ public interface YuhanHomeworkDAO {
 	public YuhanHomeworkVO selectHomeworkData(int hwno);
 	public void updateHomework(YuhanHomeworkVO vo);
 	public void deleteHomework(int hwno);
+	
+	public void insertReport(ReportVO vo);
+	public ReportVO selectReportInfo(ReportVO vo);
 }

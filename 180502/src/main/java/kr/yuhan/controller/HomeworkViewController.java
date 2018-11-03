@@ -62,7 +62,7 @@ public class HomeworkViewController {
 	}
 	
 	@RequestMapping(value="/hwread", method = {RequestMethod.GET})
-	public void hwread(@RequestParam ("_id") String _id, @RequestParam("hwno") int hwno, @RequestParam("subjectID") int subjectID, @ModelAttribute("cri") SearchCriteria cri, @ModelAttribute("recri") ReplyCriteria recri, Model model){
+	public void hwread(@RequestParam ("_id") String _id, @RequestParam("hwno") int hwno, @RequestParam("subjectID") int subjectID, @ModelAttribute("cri") SearchCriteria cri, @ModelAttribute("recri") ReplyCriteria recri, HttpSession session, Model model){
 		System.out.println(hwno);
 		model.addAttribute("subjectID", subjectID);
 		model.addAttribute("hwno", hwno);
@@ -70,6 +70,7 @@ public class HomeworkViewController {
 		model.addAttribute("elastic", elservice.readElastic(_id).get(0).get_source());
 		model.addAttribute("professorNo", 1999); // 후에 세션으로 넘김(지금은 임시로)
 		model.addAttribute("proName", "민경주"); // 후에 세션으로 넘김(지금은 임시로)
+		model.addAttribute("studentID", session.getAttribute("sessionID")); 
 		
 		if(fileService.fileCount(hwno) >= 1) { //첨부파일의 유무를 확인해주는 함수가 선언되어야한다.
 			//System.out.println("파일이 있습니다.");
@@ -80,6 +81,16 @@ public class HomeworkViewController {
 			model.addAttribute("file", fileService.selectFileInfo(hwno));
 		}else {
 			model.addAttribute("file", "첨부 파일이 없습니다.");
+		}
+		
+		int reportCount = fileService.ReportCount(hwno, (String)session.getAttribute("sessionID"));
+		System.out.println("학생의 과제 제출 : " + reportCount);
+		model.addAttribute("report", reportCount);
+		
+		if(reportCount >= 1) {
+			model.addAttribute("reportFile", fileService.selectReportFileInfo(hwno, (String)session.getAttribute("sessionID")));
+		}else {
+			model.addAttribute("reportFile", "제출 파일이 없습니다.");
 		}
 		
 		/**댓글**/
@@ -95,6 +106,64 @@ public class HomeworkViewController {
 //		model.addAttribute("reply", reList);
 //		System.out.println(reList.get(0).getProfessorName());
 //		System.out.println(reList.get(0).getComment());
+	}
+	
+	@RequestMapping(value="/hwReport", method = RequestMethod.GET)
+	public void hwReport(HttpSession session, HttpServletRequest request, @RequestParam("subjectID") int subjectID, @ModelAttribute("cri") SearchCriteria cri, Model model) {
+		
+		List<GetElasticSearchVo> searchList = elservice.readElastic(request.getParameter("_id"));
+
+		model.addAttribute("professorNo", 1999); // 로그인 후에는 세션으로 받는다.
+		model.addAttribute("_id", request.getParameter("_id"));
+		model.addAttribute("hwno", request.getParameter("hwno"));
+		model.addAttribute("subjectID", subjectID);
+		model.addAttribute("page", cri.getPage());
+		model.addAttribute("perPageNum", cri.getPerPageNum());
+		model.addAttribute("searchType", cri.getSearchType());
+		model.addAttribute("keyword", cri.getKeyword());
+		model.addAttribute("elastic", searchList.get(0).get_source());
+		model.addAttribute("studentID", session.getAttribute("sessionID")); 
+		System.out.println("리포트 : " + session.getAttribute("sessionID"));
+		
+		String elstart = searchList.get(0).get_source().getStartdate();
+		String[] array = elstart.split(" ");
+		
+		String elend = searchList.get(0).get_source().getEnddate();
+		String[] array2 = elend.split(" ");
+		
+		model.addAttribute("start", array[0]);
+		model.addAttribute("startTime", array[1]);
+		model.addAttribute("end", array2[0]);
+		model.addAttribute("endTime", array2[1]);
+	}
+	
+	@RequestMapping(value="/hwReportCheck", method = RequestMethod.GET)
+	public void hwReportCheck(HttpSession session, HttpServletRequest request, @RequestParam("subjectID") int subjectID, @ModelAttribute("cri") SearchCriteria cri, Model model) {
+		
+		List<GetElasticSearchVo> searchList = elservice.readElastic(request.getParameter("_id"));
+
+		model.addAttribute("professorNo", 1999); // 로그인 후에는 세션으로 받는다.
+		model.addAttribute("_id", request.getParameter("_id"));
+		model.addAttribute("hwno", request.getParameter("hwno"));
+		model.addAttribute("subjectID", subjectID);
+		model.addAttribute("page", cri.getPage());
+		model.addAttribute("perPageNum", cri.getPerPageNum());
+		model.addAttribute("searchType", cri.getSearchType());
+		model.addAttribute("keyword", cri.getKeyword());
+		model.addAttribute("elastic", searchList.get(0).get_source());
+		model.addAttribute("studentID", session.getAttribute("sessionID")); 
+		System.out.println("리포트 : " + session.getAttribute("sessionID"));
+		
+		String elstart = searchList.get(0).get_source().getStartdate();
+		String[] array = elstart.split(" ");
+		
+		String elend = searchList.get(0).get_source().getEnddate();
+		String[] array2 = elend.split(" ");
+		
+		model.addAttribute("start", array[0]);
+		model.addAttribute("startTime", array[1]);
+		model.addAttribute("end", array2[0]);
+		model.addAttribute("endTime", array2[1]);
 	}
 	
 	@RequestMapping(value="/hwList", method = RequestMethod.GET)
@@ -116,10 +185,10 @@ public class HomeworkViewController {
 		vo.setSubjectClass(memberClass); //회원 아이디와, 과목번호, 반으로 학생의 해당 과목의 과제 목록을 불러온다. //교수의 경우 해당 반을 선택해서 들어올 수 있게 구현한다.(후에 구현)
 	
 		model.addAttribute("subjectID", subjectID);
-		//System.out.println(subjectID);
+		System.out.println("과목 번호 :" + subjectID);
 				
 		model.addAttribute("hw", service.listHomework(vo)); //글 번호를 알기위해. hwread 페이지의 파라미터로 넘겨줄것임.
-		//System.out.println(service.listHomework(vo).get(0).getHwno());
+		//System.out.println("글 번호 :"+service.listHomework(vo).get(0).getHwno());
 
 		/** 밑 부분 검색 엔진 사용  **/
 		String professorName = service.listHomeworkEla(String.valueOf(subjectID)).getProfessor(); // 검색엔진에서는 교수이름, 과목 이름, 학생의 반으로 리스트를 가져옴
@@ -143,35 +212,33 @@ public class HomeworkViewController {
 
 		PageMaker maker = new PageMaker();
 		maker.setCri(cri);
-			
+		System.out.println("글 개수 : "+searchvo.get(searchvo.size()-1).getTotalCount());
 		maker.setTotalCount(searchvo.get(searchvo.size()-1).getTotalCount());
 		model.addAttribute("maker", maker);
 		model.addAttribute("totalCount", searchvo.get(searchvo.size()-1).getTotalCount());
 	}
 
 	
-	@RequestMapping(value="/hwPersonalList", method = RequestMethod.GET) /** 학생,교수 개인의 수강,담당 과목 **/
+	@RequestMapping(value="/hwPersonalList", method = RequestMethod.GET) /** 학생, 교수 개인의 수강, 담당 과목 **/
 	public void hwPersonalList(Model model, HttpSession session, RedirectAttributes redir){
+		String professorNum; //교수번호
+		String sessionID; //학생 아이디
 		
 		model.addAttribute("loginMemberList", memberService.select_Member(session.getAttribute("sessionID").toString())); //메뉴바 접속 회원 이름 출력 서비스
 		
 		String rate = (String) session.getAttribute("Rate"); //학생과 교수를 구분
-		String memberClass = (String) session.getAttribute("memberClass"); // 만약 학생이라면 반을 가져옴.
-		
-		String sessionNum; 
-		String sessionID;
-		
-		//System.out.println("rate : " + rate);
-		model.addAttribute("rate", rate);
-		
-		sessionID = (String ) session.getAttribute("sessionID"); // 학생의 개인 과목 목록을 가져올 땐, 아이디를 사용하여 수강 테이블에서 검색한다.
-		//System.out.println(sessionID);
-
-		model.addAttribute("sessionID", sessionID);
-			
-		model.addAttribute("hw", service.readClass(sessionID)); //학생 개인의 과목 목록을 가져옴
-
-		//System.out.println("과목 이름 확인 : " + service.readClass(sessionID).get(0).getSubjectName() + "  " + service.readClass(sessionID).get(1).getSubjectName());
+		if(rate.equals("S")) {
+			System.out.println("학생 입니다.");
+			String memberClass = (String) session.getAttribute("memberClass"); // 만약 학생이라면 반을 가져옴.
+			System.out.println("학생의 반 : " + memberClass);
+			model.addAttribute("rate", rate);
+			sessionID = (String ) session.getAttribute("sessionID"); // 학생의 개인 과목 목록을 가져올 땐, 아이디를 사용하여 수강 테이블에서 검색한다.
+			model.addAttribute("sessionID", sessionID);
+			model.addAttribute("hw", service.readClass(sessionID)); //학생 개인의 과목 목록을 가져옴
+		}else if(rate.equals("P")) {
+			System.out.println("교수입니다.");
+			professorNum = (String) session.getAttribute("professorNum");
+		}
 
 	}
 	

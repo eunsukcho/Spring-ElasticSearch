@@ -58,38 +58,11 @@ $(document).ready(function(){
 		frm.submit();
 	});
 	
- 	$("#reportCheck").on("click", function(){
-
-		var html = $(this).html();
- 		var hwno = $("#hwno").val();
- 		var studentID = $("#studentID").val();
-		
- 		reportVO = new Object();
- 		
- 		reportVO.homeworkNo = hwno;
- 		reportVO.studentID = studentID;
- 		jsonData = JSON.stringify(reportVO);
- 		
- 		$.ajax({
- 			type : "POST",
- 			url : "/homeworkdata/reportInfo",
- 			data : jsonData,
- 			dataType : "json",
- 			contentType : "application/json; charset=utf-8",
- 			success : function(data){ 
- 				alert(data.content);
-
- 		 		var tag = "<p>"+data.content+"</p>";
- 	 			$("#reportContent").html("");
- 	 			$("#reportContent").append(tag);
- 		 	}
- 		},
- 			error : function(){
- 				alert("댓글 로딩 실패")
- 			}
- 		});
-		
-	}); 
+	$("#reportCheck").on("click", function(){
+		frm.attr("method", "get");
+		frm.attr("action", "/hwReportCheck");
+		frm.submit();
+	});
 });
 function firstLoad(e){
 
@@ -282,7 +255,6 @@ function repUpdate(e){
 	    <input type = "hidden" name = "searchType" value = "${cri.searchType }">
 	    <input type = "hidden" name = "keyword" value = "${cri.keyword }">
 	    <input type = "hidden" name = "file" value = "${file}">
-	    <input type = "hidden" name = "studentID" value = "${studentID }" id = "studentID">
 </form>
 <!-- Page Container -->
 <div class="w3-content w3-margin-top" style="max-width:1400px;">
@@ -345,24 +317,8 @@ function repUpdate(e){
 		    </tr>
 		  </table>
 		  </div>
-		  <p>제출 파일</p>
-		  <c:set var = "reportFile" value="${reportFile}" />
-		  <c:choose>
-		  	<c:when test="${reportFile eq '제출 파일이 없습니다.' }">
-		  		<div class="w3-panel w3-border w3-border-meal">
-					<p>${reportFile }</p>
-				</div>
-		  	</c:when>
-		  	<c:otherwise>
-			  	<div class="w3-panel w3-border w3-border-meal">
-			  		<c:forEach begin="0" end="${reportFile.size()-1 }" var="idx">
-		    			&nbsp <p><a href="/download.do?filePath=${reportFile.get(idx).filePath}&fileName=${reportFile.get(idx).fileName}&saveFileName=${reportFile.get(idx).saveFileName}">${reportFile.get(idx).fileName}</a></p>
-		    		</c:forEach>
-			  	</div>
-		  	</c:otherwise>
-		  </c:choose>
-		  <div id="reportContent">
-		  	
+		  <div class="w3-panel w3-border w3-border-meal">
+		  	<p>제출 파일이 없습니다.</p>
 		  </div>
 		  <c:set var = "reportCount" value="${report}" />
 		  <c:choose>

@@ -93,4 +93,18 @@ public class ReplyDataController {
 		return entity; 
 	}
 	
+	@RequestMapping(value = "/updateRep/{repNo}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+	public ResponseEntity<?> updateRep(@PathVariable("repNo") int repNo){
+		ResponseEntity<?> entity;
+		try {
+			service.deleteRep(repNo);
+			entity = new ResponseEntity<Object>("SUCCESS", HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
+	
+	
 }

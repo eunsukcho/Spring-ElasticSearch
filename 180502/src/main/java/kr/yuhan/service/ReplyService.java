@@ -13,4 +13,5 @@ public interface ReplyService {
 	public List<ReplyVO> selectRepPage(ReplyVO repVo);
 	public void deleteRep(int repNo);
 	public int totalRep(ReplyVO repVo);
+	public void updateRep(int repNo);
 }

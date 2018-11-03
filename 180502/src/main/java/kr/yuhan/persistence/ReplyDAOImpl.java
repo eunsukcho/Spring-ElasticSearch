@@ -42,5 +42,10 @@ public class ReplyDAOImpl implements ReplyDAO{
 	public int totalRep(ReplyVO repVo) {
 		return sqlSession.selectOne(NAMESPACE + ".totalRep", repVo);
 	}
+
+	@Override
+	public void updateRep(int repNo) {
+		
+	}
 	
 }

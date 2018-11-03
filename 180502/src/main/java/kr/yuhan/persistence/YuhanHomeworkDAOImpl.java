@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import kr.yuhan.domain.Criteria;
 import kr.yuhan.domain.ElasticVO;
+import kr.yuhan.domain.ReportVO;
 import kr.yuhan.domain.YuhanClass;
 import kr.yuhan.domain.YuhanFileVO;
 import kr.yuhan.domain.YuhanHomeworkVO;
@@ -88,7 +89,6 @@ public class YuhanHomeworkDAOImpl implements YuhanHomeworkDAO{
 
 	@Override
 	public List<YuhanSubjectVO> selectSubjectData(String subjectID) {
-		// TODO Auto-generated method stub
 		return sqlSession.selectList(NAMESPACE + ".selectSubjectData", subjectID);
 	}
 
@@ -105,5 +105,15 @@ public class YuhanHomeworkDAOImpl implements YuhanHomeworkDAO{
 	@Override
 	public void deleteHomework(int hwno) {
 		sqlSession.update(NAMESPACE + ".deleteHomework", hwno);
+	}
+
+	@Override
+	public void insertReport(ReportVO vo) {
+		sqlSession.insert(NAMESPACE + ".insertReport", vo);
+	}
+
+	@Override
+	public ReportVO selectReportInfo(ReportVO vo) {
+		return sqlSession.selectOne(NAMESPACE + ".selectReportInfo", vo);
 	}
 }
