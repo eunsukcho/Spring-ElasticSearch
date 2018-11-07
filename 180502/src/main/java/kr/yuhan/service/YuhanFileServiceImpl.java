@@ -1,17 +1,14 @@
 package kr.yuhan.service;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import kr.yuhan.domain.YuhanFileVO;
-import kr.yuhan.domain.YuhanHomeworkVO;
 import kr.yuhan.domain.YuhanReportFileVO;
 import kr.yuhan.persistence.YuhanFileDAO;
 
@@ -59,7 +56,7 @@ public class YuhanFileServiceImpl implements YuhanFileService{
 
 	@Override
 	public void ReportFileServerUp(String reportFilePath, MultipartHttpServletRequest multipartRequest) {
-		dao.ReportFileServerUp(reportFilePath, multipartRequest);;
+		dao.ReportFileServerUp(reportFilePath, multipartRequest);
 	}
 
 	@Override

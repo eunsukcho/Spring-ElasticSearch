@@ -197,7 +197,7 @@ $(document).ready(function(){
 			cache : false,
 			success : function(data) {
 				/* alert('성공'); */
-				self.location="/hwList?subjectID="+subjectID;
+				self.location="/hwList?subjectID="+subjectID+"&selectClass="+selectClass;
 			},
 			error : function(){
 				alert("글 등록 실패")
@@ -226,6 +226,7 @@ $(document).ready(function(){
 		var content = $("#content").val();
 		var professorNo = parseInt($("#professorNo").val());
 		var subjectID = $("#subjectID").val();
+		var selectClass = $("#selectClass").val();
 		var jsonData;
 		var file;
 		alert(new Date($.now()));
@@ -268,7 +269,7 @@ $(document).ready(function(){
 					sendFileToServer(data, professorNo, subjectID);
 				}
 				alert("과제 등록 성공")
-				self.location="/hwList?subjectID="+subjectID;
+				self.location="/hwList?subjectID="+subjectID+"&selectClass="+selectClass;
 			},
 			error : function(){
 				alert("글 등록 실패")
@@ -299,7 +300,7 @@ function cancle_onClick()
   <h2 class="w3-text-grey w3-padding-16"><i class="fa fa-code fa-fw w3-margin-right w3-xxlarge w3-text-teal"></i>Write Homework</h2>
   <div class="w3-row w3-container" style="margin-bottom: 7px">
   <input class="w3-input w3-border" type = "text" name = "title" id="title" placeholder = "TITLE" style="margin-bottom: 7px">
-  <input class="w3-input w3-border" type = "text" name = "writer" id="writer" placeholder = "WRITER" style="margin-bottom: 7px; margin-right:7px">
+  <input class="w3-input w3-border" type = "text" name = "writer" id="writer" value="${proName}" style="margin-bottom: 7px; margin-right:7px">
   <select name="subjectClass" style="width:175px">
 		<option value="1">1</option>
 		<option value="2">2</option>
@@ -342,6 +343,6 @@ function cancle_onClick()
   </div>
   </div>	
 			<input type="hidden" value="${subjectID }" name='subjectID' id='subjectID'>
-			<input type="hidden" value=1999 name='professorNo' id='professorNo'>
-			
+			<input type="hidden" value="${professorNo }" name='professorNo' id='professorNo'>
+			<input type="hidden" value="${selectClass }" name='selectClass' id='selectClass'>	
 <%@ include file = "./include/footer.jsp" %>

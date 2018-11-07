@@ -24,8 +24,8 @@
 </style>
 </head>
 <body>
-	<div class="w3-container w3-padding-24 w3-center"> <!--  -->
-  		<img src="./resources/images/logo/yuhanlogo.png">
+	<div class="w3-container w3-padding-24 w3-center w3-white"> <!--  -->
+  		<img src="/resources/images/logo/yuhanlogo.png">
 	</div>
 	<div class="w3-bar w3-border w3-teal w3-center w3-padding-16">
 		<a href="/hwPersonalList" class="w3-bar-item w3-wide w3-button">과제실</a>
@@ -62,6 +62,8 @@
     			<div class="w3-dropdown-content w3-bar-block w3-card-4">
      				<a href="#" class="w3-bar-item w3-button">마이페이지</a>
       				<a href="/logout" class="w3-bar-item w3-button">로그아웃</a>
+      				<a href="/updateSubject" class="w3-bar-item w3-button">과목 수정</a>
+      				<a href="/createSubject" class="w3-bar-item w3-button">과목 생성</a>
     			</div>
     	</div>
     	<a href="/messageHome" class="w3-bar-item w3-wide w3-button w3-right">쪽지함</a>

@@ -1,6 +1,6 @@
-<%@ include file = "./include/navbar.jsp" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    <%@ include file = "./include/navbar.jsp" %>
     <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 	<%@ taglib uri = "http://java.sun.com/jsp/jstl/fmt" prefix = "fmt" %>
 	
@@ -25,11 +25,18 @@
           
           <hr>
           </c:forEach>
-          <p><i class="fa fa-circle fa-fw w3-margin-right w3-large w3-text-teal"></i><a href="/hwRegister?subjectID=${subjectID }">과제 등록</a></p>
+          <c:set var = "rate" value = "${rate }" />
+          <c:choose>
+		  	<c:when test="${rate eq 'S' }">
+		  		<p></p>
+		  	</c:when>
+		  	<c:otherwise>
+		  		<p><i class="fa fa-circle fa-fw w3-margin-right w3-large w3-text-teal"></i><a href="/hwRegister?subjectID=${subjectID }&selectClass=${selectClass}">과제 등록</a></p>
+		  	</c:otherwise>
+		  </c:choose>
          </div>
         </div>
         </div>
-        
         <div class="w3-twothird">
     		<c:set var = "count" value = "${totalCount }" />
     		<c:if test="${empty count}">
@@ -58,10 +65,10 @@
 						<th>title</th>
 						<th>regdate</th>
 					</tr>
-					<c:forEach begin="1" end="${elastic.size() -1 }" var="idx"> 
+					<c:forEach begin="1" end="${elastic.size()-1 }" var="idx"> 
 					<tr>
 						<td>${((totalCount-idx)-(maker.cri.page-1)*10)+1 }</td>
-						<td><a href="/hwread${maker.makeSearch(maker.cri.page) }&_id=${elastic.get(idx-1)._id }&hwno=${hw.get(idx-1).hwno}&subjectID=${subjectID}">${elastic.get(idx-1)._source.title}</a></td>
+						<td><a href="/hwread${maker.makeSearch(maker.cri.page) }&_id=${elastic.get(idx-1)._id }&hwno=${hw.get(idx-1).hwno}&subjectID=${subjectID}&selectClass=${selectClass }">${elastic.get(idx-1)._source.title}</a></td>
 						<td>${elastic.get(idx-1)._source.date}</td>
 					</tr>
 					</c:forEach>
@@ -95,6 +102,8 @@ $(document).ready(function(){
 		alert("안녕");
 		self.location = "hwList?page=1&subjectID="
 						+'${subjectID}'
+						+ "&selectClass="
+						+'${selectClass}'
 						+"&searchType=" 
 						+ $("select option:selected").val() 
 						+"&keyword=" 

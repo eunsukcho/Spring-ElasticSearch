@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ import kr.yuhan.domain.SearchCriteria;
 import kr.yuhan.domain.YuhanHomeworkVO;
 import kr.yuhan.service.ElasticService;
 import kr.yuhan.service.YuhanHomeworkService;
+import kr.yuhan.service.YuhanReportService;
 
 @RestController
 @RequestMapping("/homeworkdata")
@@ -34,6 +36,9 @@ public class HomeworkDataController {
 
 	@Inject
 	private YuhanHomeworkService service;
+	
+	@Inject
+	private YuhanReportService reportService;
 	
 	@Inject
 	private ElasticService elservice;
@@ -126,13 +131,13 @@ public class HomeworkDataController {
 	}
 	
 	@RequestMapping(value="/addReport" , method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public ResponseEntity<?> addReort(@RequestBody ReportVO vo){
+	public ResponseEntity<?> addReort(@RequestBody ReportVO vo, HttpSession session){
 		
 		ResponseEntity<?> entity;
 		Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
-
+		vo.setStudentID((String) session.getAttribute("sessionID"));
 		try {
-			service.insertReport(vo);
+			reportService.insertReport(vo);
 			entity = new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -150,7 +155,7 @@ public class HomeworkDataController {
 
 		System.out.println("과제 제출 정보");
 		try {
-			entity = new ResponseEntity<Object>(service.selectReportInfo(vo), HttpStatus.OK);
+			entity = new ResponseEntity<Object>(reportService.selectReportInfo(vo), HttpStatus.OK);
 		}catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);

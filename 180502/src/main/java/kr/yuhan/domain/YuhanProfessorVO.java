@@ -2,16 +2,17 @@ package kr.yuhan.domain;
 
 public class YuhanProfessorVO 
 {
-	int proNo;
+	String proNo;
 	String proID;
 	String ProPW;
 	String proName;
 	String proRating;
 	String proEmail;
-	public int getProNo() {
+	
+	public String getProNo() {
 		return proNo;
 	}
-	public void setProNo(int proNo) {
+	public void setProNo(String proNo) {
 		this.proNo = proNo;
 	}
 	public String getProID() {

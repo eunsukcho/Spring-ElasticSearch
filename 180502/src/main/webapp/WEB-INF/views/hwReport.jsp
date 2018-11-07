@@ -190,12 +190,12 @@ $(document).ready(function(){
 		return file.format().tag();
 	}
 
-	var sendFileToServer = function(hwno, professorno, subjectID, studentID){ //파일 전송 함수
+	var sendFileToServer = function(hwno, professorno, subjectID){ //파일 전송 함수
 		fd.append('hwno', hwno);
-		fd.append('professorNo', professorno);
+		fd.append('professorNo', '${professorNo}');
 		fd.append('subjectID', subjectID);
-		fd.append('studentID', studentID);
-		alert(studentID);
+		fd.append('studentID', '${studentID}');
+		
 		$.ajax({
 			type : "POST",
 			url : "/reportFileUpload", //Upload URL
@@ -226,10 +226,10 @@ $(document).ready(function(){
     	reportVO = new Object();
 
     	var hwno = $("#hwno").val();
-    	var studentID = $("#studentID").val();
+    	
 		var content = $("#content").val();
 		
-		var professorNo = parseInt($("#professorNo").val());
+		var professorNo = parseInt('${professorNo}');
 		var subjectID = $("#subjectID").val();
 		
 		alert("교수 번호 : " + professorNo);
@@ -242,7 +242,7 @@ $(document).ready(function(){
 			file = 'N';
 		
 		reportVO.homeworkNo = hwno;
-		reportVO.studentID = studentID;
+		
 		reportVO.content = content;
 		
 		jsonData = JSON.stringify(reportVO);
@@ -257,7 +257,7 @@ $(document).ready(function(){
 			contentType : "application/json; charset=utf-8",//보내는 타입
 			success : function(data){ //받는 데이터
 				if (file == 'Y'){
-					sendFileToServer(hwno, professorNo, subjectID, studentID);
+					sendFileToServer(hwno, professorNo, subjectID);
 				}
 				alert("과제 등록 성공")
 				frm.attr("action", "/hwread");
@@ -271,31 +271,17 @@ $(document).ready(function(){
     }
 });
 
-function cancle_onClick()
-{
-	if (confirm("작성을 그만 두고 이전 페이지로 돌아가겠습니까?") == true)
-	{
-		self.location="/hwList?subjectID="+${subjectID};
-	}
-	else
-	{
-		return;
-	}
-}
 </script>
 </head>
-<form role="form" method = "post" action="#">
+<form role="form" method = "post" action="#" id="fform">
+		<input type = "hidden" name = "page" value = "${cri.page}">
+	    <input type = "hidden" name = "perPageNum" value = "${cri.perPageNum}">
+	    <input type = "hidden" name = "searchType" value = "${cri.searchType }">
+	    <input type = "hidden" name = "keyword" value = "${cri.keyword }">
+	    <input type = "hidden" name = "_id" value = "${_id}">
 	    <input type = "hidden" name = "hwno" value = "${hwno}" id = "hwno">
-	    <input type = "hidden" name = "professorNo" value = "${professorNo }" id = "professorNo">
-	    <input type = "hidden" name = "proName" value = "${proName }" id = "proName">
 	    <input type = "hidden" name = "subjectID" value = "${subjectID }" id="subjectID">
-	    <input type = "hidden" name = "_id" value = "${_id}" id="id">
-	    <input type = "hidden" name = "page" value = "${cri.page}" id="page">
-	    <input type = "hidden" name = "perPageNum" value = "${cri.perPageNum}" id="perPageNum">
-	    <input type = "hidden" name = "searchType" value = "${cri.searchType }" id="searchType">
-	    <input type = "hidden" name = "keyword" value = "${cri.keyword }" id="keyword">
-	    <input type = "hidden" name = "file" value = "${file}">
-	    <input type = "hidden" name = "studentID" value = "${studentID }" id="studentID" >
+	    <input type = "hidden" name = "selectClass" value = "${selectClass}" id="selectClass">
 </form>
 <!-- Page Container -->
 <div class="w3-content w3-margin-top" style="max-width:1400px;">

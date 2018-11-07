@@ -188,7 +188,7 @@ $(document).ready(function(){
 
 	var sendFileToServer = function(data, professorno, subjectID){ //파일 전송 함수
 		fd.append('hwno', data);
-		fd.append('professorNo', professorno);
+		fd.append('professorNo', '${professorNo}');
 		fd.append('subjectID', subjectID);
 		alert(professorno + subjectID);
 		$.ajax({
@@ -200,7 +200,7 @@ $(document).ready(function(){
 			cache : false,
 			success : function(data) {
 				/* alert('성공'); */
-				self.location="/hwList?subjectID="+subjectID;
+				self.location="/hwList?subjectID="+subjectID + "&selectClass=${selectClass}";
 			},
 			error : function(){
 				alert("글 등록 실패")
@@ -215,6 +215,8 @@ $(document).ready(function(){
 	});
     
     function sendData(){
+    	var frm = $("form[role = 'form']"); 
+    	
     	$("#content").val(CKEDITOR.instances.content.getData());
     	registerVO = new Object();
 		var title = $("#title").val();
@@ -224,12 +226,13 @@ $(document).ready(function(){
 		var endday = $("#endday").val();
 		var enddayTime = $("#enddayTime").val();
 		var content = $("#content").val();
-		var professorNo = parseInt($("#professorNo").val());
+		var professorNo = parseInt('${professorNo}');
 		var subjectID = $("#subjectID").val();
 		var page = $("#page").val();
 		var perPageNum = $("#perPageNum").val();
 		var searchType = $("#searchType").val();
 		var keyword = $("#keyword").val();
+		var selectClass = $("#selectClass").val();
 		var jsonData;
 		var file;
 		var hwno = "${hwno}";
@@ -275,7 +278,10 @@ $(document).ready(function(){
 						sendFileToServer(hwno, professorNo, subjectID);
 					}
 					alert("글 수정 성공")
-					self.location="/hwList?subjectID="+subjectID+"&page="+page+"&perPageNum="+perPageNum+"&searchType="+searchType+"&keyword="+keyword;
+					//self.location="/hwList?subjectID="+subjectID+"&page="+page+"&perPageNum="+perPageNum+"&searchType="+searchType+"&keyword="+keyword+"&selectClass="+selectClass;
+					frm.attr("method", "get");
+					frm.attr("action", "/hwList");
+					frm.submit();
 				}
 			},
 			error : function(){
@@ -382,6 +388,7 @@ function FileDelete(e){
   </div>
   </div>
   </div>	
+  <form role="form" method = "post" action="#">
 			<input type = "hidden" name = "hwno" value = "${hwno}" id = "hwno">
 			<input type = "hidden" name = "subjectID" value = "${subjectID }" id = "subjectID">
 			<input type = "hidden" name = "_id" value = "${_id}" id = "_id">
@@ -389,7 +396,6 @@ function FileDelete(e){
 			<input type = "hidden" name = "perPageNum" value = "${cri.perPageNum}" id = "perPageNum">
 			<input type = "hidden" name = "searchType" value = "${cri.searchType }" id = "searchType">
 			<input type = "hidden" name = "keyword" value = "${cri.keyword }" id = "keyword">
-
-			<input type="hidden" value=1999 name='professorNo' id='professorNo'>
-			
+			<input type = "hidden" name = "selectClass" value = "${selectClass }" id = "selectClass">
+ </form>		
 <%@ include file = "./include/footer.jsp" %>

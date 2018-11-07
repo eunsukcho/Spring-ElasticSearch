@@ -10,6 +10,29 @@ public class YuhanSubjectVO
 	private String proEmail;
 	private String proName;
 	
+	private String memberID;
+	private int subjectNO;
+	private int subjectCount;
+	
+	
+	public String getMemberID() {
+		return memberID;
+	}
+	public void setMemberID(String memberID) {
+		this.memberID = memberID;
+	}
+	public int getSubjectNO() {
+		return subjectNO;
+	}
+	public void setSubjectNO(int subjectNO) {
+		this.subjectNO = subjectNO;
+	}
+	public int getSubjectCount() {
+		return subjectCount;
+	}
+	public void setSubjectCount(int subjectCount) {
+		this.subjectCount = subjectCount;
+	}
 	public int getYUHAN_SUBJECT_NUMBER() {
 		return YUHAN_SUBJECT_NUMBER;
 	}
@@ -59,7 +82,5 @@ public class YuhanSubjectVO
 				+ YUHAN_SUBJECT_PRO + ", YUHAN_SUBJECT_CLASS_ROOM=" + YUHAN_SUBJECT_CLASS_ROOM + ", proEmail="
 				+ proEmail + ", proName=" + proName + "]";
 	}
-	
-	
-	
+
 }

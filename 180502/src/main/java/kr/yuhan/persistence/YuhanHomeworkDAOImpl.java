@@ -3,6 +3,7 @@ package kr.yuhan.persistence;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,8 +43,8 @@ public class YuhanHomeworkDAOImpl implements YuhanHomeworkDAO{
 	}
 	
 	@Override
-	public List<YuhanHomeworkVO> listProfessorHomework(Map<String, Object> map) {
-		return sqlSession.selectList(NAMESPACE + ".listProfessorHomework", map);
+	public List<YuhanHomeworkVO> listProfessorHomework(YuhanHomeworkVO vo) {
+		return sqlSession.selectList(NAMESPACE + ".listProfessorHomework", vo);
 	}
 	
 	@Override
@@ -108,12 +109,14 @@ public class YuhanHomeworkDAOImpl implements YuhanHomeworkDAO{
 	}
 
 	@Override
-	public void insertReport(ReportVO vo) {
-		sqlSession.insert(NAMESPACE + ".insertReport", vo);
+	public List<Object> selectHak(String professorNum) {
+		return sqlSession.selectList(NAMESPACE + ".selectHak", professorNum);
 	}
 
 	@Override
-	public ReportVO selectReportInfo(ReportVO vo) {
-		return sqlSession.selectOne(NAMESPACE + ".selectReportInfo", vo);
+	public List<YuhanClass> selectClass(String memberNum) {
+		return sqlSession.selectList(NAMESPACE + ".selectClass", memberNum);
 	}
+
+	
 }

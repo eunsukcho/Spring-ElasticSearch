@@ -5,10 +5,23 @@ public class YuhanClass {
 	private int studentID;
 	private int subjectID;
 	private String subjectName;
-	int subjectNo;
-	int subjectClass;
-	
+	private int subjectNo;
+	private int subjectClass;
+	private String yuhan_subject_hak;
+	String memberClass;
 
+	public String getMemberClass() {
+		return memberClass;
+	}
+	public void setMemberClass(String memberClass) {
+		this.memberClass = memberClass;
+	}
+	public String getYuhan_subject_hak() {
+		return yuhan_subject_hak;
+	}
+	public void setYuhan_subject_hak(String yuhan_subject_hak) {
+		this.yuhan_subject_hak = yuhan_subject_hak;
+	}
 	public int getSubjectClass() {
 		return subjectClass;
 	}

@@ -75,7 +75,7 @@ public class YuhanMemberCheckServiceImpl implements YuhanMemberCheckService {
 	}
 
 	@Override
-	public String professorNum(YuhanMemberVO vo) {
-		return dao.professorNum(vo);
+	public YuhanProfessorVO professorNum(String id) {
+		return dao.professorNum(id);
 	}
 }

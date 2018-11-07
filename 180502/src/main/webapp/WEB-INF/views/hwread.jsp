@@ -1,12 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-        <%@ include file = "./include/navbar.jsp" %>
-        <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<%@ include file = "./include/navbar.jsp" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+
 <style>
 html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif}
 </style>
@@ -61,7 +57,7 @@ $(document).ready(function(){
  	$("#reportCheck").on("click", function(){
 
 		var html = $(this).html();
- 		var hwno = $("#hwno").val();
+ 		var hwno = $('input[name="hwno"]').val();
  		var studentID = $("#studentID").val();
 		
  		reportVO = new Object();
@@ -82,18 +78,16 @@ $(document).ready(function(){
  		 		var tag = "<p>"+data.content+"</p>";
  	 			$("#reportContent").html("");
  	 			$("#reportContent").append(tag);
- 		 	}
- 		},
+ 		 	},
  			error : function(){
  				alert("댓글 로딩 실패")
  			}
  		});
-		
 	}); 
 });
 function firstLoad(e){
 
-	var hwno = $("#hwno").val();
+	var hwno = $('input[name="hwno"]').val();
 	var page;
 	
 	if (e == null){
@@ -130,7 +124,7 @@ function firstLoad(e){
 }
 function paging(e){
 	
-	var hwno = $("#hwno").val();
+	var hwno = $('input[name="hwno"]').val();
 
 	replyVO = new Object();
 	replyVO.hwno = hwno;
@@ -195,7 +189,7 @@ function repAdd(){
 	
 	replyVO = new Object();
 	var comment = $("#commentArea").val();
-	var hwno = $("#hwno").val();
+	var hwno = $('input[name="hwno"]').val();
 	var professorNo = $("#professorNo").val();
 	var proName = $("#proName").val();
 	if(comment == null || $.trim(comment) == ""){
@@ -270,19 +264,15 @@ function repUpdate(e){
 }
 
 </script>
-</head>
 <form role="form" method = "post" action="#">
-	    <input type = "hidden" name = "hwno" value = "${hwno}" id = "hwno">
-	    <input type = "hidden" name = "professorNo" value = "${professorNo }" id = "professorNo">
-	    <input type = "hidden" name = "proName" value = "${proName }" id = "proName">
-	    <input type = "hidden" name = "subjectID" value = "${subjectID }">
-	    <input type = "hidden" name = "_id" value = "${_id}">
-	    <input type = "hidden" name = "page" value = "${cri.page}">
+		<input type = "hidden" name = "page" value = "${cri.page}">
 	    <input type = "hidden" name = "perPageNum" value = "${cri.perPageNum}">
 	    <input type = "hidden" name = "searchType" value = "${cri.searchType }">
 	    <input type = "hidden" name = "keyword" value = "${cri.keyword }">
-	    <input type = "hidden" name = "file" value = "${file}">
-	    <input type = "hidden" name = "studentID" value = "${studentID }" id = "studentID">
+	    <input type = "hidden" name = "_id" value = "${_id}">
+	    <input type = "hidden" name = "hwno" value = "${hwno}" id = "hwno">
+	    <input type = "hidden" name = "subjectID" value = "${subjectID }">
+	    <input type = "hidden" name = "selectClass" value = "${selectClass }" id = "selectClass">
 </form>
 <!-- Page Container -->
 <div class="w3-content w3-margin-top" style="max-width:1400px;">
@@ -345,38 +335,57 @@ function repUpdate(e){
 		    </tr>
 		  </table>
 		  </div>
-		  <p>제출 파일</p>
-		  <c:set var = "reportFile" value="${reportFile}" />
+		  <c:set var = "rate" value = "${rate }" />
 		  <c:choose>
-		  	<c:when test="${reportFile eq '제출 파일이 없습니다.' }">
-		  		<div class="w3-panel w3-border w3-border-meal">
-					<p>${reportFile }</p>
-				</div>
+		  	<c:when test="${rate eq 'S' }">
+		  		  <p>제출 파일</p>
+				  <c:set var = "reportFile" value="${reportFile}" />
+				  <c:choose>
+				  	<c:when test="${reportFile eq '제출 파일이 없습니다.' }">
+				  		<div class="w3-panel w3-border w3-border-meal">
+							<p>${reportFile }</p>
+						</div>
+				  	</c:when>
+				  	<c:otherwise>
+					  	<div class="w3-panel w3-border w3-border-meal">
+					  		<c:forEach begin="0" end="${reportFile.size()-1 }" var="idx">
+				    			&nbsp <p><a href="/download.do?filePath=${reportFile.get(idx).filePath}&fileName=${reportFile.get(idx).fileName}&saveFileName=${reportFile.get(idx).saveFileName}">${reportFile.get(idx).fileName}</a></p>
+				    		</c:forEach>
+					  	</div>
+				  	</c:otherwise>
+				  </c:choose>
 		  	</c:when>
 		  	<c:otherwise>
-			  	<div class="w3-panel w3-border w3-border-meal">
-			  		<c:forEach begin="0" end="${reportFile.size()-1 }" var="idx">
-		    			&nbsp <p><a href="/download.do?filePath=${reportFile.get(idx).filePath}&fileName=${reportFile.get(idx).fileName}&saveFileName=${reportFile.get(idx).saveFileName}">${reportFile.get(idx).fileName}</a></p>
-		    		</c:forEach>
-			  	</div>
+		  		<div></div>
 		  	</c:otherwise>
 		  </c:choose>
+		  
 		  <div id="reportContent">
 		  	
 		  </div>
-		  <c:set var = "reportCount" value="${report}" />
+		  
+		  <c:set var = "rate" value = "${rate }" />
 		  <c:choose>
-		  	<c:when test="${reportCount eq '1' }">
-			  	<div class="w3-right w3-container">
-			  		<p><button class="w3-button w3-teal" id="reportCheck">제출정보보기</button></p>
-			  	</div>
+		  	<c:when test="${rate eq 'S' }">
+			  		<c:set var = "reportCount" value="${report}" />
+					  <c:choose>
+					  	<c:when test="${reportCount eq '1' }">
+						  	<div class="w3-right w3-container">
+						  		<p><button class="w3-button w3-teal" id="reportCheck">제출정보보기</button></p>
+						  	</div>
+					  	</c:when>
+					  	<c:otherwise>
+						  	<div class="w3-right w3-container">
+						  		<p><button class="w3-button w3-teal" id="report">과제제출</button></p>
+						  	</div>
+					  	</c:otherwise>
+					  </c:choose>
 		  	</c:when>
 		  	<c:otherwise>
-			  	<div class="w3-right w3-container">
-			  		<p><button class="w3-button w3-teal" id="report">과제제출</button></p>
-			  	</div>
+		  			<div></div>
 		  	</c:otherwise>
 		  </c:choose>
+
 		  <hr>
 		  <div class="w3-container">
 		  	<p>댓글</p>
@@ -400,17 +409,25 @@ function repUpdate(e){
 		  		</div>
 		  	</div>
 		  </div>
-		   <div class="w3-container">
-		    <p>
-			    <button class="w3-button w3-teal" id = "list">List</button>
-			   	<button class="w3-button w3-right w3-teal" id="delete">Delete</button>
-			   	<button class="w3-button w3-right w3-teal" id="modify">Update</button>
-		   	</p>
-		   </div>
+		  <c:set var = "rate" value = "${rate }" />
+		  <c:choose>
+		  	<c:when test="${rate eq 'S' }">
+		  		<div class="w3-container">
+		  			<button class="w3-button w3-teal" id = "list">List</button>
+		  		</div>
+		  	</c:when>
+		  	<c:otherwise>
+		  		<div class="w3-container">
+			    <p>
+				    <button class="w3-button w3-teal" id = "list">List</button>
+				   	<button class="w3-button w3-right w3-teal" id="delete">Delete</button>
+				   	<button class="w3-button w3-right w3-teal" id="modify">Update</button>
+			   	</p>
+			   </div>
+		  	</c:otherwise>
+		  </c:choose>
         </div>
-        
       </div>
       </div>
         </div>
         </div>
-</html>

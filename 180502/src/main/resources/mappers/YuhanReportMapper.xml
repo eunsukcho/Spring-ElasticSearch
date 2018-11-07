@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.yuhan.mapper.YuhanReportMapper">
+	<insert id="insertReport">
+		insert into yuhan_student_report(homeworkNo, studentID, content)
+		values(#{homeworkNo}, #{studentID}, #{content})
+	</insert>
+	
+	<select id="selectReportInfo" resultType="kr.yuhan.domain.ReportVO">
+		select content from yuhan_student_report
+		where homeworkNo = #{homeworkNo} and studentID = #{studentID}
+	</select>
+	
+	<select id="reportContentCount"	resultType="int">
+		select count(content) from yuhan_student_report
+		where homeworkNo = #{hwno} and studentID = #{studentID}
+	</select>
+</mapper>

@@ -28,6 +28,22 @@ public class YuhanHomeworkVO {
 	private Date totalStart;
 	private Date totalEnd;
 	//직접 DB와 연결되는 변수
+	
+	public YuhanHomeworkVO() {}
+
+	public YuhanHomeworkVO(int subjectID, String subjectClass, String sessionID) {
+		this.subjectID = subjectID;
+		this.subjectClass = subjectClass;
+		this.sessionID = sessionID;
+	}
+
+	public YuhanHomeworkVO(String subjectClass, int professorno, int subjectID) {
+		this.professorno = professorno;
+		this.subjectID = subjectID;
+		this.subjectClass = subjectClass;
+	}
+
+
 
 	//이하 getter/setter
 	public String get_id() {

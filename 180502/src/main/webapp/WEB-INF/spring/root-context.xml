@@ -12,6 +12,21 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
+	<bean id="mailSender" class = "org.springframework.mail.javamail.JavaMailSenderImpl">
+      <property name="host" value="smtp.gmail.com" />
+      <property name="port" value="587" />
+      <property name="username" value="yuhanitsystem16@gmail.com" />
+      <property name="password" value="itsoftware16" />
+      <property name="javaMailProperties">
+         <props>
+         	   <prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop>
+         	   <prop key="mail.smtp.starttls.enable">true</prop>
+               <prop key="mail.smtp.auth">true</prop>
+         </props>
+      </property>
+ 
+   </bean>
+   
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
       <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
       <property name="url" value="jdbc:mysql://35.227.121.82:3307/zindo?useUnicode=true&amp;characterEncoding=UTF8&amp;useSS&amp;autoReconnection=true"></property>

@@ -9,6 +9,7 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -120,12 +121,20 @@ public class YuhanMainController
 	{
 		vo.setMemberID(id);
 		vo.setMemberPW(password);
+		String professorNum = "";
+		String proName = "";
 		
 		//교수로그인처리
 		if(service.loginPro(vo) == 1){
+			professorNum =  String.valueOf(service.professorNum(id).getProNo());
+			proName = service.professorNum(id).getProName();
+			System.out.println("Main Num : " + professorNum);
+			System.out.println("Main Name : " + proName);
 			session.setAttribute("sessionID", id);
-			session.setAttribute("Rate", "PS");
-			session.setAttribute("professorNum", service.professorNum(vo));
+			session.setAttribute("Rate", "P");
+			session.setAttribute("professorNum", service.professorNum(id).getProNo());
+			session.setAttribute("proName", service.professorNum(id).getProName());
+
 			return "/main";
 		}
 

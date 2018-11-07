@@ -63,7 +63,7 @@
 		AND proRating = 'p'
 	</select>
 	
-	<select id="professorNum" resultType="String">
-		select proNo from yuhan_professor WHERE proID = #{memberID}
+	<select id="professorNum" resultType="kr.yuhan.domain.YuhanProfessorVO">
+		select proNo, proName from yuhan_professor WHERE proID = #{id}
 	</select>
 </mapper>

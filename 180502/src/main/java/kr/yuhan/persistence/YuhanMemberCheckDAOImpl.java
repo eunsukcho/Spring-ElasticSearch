@@ -87,7 +87,7 @@ public class YuhanMemberCheckDAOImpl implements YuhanMemberCheckDAO
 	}
 
 	@Override
-	public String professorNum(YuhanMemberVO vo) {
-		return sqlSession.selectOne(NAMESPACE + ".professorNum", vo);
+	public YuhanProfessorVO professorNum(String id) {
+		return sqlSession.selectOne(NAMESPACE + ".professorNum", id);
 	}
 }

@@ -25,6 +25,6 @@ public interface YuhanMemberCheckService
 	
 	//login
 	public int loginPro(YuhanMemberVO vo);
-	public String professorNum(YuhanMemberVO vo);
+	public YuhanProfessorVO professorNum(String id);
 	/**********************************************/
 }

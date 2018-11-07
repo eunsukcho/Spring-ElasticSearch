@@ -1,6 +1,7 @@
 package kr.yuhan.controller;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,10 +51,11 @@ public class FileController {
 	}
 	
 	@RequestMapping(value = "/reportFileUpload", method = RequestMethod.POST)
-	public ResponseEntity<?> reportFileUpload(MultipartHttpServletRequest multipartRequest, RedirectAttributes redir) {
+	public ResponseEntity<?> reportFileUpload(MultipartHttpServletRequest multipartRequest, RedirectAttributes redir, HttpSession session) {
 		ResponseEntity<?> entity;
-		System.out.println(multipartRequest.getParameter("studentID"));
-		
+		System.out.println("학생과제파일");
+		//System.out.println(multipartRequest.getParameter("studentID"));
+		multipartRequest.setAttribute("studentID", (String) session.getAttribute("sessionID"));
 		try {
 			service.ReportFileServerUp(reportFilePath, multipartRequest);
 			entity = new ResponseEntity<Object>("SUCCESS", HttpStatus.OK);

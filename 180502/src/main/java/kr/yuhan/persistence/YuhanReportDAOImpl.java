@@ -1,0 +1,36 @@
+package kr.yuhan.persistence;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.stereotype.Repository;
+
+import kr.yuhan.domain.ReportVO;
+
+@Repository
+public class YuhanReportDAOImpl implements YuhanReportDAO{
+	@Inject
+	private SqlSession sqlSession;
+	static final String NAMESPACE = "kr.yuhan.mapper.YuhanReportMapper";
+	
+	@Override
+	public void insertReport(ReportVO vo) {
+		sqlSession.insert(NAMESPACE + ".insertReport", vo);
+	}
+
+	@Override
+	public ReportVO selectReportInfo(ReportVO vo) {
+		return sqlSession.selectOne(NAMESPACE + ".selectReportInfo", vo);
+	}
+	
+	@Override
+	public int reportContentCount(int hwno, String studentID) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("hwno", hwno);
+		map.put("studentID", studentID);
+		return sqlSession.selectOne(NAMESPACE + ".reportContentCount", map);
+	}
+}

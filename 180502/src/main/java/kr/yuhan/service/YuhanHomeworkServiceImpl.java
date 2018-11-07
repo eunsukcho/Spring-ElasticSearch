@@ -42,8 +42,8 @@ public class YuhanHomeworkServiceImpl implements YuhanHomeworkService {
 	}
 	
 	@Override
-	public List<YuhanHomeworkVO> listProfessorHomework(Map<String, Object> map) {
-		return dao.listProfessorHomework(map);
+	public List<YuhanHomeworkVO> listProfessorHomework(YuhanHomeworkVO vo) {
+		return dao.listProfessorHomework(vo);
 	}
 
 	@Override
@@ -106,14 +106,12 @@ public class YuhanHomeworkServiceImpl implements YuhanHomeworkService {
 	}
 
 	@Override
-	public void insertReport(ReportVO vo) {
-		dao.insertReport(vo);
+	public List<Object> selectHak(String professorNum) {
+		return dao.selectHak(professorNum);
 	}
 
 	@Override
-	public ReportVO selectReportInfo(ReportVO vo) {
-		return dao.selectReportInfo(vo);
+	public List<YuhanClass> selectClass(String memberNum) {
+		return dao.selectClass(memberNum);
 	}
-
-
 }

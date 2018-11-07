@@ -14,26 +14,26 @@ import kr.yuhan.domain.YuhanSubjectVO;
 
 public interface YuhanHomeworkService {
 	public void insertHomework(YuhanHomeworkVO vo) throws ParseException; //과제 등록
-	public List<YuhanHomeworkVO> listHomework(YuhanHomeworkVO vo); //학생의 과제 목록
-	public List<YuhanHomeworkVO> listProfessorHomework(Map<String, Object> map); // 교수의 과제 목록
+	public List<YuhanHomeworkVO> listHomework(YuhanHomeworkVO vo); // 학생의 과제 목록 (게시글의 글 번호를 출력)
+	public List<YuhanHomeworkVO> listProfessorHomework(YuhanHomeworkVO vo); // 교수의 과제 목록 (게시글의 글 번호를 출력)
 	public YuhanHomeworkVO readHomework(Map<Integer, Integer> parameters); //과제의 상세 View
-	public List<YuhanClass> readClass(String memberID); // 학생의 수강 과목 목록
-	public List<YuhanClass> readProfesserClass(String memberNum); //교수의 수강 과목 목록
-	public int selectHwno(YuhanHomeworkVO vo); // 파일 DB에 저장하기 위한 글번호
+	public List<YuhanClass> readClass(String memberID); //학생의 수강 과목을 출력
+	public List<YuhanClass> readProfesserClass(String memberNum); //교수의 담당 과목을 출력
+	public int selectHwno(YuhanHomeworkVO vo); // 파일 테이블에 저장하기 위한 글번호
 	
-	///--페이징
+	///--페이징 (DB로 페이징 안함)
 	public List<YuhanHomeworkVO> listCriteriaHomework(Criteria cri);
 	public int listCountCriteria(Criteria cri);
 	//
 	
-	public List<YuhanSubjectVO> selectSubjectData(String subjectID); //2018-10-16 이진주
+	public List<YuhanSubjectVO> selectSubjectData(String subjectID); //2018-10-16 이진주-과목 정보 출력
 	
 	public ElasticVO listHomeworkEla(String string); //엘라스틱 서치에 필요한 교수 이름, 과목 이름 등을 가져오기 위함
 	
-	public YuhanHomeworkVO selectHomeworkData(int hwno); //update 기본 세팅
+	public YuhanHomeworkVO selectHomeworkData(int hwno); //update 기본 세팅(GET)
 	public void updateHomework(YuhanHomeworkVO vo);
 	public void deleteHomework(int hwno);
 	
-	public void insertReport(ReportVO vo);
-	public ReportVO selectReportInfo(ReportVO vo);
+	public List<Object> selectHak(String professorNum); //교수일 경우 몇 학년까지 담당하는지 
+	public List<YuhanClass> selectClass(String memberNum); //해당 과목에 몇 반까지 있는지
 }
