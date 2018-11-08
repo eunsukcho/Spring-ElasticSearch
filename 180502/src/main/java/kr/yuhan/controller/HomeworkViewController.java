@@ -24,6 +24,7 @@ import kr.yuhan.domain.GetElasticSearchVo;
 import kr.yuhan.domain.PageMaker;
 import kr.yuhan.domain.ReplyCriteria;
 import kr.yuhan.domain.ReplyVO;
+import kr.yuhan.domain.ReportVO;
 import kr.yuhan.domain.SearchCriteria;
 import kr.yuhan.domain.YuhanClass;
 import kr.yuhan.domain.YuhanHomeworkVO;
@@ -157,10 +158,17 @@ public class HomeworkViewController {
 	
 	@RequestMapping(value="/hwReportCheck", method = RequestMethod.GET)
 	public void hwReportCheck(HttpSession session, HttpServletRequest request, @RequestParam("subjectID") int subjectID, @ModelAttribute("cri") SearchCriteria cri, Model model) {
-		
+		System.out.println("과제 체크 : " + request.getParameter("reportNo"));
 		List<GetElasticSearchVo> searchList = elservice.readElastic(request.getParameter("_id"));
+		List<YuhanSubjectVO> list = service.selectSubjectData(Integer.toString(subjectID));
+		int no = Integer.parseInt(request.getParameter("reportNo"));
+		System.out.println("숫자로 변환 : " + no);
+		String selectClass = "";
+		String studentID = "";
+		System.out.println("교수번호 : " + list.get(0).getYUHAN_SUBJECT_PRO());
+		System.out.println("교수이름 : " + list.get(0).getProName());
 
-		model.addAttribute("professorNo", 1999); // 로그인 후에는 세션으로 받는다.
+		model.addAttribute("professorNo", list.get(0).getYUHAN_SUBJECT_PRO()); // 로그인 후에는 세션으로 받는다.
 		model.addAttribute("_id", request.getParameter("_id"));
 		model.addAttribute("hwno", request.getParameter("hwno"));
 		model.addAttribute("subjectID", subjectID);
@@ -170,18 +178,21 @@ public class HomeworkViewController {
 		model.addAttribute("keyword", cri.getKeyword());
 		model.addAttribute("elastic", searchList.get(0).get_source());
 		model.addAttribute("studentID", session.getAttribute("sessionID")); 
-		System.out.println("리포트 : " + session.getAttribute("sessionID"));
+		model.addAttribute("reportNo", no);
+		ReportVO vo = reportService.reportDetailView(no);
+		model.addAttribute("reportInfo", vo);
 		
-		String elstart = searchList.get(0).get_source().getStartdate();
-		String[] array = elstart.split(" ");
+		System.out.println("제출 내용 : " + vo.getContent());
+		System.out.println("제출 아이디 : " + vo.getStudentID());
+		System.out.println("제출 시간 : " + vo.getReportDate());
 		
-		String elend = searchList.get(0).get_source().getEnddate();
-		String[] array2 = elend.split(" ");
-		
-		model.addAttribute("start", array[0]);
-		model.addAttribute("startTime", array[1]);
-		model.addAttribute("end", array2[0]);
-		model.addAttribute("endTime", array2[1]);
+		int reportCount = fileService.ReportCount(vo.getHomeworkNo(), vo.getStudentID()); // 학생이 해당 과제에 파일을 제출했을 경우
+		if(reportCount >= 1) {
+			System.out.println("학생의 과제 파일 제출 : " + reportCount);
+			model.addAttribute("reportFile", fileService.selectReportFileInfo(vo.getHomeworkNo(), vo.getStudentID()));
+		}else {
+			model.addAttribute("reportFile", "제출 파일이 없습니다.");
+		}
 	}
 	
 	@RequestMapping(value="/hwList", method = RequestMethod.GET)

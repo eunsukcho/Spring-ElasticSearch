@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -161,6 +162,27 @@ public class HomeworkDataController {
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 		
+		return entity;
+	}
+	
+	@RequestMapping(value="/reportStudentCheck/{hwno}" , method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+	public ResponseEntity<?> reportStudentCheck(@PathVariable("hwno") String hwno){
+		
+		ResponseEntity<?> entity;
+		Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
+
+		System.out.println("학생 과제 제출 정보");
+		
+		int no = Integer.parseInt(hwno);
+		System.out.println(no);
+		
+		try {
+			entity = new ResponseEntity<Object>(gson.toJson(reportService.reportStudentCheck(no)), HttpStatus.OK);
+			System.out.println(gson.toJson(reportService.reportStudentCheck(no)));
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 		return entity;
 	}
 }

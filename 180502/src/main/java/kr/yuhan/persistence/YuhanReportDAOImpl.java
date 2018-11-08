@@ -1,6 +1,7 @@
 package kr.yuhan.persistence;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -32,5 +33,16 @@ public class YuhanReportDAOImpl implements YuhanReportDAO{
 		map.put("hwno", hwno);
 		map.put("studentID", studentID);
 		return sqlSession.selectOne(NAMESPACE + ".reportContentCount", map);
+	}
+
+	@Override
+	public List<ReportVO> reportStudentCheck(int hwno) {
+		return sqlSession.selectList(NAMESPACE + ".reportStudentCheck", hwno);
+	}
+
+	@Override
+	public ReportVO reportDetailView(int no) {
+		System.out.println("dao no : " + no);
+		return sqlSession.selectOne(NAMESPACE + ".reportDetailView", no);
 	}
 }

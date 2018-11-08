@@ -26,8 +26,10 @@ StringBuffer.prototype.toString = function() {
 $(document).ready(function(){
 	var frm = $("form[role = 'form']"); 
 	console.log(frm);
-	firstLoad();
-	//paging(1);
+	
+	if('${rate}' ==  'S'){
+		firstLoad();
+	}
 	
 	$("#modify").on("click", function(){
 		alert("수정")
@@ -84,9 +86,47 @@ $(document).ready(function(){
  			}
  		});
 	}); 
+ 	
+ 	$("#studentCheck").on("click", function(){
+ 		var hwno = $('input[name="hwno"]').val();
+ 		
+		reportVO = new Object();
+ 		reportVO.homeworkNo = hwno;
+ 		jsonData = JSON.stringify(reportVO);
+ 		
+ 		$.ajax({
+ 			type : "GET",
+ 			url : "/homeworkdata/reportStudentCheck/"+hwno,
+ 			dataType : "json",
+ 			success : function(data){ 
+ 				console.log(data.length);
+ 				for (var i = 0; i < data.length; i++) {
+ 					var result = parseInt(i)+parseInt(1);
+					var liTag = "<tr><td>" + result +"</td><td>" + data[i].studentID + "</td><td>" + data[i].date + "</td><td>" + data[i].content + "</td><td><button class='showDetail' value='"+data[i].no+"' onClick='showReportDetail(this)'>상세 내용 확인</button></td></tr><hr/>";
+					$("#studentCheckList").append(liTag);
+					console.log(liTag);
+ 				}
+ 		 	},
+ 			error : function(){
+ 				alert("댓글 로딩 실패")
+ 			}
+ 		});
+ 		
+ 	});
+ 	
+ 	
 });
+function showReportDetail(e){
+	alert($(e).val());
+	var reportNo = $(e).val();
+	$("#reportNo").val(reportNo);
+	var frm = $("form[role = 'form']"); 
+	frm.attr("method", "get");
+	frm.attr("action", "/hwReportCheck");
+	frm.submit();
+}
 function firstLoad(e){
-
+	alert("로드");
 	var hwno = $('input[name="hwno"]').val();
 	var page;
 	
@@ -94,10 +134,7 @@ function firstLoad(e){
 		page = 1;
 	}else{
 		page = e;
-	} 
-	
-	//alert("페이지 : " + e);
-
+	}
 	replyVO = new Object();
 	replyVO.hwno = hwno;
 	replyVO.repPage = page;
@@ -118,7 +155,7 @@ function firstLoad(e){
 			paging(page);
 		},
 		error : function(){
-			alert("댓글 로딩 실패")
+			//alert("댓글 로딩 실패")
 		}
 	});
 }
@@ -155,7 +192,7 @@ function paging(e){
 			if(endPage > tempEndPage){
 				endPage = tempEndPage;
 			}
-			alert("2end : " + endPage + " start : " + startPage + " tempEndPage : " + tempEndPage + " total : " + data);
+			//alert("2end : " + endPage + " start : " + startPage + " tempEndPage : " + tempEndPage + " total : " + data);
 			var next = endPage * 5 >= data ? false:true;
 			
 			$("#paging").html("");
@@ -273,6 +310,7 @@ function repUpdate(e){
 	    <input type = "hidden" name = "hwno" value = "${hwno}" id = "hwno">
 	    <input type = "hidden" name = "subjectID" value = "${subjectID }">
 	    <input type = "hidden" name = "selectClass" value = "${selectClass }" id = "selectClass">
+	    <input type = "hidden" name = "reportNo" id="reportNo">
 </form>
 <!-- Page Container -->
 <div class="w3-content w3-margin-top" style="max-width:1400px;">
@@ -382,33 +420,45 @@ function repUpdate(e){
 					  </c:choose>
 		  	</c:when>
 		  	<c:otherwise>
-		  			<div></div>
+		  			<div class="w3-right w3-container">
+						<p><button class="w3-button w3-teal" id="studentCheck">제출학생목록</button></p>
+					</div>
+		  	</c:otherwise>
+		  </c:choose>
+		  <div class="bs-docs-example">
+				<table id="studentCheckList">
+		
+				</table>
+		 </div>
+		 <c:set var = "rate" value = "${rate }" />
+		 <c:choose>
+		  	<c:when test="${rate eq 'S' }">
+			  	<div class="w3-container">
+			  		<p>댓글</p>
+			  		<p><b></b></p>
+				  	<div class="bs-docs-example">
+						<table id="commentList">
+				
+						</table>
+					</div>
+					<div>
+						<ul id="paging">
+						
+						</ul>
+					</div>
+					<div class="w3-left">
+			  			<textarea class="w3-input w3-border" cols="95" id="commentArea"></textarea>
+			  		</div>
+			  		<div class="w3-right">
+			  			<button class="w3-button w3-teal" id="commentBtn" onclick="repAdd()">작성</button>
+			  		</div>
+				</div>
+		  	</c:when>
+		  	<c:otherwise>
+		  		
 		  	</c:otherwise>
 		  </c:choose>
 
-		  <hr>
-		  <div class="w3-container">
-		  	<p>댓글</p>
-		  	<p><b></b></p>
-		  	<div class="bs-docs-example">
-				<table id="commentList">
-		
-				</table>
-			</div>
-			<div>
-				<ul id="paging">
-				
-				</ul>
-			</div>
-		  	<div class="w3-container">
-		  		<div class="w3-left">
-		  		<textarea class="w3-input w3-border" cols="95" id="commentArea"></textarea>
-		  		</div>
-		  		<div class="w3-right">
-		  		<button class="w3-button w3-teal" id="commentBtn" onclick="repAdd()">작성</button>
-		  		</div>
-		  	</div>
-		  </div>
 		  <c:set var = "rate" value = "${rate }" />
 		  <c:choose>
 		  	<c:when test="${rate eq 'S' }">

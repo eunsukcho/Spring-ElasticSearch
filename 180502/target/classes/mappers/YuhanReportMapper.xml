@@ -17,4 +17,15 @@
 		select count(content) from yuhan_student_report
 		where homeworkNo = #{hwno} and studentID = #{studentID}
 	</select>
+	
+	<select id="reportStudentCheck" resultType="kr.yuhan.domain.ReportVO">
+		select * from yuhan_student_report
+		where homeworkNo = #{hwno}
+	</select>
+	
+	<select id="reportDetailView" resultType="kr.yuhan.domain.ReportVO">
+		select date_format(date , "%Y-%m-%d %H:%i:%s") as reportDate, content, studentID, homeworkNo
+		from yuhan_student_report
+		where no = #{no}
+	</select>
 </mapper>

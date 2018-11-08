@@ -8,6 +8,7 @@ public class ReportVO {
 	private int homeworkNo;
 	private String studentID;
 	private Date date;
+	private String reportDate;
 	private String content;
 
 	public ReportVO() {}
@@ -19,6 +20,12 @@ public class ReportVO {
 		this.content = content;
 	}
 	
+	public String getReportDate() {
+		return reportDate;
+	}
+	public void setReportDate(String reportDate) {
+		this.reportDate = reportDate;
+	}
 	public int getNo() {
 		return no;
 	}
