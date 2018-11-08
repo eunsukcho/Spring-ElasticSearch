@@ -1,7 +1,5 @@
 package kr.yuhan.domain;
 
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.queryParam;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -33,7 +31,7 @@ public class PageMaker
 
 	public void setRepTotalCount(int repTotalCount) {
 		this.repTotalCount = repTotalCount;
-		//calcData3();
+		calcData3();
 	}
 
 	public int getRepDisplayPageNum() {
@@ -175,20 +173,20 @@ public class PageMaker
 		next = endPage * cri.getPerPageNum() >= totalCount ? false : true;
 	}
 	
-//	private void calcData3() {
-//		endPage = (int)(Math.ceil(cri.getRepPage() / (double)repDisplayPageNum) * repDisplayPageNum);
-//		startPage = endPage - repDisplayPageNum + 1;
-//		int tempEndPage = (int)(Math.ceil(repTotalCount/(double)cri.getRepPerPageNum()));
-//		
-//		if(endPage > tempEndPage)
-//		{
-//			endPage = tempEndPage;
-//		}
-//		
-//		prev = startPage == 1 ? false : true;
-//		
-//		next = endPage * cri.getRepPerPageNum() >= repTotalCount ? false : true;
-//	}
+	private void calcData3() {
+		endPage = (int)(Math.ceil(cri.getRepPage() / (double)repDisplayPageNum) * repDisplayPageNum);
+		startPage = endPage - repDisplayPageNum + 1;
+		int tempEndPage = (int)(Math.ceil(repTotalCount/(double)cri.getRepPageNum()));
+		
+		if(endPage > tempEndPage)
+		{
+			endPage = tempEndPage;
+		}
+		
+		prev = startPage == 1 ? false : true;
+		
+		next = endPage * cri.getRepPageNum() >= repTotalCount ? false : true;
+	}
 	
 	private String encoding(String keyword)
 	{

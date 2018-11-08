@@ -13,5 +13,9 @@ public interface ReplyDAO {
 	public List<ReplyVO> selectRepPage(ReplyVO repVo);
 	public void deleteRep(int repNo);
 	public int totalRep(ReplyVO repVo);
-	public void updateRep(int repNo);
+	public void updateRep(ReplyVO vo);
+	
+	/**페이징**/
+	public List<ReplyVO> listPage(Integer hwno, Criteria cri);
+	public int count(Integer hwno);
 }

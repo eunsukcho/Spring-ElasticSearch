@@ -9,6 +9,18 @@
 <title>Insert title here</title>
 <style>
 html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif}
+#modDiv {
+	width:300px;
+	height:100px;
+	background-color:gray;
+	position:absolute;
+	top:50%;
+	left:50%
+	margin-top:-50px;
+	margin-left:-150px;
+	padding:10px;
+	z-index:1000;
+}
 </style>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -31,6 +43,14 @@ $(document).ready(function(){
 	var frm = $("form[role = 'form']"); 
 	console.log(frm);
 	
+	var replyPage = 1;
+	
+	$("#paging").on("click", "li a", function(event){
+		event.preventDefault();
+		replyPage = $(this).attr("href");
+		firstLoad(replyPage);
+	});
+
 	if('${rate}' ==  'S'){
 		firstLoad();
 	}
@@ -53,17 +73,114 @@ $(document).ready(function(){
 		frm.attr("action", "/hwList");
 		frm.submit();
 	}); 
+	
+	$("#replyAddBtn").on("click", function(){
+		replyVO = new Object();
+		var comment = $("#commentArea").val();
+		var hwno = $('input[name="hwno"]').val();
+		var professorNo = $("#professorNo").val();
+		var proName = $("#proName").val();
+		if(comment == null || $.trim(comment) == ""){
+			alert("댓글을 입력해주세요");
+			return false;
+		}
+
+		replyVO.comment = comment;
+		replyVO.hwno = hwno;
+		replyVO.professorNO = professorNo;
+		replyVO.professorName = proName;
+		
+		jsonData = JSON.stringify(replyVO);
+		
+		$.ajax({
+			type : "POST",
+			url : "/addRep",
+			data : jsonData,
+			dataType : "json",
+			contentType : "application/json; charset=utf-8",
+			success : function(data){ 
+				console.log(data[0]);
+				$("#commentArea").val("");
+				$("#commentList").html("");
+
+				firstLoad();
+			},
+			error : function(){
+				alert("댓글 로딩 실패")
+			}
+		});
+	});	
+	
+	$("#commentList").on("click", ".replyLi button", function(){
+		var reply = $(this).parent();
+		alert("reply : " + reply);
+		var rno = reply.attr("data-rno");
+		var replytext = reply.attr("data-comment");
+		
+		alert(rno + ":" + replytext);
+		$(".model-title").html(rno);
+		$("#replytext").val(replytext);
+		$("#modDiv").show("slow");
+	});
+	
+	$("#replyDelBtn").on("click", function(){
+		var rno = $(".model-title").html();
+		var replytext = $("#replytext").val();
+		
+		$.ajax({
+			type : "GET",
+			url : "/delRep/"+rno,
+			dataType: "text",
+			success : function(data){
+				if(data=='SUCCESS'){
+					alert("삭제 되었습니다.");
+					$("#modDiv").hide("slow");
+					firstLoad();
+				}
+			},
+			error : function(){
+				alert("댓글 삭제 실패")
+			}
+		});
+	});
+	
+	$("#replyModBtn").on("click", function(){
+		var rno = $(".model-title").html();
+		var replytext = $("#replytext").val();
+		
+		replyVO = new Object();
+		replyVO.comment = replytext;
+		replyVO.repNo = rno;
+		
+		jsonData = JSON.stringify(replyVO);
+		
+		$.ajax({
+			type : "put",
+			url : "/updateRep/"+rno,
+			headers : {
+				"Content-Type" : "application/json",
+				"X-HTTP-Method-Override" : "PUT"
+			},
+			data : jsonData,
+			dataType: "text",
+			success : function(data){
+				if(data=='SUCCESS'){
+					alert("수정 되었습니다.");
+					$("#modDiv").hide("slow");
+					firstLoad();
+				}
+			},
+			error : function(){
+				alert("댓글 수정 실패")
+			}
+		});
+	});
 });
-function firstLoad(e){
+function firstLoad(page){
 	alert("로드");
 	var hwno = $('input[name="hwno"]').val();
 	var page;
 	
-	if (e == null){
-		page = 1;
-	}else{
-		page = e;
-	}
 	replyVO = new Object();
 	replyVO.hwno = hwno;
 	replyVO.repPage = page;
@@ -74,17 +191,74 @@ function firstLoad(e){
 		url : "/loadRep",
 		data : jsonData,
 		dataType : "json",
-		contentType : "application/json; charset=utf-8",
+		headers : {
+			"Content-Type" : "application/json",
+		},
 		success : function(data){ 
+			var liTag = "";
+			console.log(data.length);
+			
 			$("#commentList").html("");
-			for (var i = 0; i < data.length; i++) {
-				var liTag = "<tr><td>"+ data[i].professorName+"</td><td>"+data[i].comment+"</td><td>"+data[i].repDate+"</td><td><button class='update-btn' value='"+data[i].repNo+"' onClick='repUpdate(this, "+page+")'>수정</button></td><td><button class='del-btn' value='"+data[i].repNo+"' onClick='repDel(this)'>X</button></td></tr><hr/>";
+			$(data.list).each(function(){
+				liTag = "<li data-rno='" + this.repNo + "' data-comment='"+this.comment+"'class='replyLi'>" + this.professorName + ":" + this.comment + ":" + this.repDate + "<button>MOD</button></li>";
 				$("#commentList").append(liTag);
-			}
-			paging(page);
+			});
+			printPaging(data.pageMaker);
 		},
 		error : function(){
 			//alert("댓글 로딩 실패")
+		}
+	});
+}
+function printPaging(pageMaker){
+	var str = "";
+	
+	if(pageMaker.prev){
+		str += "<li><a href='"+(pageMaker.startPage-1)+"'> << </a></li>";
+	}
+	for (var i = pageMaker.startPage, len = pageMaker.endPage; i <= len; i++) {
+		var strClass = pageMaker.cri.pag == i ?'class=active':'';
+		str += "<li "+strClass+"><a href='"+i+"'>"+i+"</a></li>";
+	}
+	if(pageMaker.next){
+		str += "<li><a href='"+(pageMaker.endPage + 1)+"'> >> </a></li>";
+	}
+	$('#paging').html(str);
+}
+function repDel(e){
+	var repNo = $(e).val();
+	alert(repNo);
+	
+	$.ajax({
+		type : "GET",
+		url : "/replies/delRep/"+repNo,
+		dataType: "text",
+		success : function(data){
+			if(data=='SUCCESS'){
+				$("#commentList").html("");
+				firstLoad();
+			}
+		},
+		error : function(){
+			alert("댓글 삭제 실패")
+		}
+	});
+}
+function repUpdate(e){
+	var repNo = $(e).val();
+	alert(repNo);
+
+	$.ajax({
+		type : "GET",
+		url : "/replies/updateRep/"+repNo,
+		dataType: "text",
+		success : function(data){
+			if(data=='SUCCESS'){
+				alert("수정 완료");
+			}
+		},
+		error : function(){
+			alert("댓글 삭제 실패")
 		}
 	});
 }
@@ -170,9 +344,20 @@ function firstLoad(e){
 		  	<p>댓글</p>
 		  	<p><b></b></p>
 		  	<div class="bs-docs-example">
-				<table id="commentList">
+				<ul id="commentList">
 		
-				</table>
+				</ul>
+			</div>
+			<div id="modDiv" style="display:none;">
+				<div class='model-title'></div>
+				<div>
+					<input type="text" id="replytext">
+				</div>
+				<div>
+					<button type="button" id="replyModBtn">Modify</button>
+					<button type="button" id="replyDelBtn">Delete</button>
+					<button type="button" id="closeBtn">Close</button>
+				</div>
 			</div>
 			<div>
 				<ul id="paging">
@@ -184,7 +369,7 @@ function firstLoad(e){
 		  		<textarea class="w3-input w3-border" cols="95" id="commentArea"></textarea>
 		  		</div>
 		  		<div class="w3-right">
-		  		<button class="w3-button w3-teal" id="commentBtn" onclick="repAdd()">작성</button>
+		  		<button class="w3-button w3-teal" id="replyAddBtn">작성</button>
 		  		</div>
 		  	</div>
 		  </div>

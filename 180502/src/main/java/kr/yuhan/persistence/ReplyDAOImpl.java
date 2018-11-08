@@ -1,6 +1,8 @@
 package kr.yuhan.persistence;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -44,8 +46,21 @@ public class ReplyDAOImpl implements ReplyDAO{
 	}
 
 	@Override
-	public void updateRep(int repNo) {
-		
+	public void updateRep(ReplyVO vo) {
+		sqlSession.update(NAMESPACE + ".updateRep", vo);
+	}
+
+	@Override
+	public List<ReplyVO> listPage(Integer hwno, Criteria cri) {
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("hwno", hwno);
+		paramMap.put("cri", cri);
+		return sqlSession.selectList(NAMESPACE + ".listPage", paramMap);
+	}
+
+	@Override
+	public int count(Integer hwno) {
+		return sqlSession.selectOne(NAMESPACE + ".count", hwno);
 	}
 	
 }

@@ -43,8 +43,18 @@ public class ReplyServiceImpl implements ReplyService{
 	}
 
 	@Override
-	public void updateRep(int repNo) {
-		dao.updateRep(repNo);
+	public void updateRep(ReplyVO vo) {
+		dao.updateRep(vo);
+	}
+
+	@Override
+	public List<ReplyVO> listPage(Integer hwno, Criteria cri) {
+		return dao.listPage(hwno, cri);
+	}
+
+	@Override
+	public int count(Integer hwno) {
+		return dao.count(hwno);
 	}
 
 }

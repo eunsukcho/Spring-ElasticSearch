@@ -6,6 +6,37 @@ public class Criteria
 	private int perPageNum;
 	private String memberHak;
 	private String YUHAN_MESSAGE_FROM_MEMBER_NUMBER;
+	
+	private int repPage;
+	private int repPageNum;
+
+	public int getRepPage() {
+		return repPage;
+	}
+
+	public void setRepPage(int repPage) {
+		if(repPage<=0) 
+		{
+			this.repPage=1;
+			return;
+		}
+		this.repPage = repPage;
+	}
+
+	public int getRepPageNum() {
+		return repPageNum;
+	}
+
+	public void setRepPageNum(int repPageNum) {
+		
+		if(repPageNum <= 0 || repPageNum >100) 
+		{
+			this.repPageNum =5;
+			return; //메소드 탈출
+		}
+		
+		this.repPageNum = repPageNum;
+	}
 
 	public String getYUHAN_MESSAGE_FROM_MEMBER_NUMBER() 
 	{
@@ -36,6 +67,9 @@ public class Criteria
 	{
 		page = 1;
 		perPageNum = 10;
+		
+		repPage = 1;
+		repPageNum = 5;
 	}
 	
 	public void setPage(int page) 
@@ -67,5 +101,9 @@ public class Criteria
 	public int getPageStart() 
 	{
 		return (page-1)*perPageNum;
+	}
+	
+	public int getRepPageStart() {
+		return (repPage-1)*repPageNum;
 	}
 }

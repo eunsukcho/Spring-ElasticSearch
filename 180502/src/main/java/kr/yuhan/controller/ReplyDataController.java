@@ -1,5 +1,9 @@
 package kr.yuhan.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,7 +21,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import kr.yuhan.domain.Criteria;
-import kr.yuhan.domain.ElasticVO;
 import kr.yuhan.domain.PageMaker;
 import kr.yuhan.domain.ReplyCriteria;
 import kr.yuhan.domain.ReplyVO;
@@ -48,15 +51,61 @@ public class ReplyDataController {
 		return entity;
 	}
 	
-	@RequestMapping(value = "/loadRep", method = RequestMethod.POST, produces = "application/json; charset=utf-8" )
-	public ResponseEntity<?> loadRep(@RequestBody ReplyVO repVo, Model model){
+	@RequestMapping(value="/listRep/{hwno}/{repPage}", method=RequestMethod.GET)
+	public ResponseEntity<Map<String, Object>> listpage(@PathVariable("hwno") int hwno, @PathVariable("repPage") int repPage){
+		System.out.println("리스트 댓글");
+		ResponseEntity<Map<String, Object>> entity = null;
+		try {
+			Criteria cri = new Criteria();
+			cri.setRepPage(repPage);
+			
+			PageMaker pageMaker = new PageMaker();
+			pageMaker.setCri(cri);
+			
+			Map<String, Object> map = new HashMap<String, Object>();
+			List<ReplyVO> list = service.listPage(hwno, cri);
+			
+			map.put("list", list);
+			
+			int replyCount = service.count(hwno);
+			pageMaker.setRepTotalCount(replyCount);
+			
+			map.put("pageMaker", pageMaker);
+			
+			entity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<Map<String, Object>>(HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
+	
+	@RequestMapping(value = "/loadRep", method = RequestMethod.POST)
+	public ResponseEntity<?> loadRep(@RequestBody ReplyVO repVo){
 		ResponseEntity<?> entity;
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		
-		System.out.println("하하"+repVo.getHwno());
+		Criteria cri = new Criteria();
+		cri.setRepPage(repVo.getRepPage());
+		
+		PageMaker pageMaker = new PageMaker();
+		pageMaker.setCri(cri);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<ReplyVO> list = service.selectRepPage(repVo);
+		
+		map.put("list", list);
+		
+		int replyCount = service.count(repVo.getHwno());
+		pageMaker.setRepTotalCount(replyCount);
+		
+		map.put("pageMaker", pageMaker);
 
+		System.out.println("하하"+repVo.getHwno());
+		
 		try {
-			entity = new ResponseEntity<Object>(gson.toJson(service.selectRepPage(repVo)), HttpStatus.OK);
+			entity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+			//entity = new ResponseEntity<Object>(gson.toJson(service.selectRepPage(repVo)), HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -93,11 +142,12 @@ public class ReplyDataController {
 		return entity; 
 	}
 	
-	@RequestMapping(value = "/updateRep/{repNo}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
-	public ResponseEntity<?> updateRep(@PathVariable("repNo") int repNo){
+	@RequestMapping(value = "/updateRep/{repNo}", method = {RequestMethod.PUT, RequestMethod.PATCH}, produces = "application/json; charset=utf-8")
+	public ResponseEntity<?> updateRep(@PathVariable("repNo") int repNo, @RequestBody ReplyVO vo){
 		ResponseEntity<?> entity;
 		try {
-			service.deleteRep(repNo);
+			vo.setRepNo(repNo);
+			service.updateRep(vo);
 			entity = new ResponseEntity<Object>("SUCCESS", HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -36,5 +36,20 @@
 		where YUHAN_HOMEWORK_COMMENT_HOMEWORK_NUMBER = #{hwno}
 	</select>
 	
+	<update id="updateRep">
+		update yuhan_homework_comment_table set YUHAN_HOMEWORK_COMMENT_CONTENT = #{comment} 
+		where YUHAN_HOMEWORK_COMMENT_NUMBER = #{repNo}
+	</update>
 	
+	<select id="listPage" resultType="kr.yuhan.domain.ReplyVO">
+		select * from yuhan_homework_comment_table
+		where YUHAN_HOMEWORK_COMMENT_HOMEWORK_NUMBER = #{hwno} and YUHAN_HOMEWORK_COMMENT_NUMBER > 0
+		order by YUHAN_HOMEWORK_COMMENT_NUMBER desc, YUHAN_HOMEWORK_COMMENT_DATE desc
+		limit #{cri.pageStart}, #{cri.perpageNum}  
+	</select>
+	
+	<select id="count" resultType="int">
+		select count(*) from yuhan_homework_comment_table
+		where YUHAN_HOMEWORK_COMMENT_HOMEWORK_NUMBER = #{hwno}
+	</select>
 </mapper>
