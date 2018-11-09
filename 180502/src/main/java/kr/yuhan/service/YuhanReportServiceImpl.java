@@ -39,4 +39,9 @@ public class YuhanReportServiceImpl implements YuhanReportService{
 	public ReportVO reportDetailView(int no) {
 		return dao.reportDetailView(no);
 	}
+
+	@Override
+	public String reportStudentID(int no) {
+		return dao.reportStudentID(no);
+	}
 }

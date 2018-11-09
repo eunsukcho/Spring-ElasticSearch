@@ -45,4 +45,9 @@ public class YuhanReportDAOImpl implements YuhanReportDAO{
 		System.out.println("dao no : " + no);
 		return sqlSession.selectOne(NAMESPACE + ".reportDetailView", no);
 	}
+
+	@Override
+	public String reportStudentID(int no) {
+		return sqlSession.selectOne(NAMESPACE + ".reportStudentID", no);
+	}
 }

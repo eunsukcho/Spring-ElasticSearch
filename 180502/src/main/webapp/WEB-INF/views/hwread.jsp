@@ -26,8 +26,9 @@ StringBuffer.prototype.toString = function() {
 $(document).ready(function(){
 	var frm = $("form[role = 'form']"); 
 	console.log(frm);
+	var replyCount = '${replyCount}';
 	
-	if('${rate}' ==  'S'){
+	if('${rate}' ==  'S' && replyCount != 0){
 		firstLoad();
 	}
 	
@@ -125,19 +126,16 @@ function showReportDetail(e){
 	frm.attr("action", "/hwReportCheck");
 	frm.submit();
 }
-function firstLoad(e){
+function firstLoad(page){
 	alert("로드");
 	var hwno = $('input[name="hwno"]').val();
 	var page;
+	var studentID = '${studentID}';
 	
-	if (e == null){
-		page = 1;
-	}else{
-		page = e;
-	}
 	replyVO = new Object();
 	replyVO.hwno = hwno;
 	replyVO.repPage = page;
+	replyVO.studentID = studentID;
 	jsonData = JSON.stringify(replyVO);
 	
 	$.ajax({
@@ -145,161 +143,40 @@ function firstLoad(e){
 		url : "/loadRep",
 		data : jsonData,
 		dataType : "json",
-		contentType : "application/json; charset=utf-8",
+		headers : {
+			"Content-Type" : "application/json",
+		},
 		success : function(data){ 
+			var liTag = "";
+			console.log(data.length);
+			
 			$("#commentList").html("");
-			for (var i = 0; i < data.length; i++) {
-				var liTag = "<tr><td>"+ data[i].professorName+"</td><td>"+data[i].comment+"</td><td>"+data[i].repDate+"</td><td><button class='update-btn' value='"+data[i].repNo+"' onClick='repUpdate(this, "+page+")'>수정</button></td><td><button class='del-btn' value='"+data[i].repNo+"' onClick='repDel(this)'>X</button></td></tr><hr/>";
+			$(data.list).each(function(){
+				liTag = "<li data-rno='" + this.repNo + "' data-comment='"+this.comment+"'class='replyLi'>" + this.professorName + ":" + this.comment + ":" + this.repDate + "<button>MOD</button></li>";
 				$("#commentList").append(liTag);
-			}
-			paging(page);
+			});
+			printPaging(data.pageMaker);
 		},
 		error : function(){
 			//alert("댓글 로딩 실패")
 		}
 	});
 }
-function paging(e){
+function printPaging(pageMaker){
+	var str = "";
 	
-	var hwno = $('input[name="hwno"]').val();
-
-	replyVO = new Object();
-	replyVO.hwno = hwno;
-	jsonData = JSON.stringify(replyVO);
-	
-	$.ajax({
-		type : "POST",
-		url : "/totalRep",
-		data : jsonData,
-		dataType : "text",
-		contentType : "application/json; charset=utf-8",
-		success : function(data){ 
-			var total;
-			var startPage;
-			var endPage;
-			var total;
-			var page = e;
-			var perPageNum = 5;
-			var displayPageNum = 5;
-			
-			endPage = Math.ceil(page / displayPageNum) * displayPageNum;
-			startPage = endPage - displayPageNum + 1;
-			
-			var prev = startPage == 1 ? false:true;
-			var tempEndPage = Math.ceil(data/perPageNum);
-			
-			//alert("end : " + endPage + " start : " + startPage + " tempEndPage : " + tempEndPage + " total : " + data);
-			if(endPage > tempEndPage){
-				endPage = tempEndPage;
-			}
-			//alert("2end : " + endPage + " start : " + startPage + " tempEndPage : " + tempEndPage + " total : " + data);
-			var next = endPage * 5 >= data ? false:true;
-			
-			$("#paging").html("");
-			
-
-			for (var i = startPage; i <= endPage; i++) {
-				console.log(i);
-				var tag = "<button id='moreRep' onclick='firstLoad("+i+")'>" + i + "</button>";
-				$("#paging").append(tag);
-			}
-			if(prev == true){
-				var start = startPage - 1;
-				alert("이전 있음");
-				var prevTag = "<button id = 'nextRep' onclick='firstLoad("+start+")'>Prev</button>";
-				$("#paging").append(prevTag);
-			}
-			if(next == true && endPage > 0){
-				var end = endPage + 1
-				alert("다음 있음" + end);
-				var nextTag = "<button id = 'nextRep' onclick='firstLoad("+end+")'>Next</button>";
-				$("#paging").append(nextTag);
-			}
-			
-		},
-		error : function(){
-			alert("댓글 로딩 실패")
-		}
-	});
-}
-function repAdd(){
-	
-	replyVO = new Object();
-	var comment = $("#commentArea").val();
-	var hwno = $('input[name="hwno"]').val();
-	var professorNo = $("#professorNo").val();
-	var proName = $("#proName").val();
-	if(comment == null || $.trim(comment) == ""){
-		alert("댓글을 입력해주세요");
-		return false;
+	if(pageMaker.prev){
+		str += "<li><a href='"+(pageMaker.startPage-1)+"'> << </a></li>";
 	}
-
-	replyVO.comment = comment;
-	replyVO.hwno = hwno;
-	replyVO.professorNO = professorNo;
-	replyVO.professorName = proName;
-	
-	jsonData = JSON.stringify(replyVO);
-	
-	$.ajax({
-		type : "POST",
-		url : "/addRep",
-		data : jsonData,
-		dataType : "json",
-		contentType : "application/json; charset=utf-8",
-		success : function(data){ 
-			console.log(data[0]);
-			$("#commentArea").val("");
-			$("#commentList").html("");
-			/* for (var i = 0; i < data.length; i++) {
-				var liTag = "<tr><td>"+ data[i].professorName+"</td><td>"+data[i].comment+"</td><td>"+data[i].repDate+"</td><td><button class='del-btn' value='"+data[i].repNo+"' onClick='repDel(this)'>X</button></td></tr><hr/>";
-				$("#commentList").append(liTag);
-			} */
-			firstLoad();
-		},
-		error : function(){
-			alert("댓글 로딩 실패")
-		}
-	});
+	for (var i = pageMaker.startPage, len = pageMaker.endPage; i <= len; i++) {
+		var strClass = pageMaker.cri.pag == i ?'class=active':'';
+		str += "<li "+strClass+"><a href='"+i+"'>"+i+"</a></li>";
+	}
+	if(pageMaker.next){
+		str += "<li><a href='"+(pageMaker.endPage + 1)+"'> >> </a></li>";
+	}
+	$('#paging').html(str);
 }
-function repDel(e){
-	var repNo = $(e).val();
-	alert(repNo);
-	
-	$.ajax({
-		type : "GET",
-		url : "/delRep/"+repNo,
-		dataType: "text",
-		success : function(data){
-			if(data=='SUCCESS'){
-				$("#commentList").html("");
-				firstLoad();
-			}
-		},
-		error : function(){
-			alert("댓글 삭제 실패")
-		}
-	});
-}
-function repUpdate(e){
-	var repNo = $(e).val();
-	alert(repNo);
-	
-	$.ajax({
-		type : "GET",
-		url : "/updateRep/"+repNo,
-		dataType: "text",
-		success : function(data){
-			if(data=='SUCCESS'){
-				alert("수정 완료");
-			}
-		},
-		error : function(){
-			alert("댓글 삭제 실패")
-		}
-	});
-}
-
 </script>
 <form role="form" method = "post" action="#">
 		<input type = "hidden" name = "page" value = "${cri.page}">
@@ -446,12 +323,6 @@ function repUpdate(e){
 						
 						</ul>
 					</div>
-					<div class="w3-left">
-			  			<textarea class="w3-input w3-border" cols="95" id="commentArea"></textarea>
-			  		</div>
-			  		<div class="w3-right">
-			  			<button class="w3-button w3-teal" id="commentBtn" onclick="repAdd()">작성</button>
-			  		</div>
 				</div>
 		  	</c:when>
 		  	<c:otherwise>

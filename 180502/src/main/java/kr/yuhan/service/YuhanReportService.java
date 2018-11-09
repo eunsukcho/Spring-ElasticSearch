@@ -11,4 +11,5 @@ public interface YuhanReportService {
 	
 	public List<ReportVO> reportStudentCheck(int hwno);
 	public ReportVO reportDetailView(int no);
+	public String reportStudentID(int no);
 }

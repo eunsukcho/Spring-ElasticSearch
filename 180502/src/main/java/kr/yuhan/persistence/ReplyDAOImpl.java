@@ -59,8 +59,11 @@ public class ReplyDAOImpl implements ReplyDAO{
 	}
 
 	@Override
-	public int count(Integer hwno) {
-		return sqlSession.selectOne(NAMESPACE + ".count", hwno);
+	public int count(Integer hwno, String studentID) {
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("hwno", hwno);
+		paramMap.put("studentID", studentID);
+		return sqlSession.selectOne(NAMESPACE + ".count", paramMap);
 	}
 	
 }

@@ -17,5 +17,5 @@ public interface ReplyService {
 	
 	/**페이징**/
 	public List<ReplyVO> listPage(Integer hwno, Criteria cri);
-	public int count(Integer hwno);
+	public int count(Integer hwno, String studentID);
 }

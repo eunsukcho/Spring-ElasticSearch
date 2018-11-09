@@ -28,4 +28,9 @@
 		from yuhan_student_report
 		where no = #{no}
 	</select>
+	
+	<select id="reportStudentID" resultType="String">
+		select studentID from yuhan_student_report
+		where no = #{no}
+	</select>
 </mapper>

@@ -38,7 +38,6 @@ StringBuffer.prototype.toString = function() {
 };
 </script>
 <script type="text/javascript">
-
 $(document).ready(function(){
 	var frm = $("form[role = 'form']"); 
 	console.log(frm);
@@ -80,6 +79,8 @@ $(document).ready(function(){
 		var hwno = $('input[name="hwno"]').val();
 		var professorNo = $("#professorNo").val();
 		var proName = $("#proName").val();
+		var studentID = '${studentID}';
+		
 		if(comment == null || $.trim(comment) == ""){
 			alert("댓글을 입력해주세요");
 			return false;
@@ -89,6 +90,7 @@ $(document).ready(function(){
 		replyVO.hwno = hwno;
 		replyVO.professorNO = professorNo;
 		replyVO.professorName = proName;
+		replyVO.studentID = studentID;
 		
 		jsonData = JSON.stringify(replyVO);
 		
@@ -180,10 +182,12 @@ function firstLoad(page){
 	alert("로드");
 	var hwno = $('input[name="hwno"]').val();
 	var page;
+	var studentID = '${studentID}';
 	
 	replyVO = new Object();
 	replyVO.hwno = hwno;
 	replyVO.repPage = page;
+	replyVO.studentID = studentID;
 	jsonData = JSON.stringify(replyVO);
 	
 	$.ajax({
@@ -224,43 +228,6 @@ function printPaging(pageMaker){
 		str += "<li><a href='"+(pageMaker.endPage + 1)+"'> >> </a></li>";
 	}
 	$('#paging').html(str);
-}
-function repDel(e){
-	var repNo = $(e).val();
-	alert(repNo);
-	
-	$.ajax({
-		type : "GET",
-		url : "/replies/delRep/"+repNo,
-		dataType: "text",
-		success : function(data){
-			if(data=='SUCCESS'){
-				$("#commentList").html("");
-				firstLoad();
-			}
-		},
-		error : function(){
-			alert("댓글 삭제 실패")
-		}
-	});
-}
-function repUpdate(e){
-	var repNo = $(e).val();
-	alert(repNo);
-
-	$.ajax({
-		type : "GET",
-		url : "/replies/updateRep/"+repNo,
-		dataType: "text",
-		success : function(data){
-			if(data=='SUCCESS'){
-				alert("수정 완료");
-			}
-		},
-		error : function(){
-			alert("댓글 삭제 실패")
-		}
-	});
 }
 </script>
 </head>

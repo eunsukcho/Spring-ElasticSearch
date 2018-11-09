@@ -107,6 +107,7 @@ public class HomeworkViewController {
 			
 			reportContentCount = reportService.reportContentCount(hwno, studentID); //학생이 파일을 제외한 글로 과제를 올렸을 때
 			model.addAttribute("report", reportContentCount);
+			model.addAttribute("replyCount", reService.count(hwno, studentID));
 	
 		}else { // 교수일경우
 			selectClass = request.getParameter("selectClass");
@@ -159,16 +160,17 @@ public class HomeworkViewController {
 	@RequestMapping(value="/hwReportCheck", method = RequestMethod.GET)
 	public void hwReportCheck(HttpSession session, HttpServletRequest request, @RequestParam("subjectID") int subjectID, @ModelAttribute("cri") SearchCriteria cri, Model model) {
 		System.out.println("과제 체크 : " + request.getParameter("reportNo"));
+		int no = Integer.parseInt(request.getParameter("reportNo"));
 		List<GetElasticSearchVo> searchList = elservice.readElastic(request.getParameter("_id"));
 		List<YuhanSubjectVO> list = service.selectSubjectData(Integer.toString(subjectID));
-		int no = Integer.parseInt(request.getParameter("reportNo"));
+		ReportVO vo = reportService.reportDetailView(no);
 		System.out.println("숫자로 변환 : " + no);
 		String selectClass = "";
 		String studentID = "";
 		System.out.println("교수번호 : " + list.get(0).getYUHAN_SUBJECT_PRO());
 		System.out.println("교수이름 : " + list.get(0).getProName());
 
-		model.addAttribute("professorNo", list.get(0).getYUHAN_SUBJECT_PRO()); // 로그인 후에는 세션으로 받는다.
+		model.addAttribute("professorNo", list.get(0).getYUHAN_SUBJECT_PRO()); 
 		model.addAttribute("_id", request.getParameter("_id"));
 		model.addAttribute("hwno", request.getParameter("hwno"));
 		model.addAttribute("subjectID", subjectID);
@@ -177,9 +179,9 @@ public class HomeworkViewController {
 		model.addAttribute("searchType", cri.getSearchType());
 		model.addAttribute("keyword", cri.getKeyword());
 		model.addAttribute("elastic", searchList.get(0).get_source());
-		model.addAttribute("studentID", session.getAttribute("sessionID")); 
+		model.addAttribute("studentID", vo.getStudentID()); 
 		model.addAttribute("reportNo", no);
-		ReportVO vo = reportService.reportDetailView(no);
+		
 		model.addAttribute("reportInfo", vo);
 		
 		System.out.println("제출 내용 : " + vo.getContent());

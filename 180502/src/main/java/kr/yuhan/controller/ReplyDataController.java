@@ -50,36 +50,7 @@ public class ReplyDataController {
 		
 		return entity;
 	}
-	
-	@RequestMapping(value="/listRep/{hwno}/{repPage}", method=RequestMethod.GET)
-	public ResponseEntity<Map<String, Object>> listpage(@PathVariable("hwno") int hwno, @PathVariable("repPage") int repPage){
-		System.out.println("리스트 댓글");
-		ResponseEntity<Map<String, Object>> entity = null;
-		try {
-			Criteria cri = new Criteria();
-			cri.setRepPage(repPage);
-			
-			PageMaker pageMaker = new PageMaker();
-			pageMaker.setCri(cri);
-			
-			Map<String, Object> map = new HashMap<String, Object>();
-			List<ReplyVO> list = service.listPage(hwno, cri);
-			
-			map.put("list", list);
-			
-			int replyCount = service.count(hwno);
-			pageMaker.setRepTotalCount(replyCount);
-			
-			map.put("pageMaker", pageMaker);
-			
-			entity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<Map<String, Object>>(HttpStatus.BAD_REQUEST);
-		}
-		return entity;
-	}
-	
+
 	@RequestMapping(value = "/loadRep", method = RequestMethod.POST)
 	public ResponseEntity<?> loadRep(@RequestBody ReplyVO repVo){
 		ResponseEntity<?> entity;
@@ -96,7 +67,7 @@ public class ReplyDataController {
 		
 		map.put("list", list);
 		
-		int replyCount = service.count(repVo.getHwno());
+		int replyCount = service.count(repVo.getHwno(), repVo.getStudentID());
 		pageMaker.setRepTotalCount(replyCount);
 		
 		map.put("pageMaker", pageMaker);

@@ -3,6 +3,7 @@ package kr.yuhan.domain;
 public class ReplyVO {
 	private int repNo;
 	private int hwno;
+	private String studentID;
 	private String professorNO;
 	private String professorName;
 	private String comment;
@@ -28,6 +29,14 @@ public class ReplyVO {
 		this.professorName = professorName;
 		this.comment = comment;
 		this.repDate = repDate;
+	}
+	
+	public String getStudentID() {
+		return studentID;
+	}
+
+	public void setStudentID(String studentID) {
+		this.studentID = studentID;
 	}
 
 	public String getProfessorName() {

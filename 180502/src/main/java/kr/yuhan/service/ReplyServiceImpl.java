@@ -53,8 +53,8 @@ public class ReplyServiceImpl implements ReplyService{
 	}
 
 	@Override
-	public int count(Integer hwno) {
-		return dao.count(hwno);
+	public int count(Integer hwno, String studentID) {
+		return dao.count(hwno, studentID);
 	}
 
 }
