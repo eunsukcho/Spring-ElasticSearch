@@ -26,4 +26,6 @@ public interface YuhanFileService {
 	public void ReportFileServerUp(String filePath, MultipartHttpServletRequest multipartRequest); // 첨부 파일을 서버에 저장
 	public int ReportCount(int hwno, String studentID);
 	public List<YuhanReportFileVO> selectReportFileInfo(int hwno, String studentID);
+	public void reportDeleteFile(String saveFileName, String filePath);
+	public void reportAllDelete(int homeworkNo, String studentID);
 }

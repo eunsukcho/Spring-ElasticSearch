@@ -66,4 +66,20 @@ public class FileController {
 		return entity;
 	}
 	
+	@RequestMapping(value = "/reportFileDelete", method = RequestMethod.POST)
+	public ResponseEntity<?> reportdelete(@RequestBody String saveFileName) {
+		ResponseEntity<?> entity;
+		
+		System.out.println(saveFileName.substring(0, saveFileName.length()-1));
+
+		try {
+			service.reportDeleteFile(saveFileName.substring(0, saveFileName.length()-1), reportFilePath);
+			entity = new ResponseEntity<Object>("SUCCESS", HttpStatus.OK);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
+	
 }

@@ -12,6 +12,10 @@ public class ReportVO {
 	private String content;
 
 	public ReportVO() {}
+	public ReportVO(int no, String studentID) {
+		this.no = no;
+		this.studentID = studentID;
+	}
 	public ReportVO(int no, int homeworkNo, String studentID, Date date, String content) {
 		this.no = no;
 		this.homeworkNo = homeworkNo;

@@ -50,4 +50,14 @@ public class YuhanReportDAOImpl implements YuhanReportDAO{
 	public String reportStudentID(int no) {
 		return sqlSession.selectOne(NAMESPACE + ".reportStudentID", no);
 	}
+
+	@Override
+	public void reportUpdate(ReportVO vo) {
+		sqlSession.update(NAMESPACE + ".reportUpdate", vo);
+	}
+
+	@Override
+	public void reportDelete(int no) {
+		sqlSession.delete(NAMESPACE + ".reportDelete", no);
+	}
 }

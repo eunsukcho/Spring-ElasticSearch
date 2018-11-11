@@ -199,9 +199,27 @@ public class YuhanFileDAOImpl implements YuhanFileDAO{
 		
 		return sqlSession.selectList(NAMESPACE+".fileReportInfo", map);
 	}
-	
 
-	
-	
+
+
+	@Override
+	public void reportDeleteFile(String saveFileName, String filePath) {
+		sqlSession.delete(NAMESPACE+".reportFileDelete", saveFileName);
+		
+		String fileURL = filePath + "\\" + saveFileName;
+		System.out.println("dao : " + fileURL);
+		File file = new File(fileURL);
+		
+		if(file.exists() == true) {
+			file.delete();
+		}
+	}
+
+
+
+	@Override
+	public void reportAllDelete(int homeworkNo, String studentID) {
+		
+	}
 
 }

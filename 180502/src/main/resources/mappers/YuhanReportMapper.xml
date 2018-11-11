@@ -9,7 +9,8 @@
 	</insert>
 	
 	<select id="selectReportInfo" resultType="kr.yuhan.domain.ReportVO">
-		select content from yuhan_student_report
+		select no, homeworkNo, content, date_format(date, "%Y-%m-%d %H:%i:%s") as reportDate
+		from yuhan_student_report
 		where homeworkNo = #{homeworkNo} and studentID = #{studentID}
 	</select>
 	
@@ -33,4 +34,15 @@
 		select studentID from yuhan_student_report
 		where no = #{no}
 	</select>
+	
+	<update id="reportUpdate">
+		update yuhan_student_report
+		set content = #{content}
+		where no = #{no}
+	</update>
+	
+	<delete id="reportDelete">
+	 	delete from yuhan_student_report
+	 	where no = #{no}
+	</delete>
 </mapper>

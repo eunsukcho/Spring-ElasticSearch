@@ -345,4 +345,42 @@ public class HomeworkViewController {
 		
 		return "/hwList?subjectID="+subjectID;
 	}
+	
+	@RequestMapping(value="/hwReportUpdate", method = RequestMethod.GET)
+	public void hwReportUpdate(HttpSession session ,HttpServletRequest request, @RequestParam("subjectID") int subjectID, @ModelAttribute("cri") SearchCriteria cri, Model model) throws ParseException{
+		List<YuhanSubjectVO> list = service.selectSubjectData(Integer.toString(subjectID));
+		int reportCount;
+		int hwno = Integer.parseInt(request.getParameter("hwno"));
+		int no = Integer.parseInt(request.getParameter("reportNo"));
+		String studentID = (String) session.getAttribute("sessionID");
+		String _id = request.getParameter("_id");
+				
+		System.out.println("교수번호 : " + list.get(0).getYUHAN_SUBJECT_PRO());
+		System.out.println("교수이름 : " + list.get(0).getProName());
+		
+		model.addAttribute("_id", _id);
+		model.addAttribute("hwno", request.getParameter("hwno"));
+		model.addAttribute("selectClass", request.getParameter("selectClass"));
+		model.addAttribute("subjectID", subjectID);
+		model.addAttribute("professorNo", list.get(0).getYUHAN_SUBJECT_PRO());
+		model.addAttribute("page", cri.getPage());
+		model.addAttribute("perPageNum", cri.getPerPageNum());
+		model.addAttribute("searchType", cri.getSearchType());
+		model.addAttribute("keyword", cri.getKeyword());
+		model.addAttribute("no", no);
+		model.addAttribute("studentID", studentID);
+		
+		reportCount = fileService.ReportCount(hwno, studentID); // 학생이 해당 과제에 파일을 제출했을 경우
+		if(reportCount >= 1) {
+			System.out.println("학생의 과제 파일 제출 : " + reportCount);
+			model.addAttribute("reportFile", fileService.selectReportFileInfo(hwno, studentID));
+		}else {
+			model.addAttribute("reportFile", "제출 파일이 없습니다.");
+		}
+		
+		ReportVO vo = new ReportVO(no, studentID);
+		model.addAttribute("studentReport", reportService.reportDetailView(no));
+		System.out.println("content : " + reportService.reportDetailView(no));
+		model.addAttribute("elastic",  elservice.readElastic(_id).get(0).get_source());
+	}
 }

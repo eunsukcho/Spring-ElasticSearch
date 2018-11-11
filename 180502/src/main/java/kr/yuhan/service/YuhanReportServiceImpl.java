@@ -44,4 +44,14 @@ public class YuhanReportServiceImpl implements YuhanReportService{
 	public String reportStudentID(int no) {
 		return dao.reportStudentID(no);
 	}
+
+	@Override
+	public void reportUpdate(ReportVO vo) {
+		dao.reportUpdate(vo);
+	}
+
+	@Override
+	public void reportDelete(int no) {
+		dao.reportDelete(no);
+	}
 }

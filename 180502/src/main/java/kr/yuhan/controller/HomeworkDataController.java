@@ -28,6 +28,7 @@ import kr.yuhan.domain.ReportVO;
 import kr.yuhan.domain.SearchCriteria;
 import kr.yuhan.domain.YuhanHomeworkVO;
 import kr.yuhan.service.ElasticService;
+import kr.yuhan.service.YuhanFileService;
 import kr.yuhan.service.YuhanHomeworkService;
 import kr.yuhan.service.YuhanReportService;
 
@@ -43,6 +44,9 @@ public class HomeworkDataController {
 	
 	@Inject
 	private ElasticService elservice;
+	
+	@Inject
+	private YuhanFileService fileService;
 	
 	@RequestMapping(value="/addhw" , method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public ResponseEntity<?> register(@RequestBody YuhanHomeworkVO vo) throws ParseException {
@@ -183,6 +187,42 @@ public class HomeworkDataController {
 			e.printStackTrace();
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
+		return entity;
+	}
+	
+	@RequestMapping(value="/updateReport/{no}" , method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public ResponseEntity<?> reportStudentUpdate(@PathVariable("no") int no, @RequestBody ReportVO vo){
+		
+		ResponseEntity<?> entity;
+		Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
+		System.out.println("과제수정");
+		try {
+			vo.setNo(no);
+			reportService.reportUpdate(vo);
+			entity = new ResponseEntity<Object>("SUCCESS", HttpStatus.OK);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
+	
+	@RequestMapping(value="/deleteReport" , method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public ResponseEntity<?> deleteReport(@RequestBody ReportVO vo){
+		
+		ResponseEntity<?> entity;
+		Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
+
+		System.out.println("과제 삭제 정보");
+		try {
+			reportService.reportDelete(vo.getNo());
+			
+			entity = new ResponseEntity<Object>(reportService.selectReportInfo(vo), HttpStatus.OK);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		
 		return entity;
 	}
 }

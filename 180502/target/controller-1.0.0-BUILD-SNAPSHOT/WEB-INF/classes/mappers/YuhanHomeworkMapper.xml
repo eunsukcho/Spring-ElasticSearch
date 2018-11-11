@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.yuhan.mapper.YuhanHomeworkMapper">
+
+	<insert id="insertHomework">
+		insert into yuhan_homework_table(YUHAN_HOMEWORK_TITLE, YUHAN_HOMEWORK_DATE, YUHAN_HOMEWORK_START_DATE, YUHAN_HOMEWORK_END_DATE, YUHAN_HOMEWORK_CONTENT, 
+		YUHAN_HOMEWORK_DATA_STATUS, YUHAN_HOMEWORK_END_STATUS, YUHAN_HOMEWORK_DELETE_STATUS, YUHAN_PROFESSOR_NUMBER, YUHAN_SUBJECT_NUMBER, YUHAN_SUBJECT_CLASS )
+		values(#{title}, date_format(#{formatToday}, "%Y-%m-%d %H:%i:%s"), #{totalStart}, #{totalEnd}, #{content}, #{dataStatus}, #{endStatus}, #{deleteStatus}, #{professorno}, #{subjectID}, #{subjectClass})
+	</insert>
+	
+	<select id="selectHwno" resultType="int">
+		select YUHAN_HOMEWORK_NUMBER as hwno from yuhan_homework_table
+		where YUHAN_HOMEWORK_DATE = #{formatToday} and YUHAN_PROFESSOR_NUMBER = #{professorno} and YUHAN_SUBJECT_NUMBER = #{subjectID} 
+	</select>
+	
+	<select id="listHomeworkEla" resultType="kr.yuhan.domain.ElasticVO">
+		select YUHAN_SUBJECT_Name as subject, proName as professor
+		from yuhan_subject_table, yuhan_professor
+		where yuhan_subject_table.YUHAN_SUBJECT_PRO = yuhan_professor.proNo and yuhan_subject_number = #{subjectID}
+	</select>
+	
+	<select id="listHomework" resultType="kr.yuhan.domain.YuhanHomeworkVO">
+		select YUHAN_HOMEWORK_NUMBER as hwno, YUHAN_HOMEWORK_TITLE as title, YUHAN_HOMEWORK_DATE as today, date_format(YUHAN_HOMEWORK_END_DATE , "%Y-%m-%d %H:%i:%s") as end, yuhan_homework_table.YUHAN_SUBJECT_NUMBER as subjectID
+		from yuhan_homework_table, yuhan_taking_class
+		where yuhan_homework_table.YUHAN_SUBJECT_NUMBER = yuhan_taking_class.SubjectNO 
+		and YUHAN_SUBJECT_NUMBER = #{subjectID} and memberID = #{sessionID}
+		and yuhan_homework_table.YUHAN_SUBJECT_CLASS = #{subjectClass} 
+		and YUHAN_HOMEWORK_DELETE_STATUS = 'N'
+		order by YUHAN_HOMEWORK_NUMBER desc, YUHAN_HOMEWORK_DATE desc
+	</select>
+	
+	<select id="listProfessorHomework" resultType="kr.yuhan.domain.YuhanHomeworkVO">
+		select YUHAN_HOMEWORK_NUMBER as hwno, YUHAN_HOMEWORK_TITLE as title, YUHAN_HOMEWORK_DATE as today, date_format(YUHAN_HOMEWORK_END_DATE , "%Y-%m-%d %H:%i:%s") as end, yuhan_homework_table.YUHAN_SUBJECT_NUMBER as subjectID, YUHAN_SUBJECT_CLASS as subjectClass
+		from yuhan_homework_table, yuhan_subject_table
+		where yuhan_homework_table.YUHAN_SUBJECT_NUMBER = yuhan_subject_table.YUHAN_SUBJECT_NUMBER 
+		and yuhan_homework_table.YUHAN_PROFESSOR_NUMBER = #{professorno}
+		and yuhan_homework_table.YUHAN_SUBJECT_NUMBER = #{subjectID}
+		and YUHAN_HOMEWORK_DELETE_STATUS = 'N'
+		and YUHAN_SUBJECT_CLASS = #{subjectClass}
+		order by YUHAN_HOMEWORK_NUMBER desc, YUHAN_HOMEWORK_DATE desc
+	</select>
+	
+	<select id="readHomework" resultType="kr.yuhan.domain.YuhanHomeworkVO">
+		select YUHAN_HOMEWORK_NUMBER as hwno, YUHAN_HOMEWORK_TITLE as title, YUHAN_HOMEWORK_CONTENT as content, YUHAN_HOMEWORK_DATE as today, YUHAN_HOMEWORK_DATA_STATUS as dataStatus,
+		date_format(YUHAN_HOMEWORK_START_DATE , "%Y-%m-%d %H:%i:%s") as start, date_format(YUHAN_HOMEWORK_END_DATE , "%Y-%m-%d %H:%i:%s") as end, yuhan_homework_table.YUHAN_SUBJECT_NUMBER as subjectID
+		from yuhan_homework_table, yuhan_taking_class
+		where yuhan_homework_table.YUHAN_SUBJECT_NUMBER = yuhan_taking_class.SubjectID and SubjectID = #{subjectID} and StudentID = 2016 and YUHAN_HOMEWORK_NUMBER = #{hwno}
+	</select>
+	
+	<select id="readStudentClass" resultType = "kr.yuhan.domain.YuhanClass">
+		select memberID, yuhan_subject_name as subjectName, yuhan_subject_number as subjectID
+		from yuhan_taking_class, yuhan_subject_table												
+		where yuhan_subject_table.YUHAN_SUBJECT_NUMBER = yuhan_taking_class.SubjectNO
+		AND memberID = #{sessionID} 
+	</select>
+	
+	<select id="readProfessorClass" resultType="kr.yuhan.domain.YuhanClass">
+		select yuhan_subject_name as subjectName, yuhan_subject_number as subjectID, YUHAN_SUBJECT_HAK
+		from yuhan_subject_table
+		where YUHAN_SUBJECT_PRO = #{memberNum}
+		order by yuhan_subject_hak desc
+	</select>
+	
+	<select id="listPageHomework" resultType = "kr.yuhan.domain.YuhanHomeworkVO">
+		<![CDATA[
+			select YUHAN_HOMEWORK_NUMBER as hwno, YUHAN_HOMEWORK_TITLE as title, prono as professorno, proName as writer, YUHAN_HOMEWORK_DATE as today
+			from yuhan_homework_table, yuhan_professor, yuhan_subject_table
+			where yuhan_homework_table.yuhan_professor_number = yuhan_professor.proNo 
+			and yuhan_homework_table.YUHAN_SUBJECT_NUMBER = yuhan_subject_table.YUHAN_SUBJECT_NUMBER
+			and yuhan_homework_table.YUHAN_PROFESSOR_NUMBER = 2 and yuhan_homework_table.YUHAN_SUBJECT_NUMBER = 3
+			order by YUHAN_HOMEWORK_NUMBER desc, YUHAN_HOMEWORK_DATE desc
+			limit #{page}, 10
+		]]>
+	</select>
+	
+	<select id="listCriteriaHomework" resultType = "kr.yuhan.domain.YuhanHomeworkVO">
+		<![CDATA[
+			select YUHAN_HOMEWORK_NUMBER as hwno, YUHAN_HOMEWORK_TITLE as title, YUHAN_HOMEWORK_DATE as today, date_format(YUHAN_HOMEWORK_END_DATE , "%Y-%m-%d %H:%i:%s") as end
+			from yuhan_homework_table, yuhan_taking_class
+			where yuhan_homework_table.YUHAN_SUBJECT_NUMBER = yuhan_taking_class.SubjectID and SubjectID = #{subjectID} and StudentID = 2016
+			order by YUHAN_HOMEWORK_NUMBER desc, YUHAN_HOMEWORK_DATE desc
+			limit #{pageStart}, #{perPageNum}
+		]]>
+	</select>
+	
+	<select id = "countPaging" resultType = "int">
+		<![CDATA[
+			select count(*)	
+			from yuhan_homework_table, yuhan_professor, yuhan_subject_table
+			where yuhan_homework_table.yuhan_professor_number = yuhan_professor.proNo 
+			and yuhan_homework_table.YUHAN_SUBJECT_NUMBER = yuhan_subject_table.YUHAN_SUBJECT_NUMBER
+			and yuhan_homework_table.YUHAN_PROFESSOR_NUMBER = 2 and yuhan_homework_table.YUHAN_SUBJECT_NUMBER = 3
+		]]>
+	</select>
+	
+	<select id="selectSubjectData" resultType="kr.yuhan.domain.YuhanSubjectVO">
+		SELECT YUHAN_SUBJECT_NUMBER, YUHAN_SUBJECT_NAME, YUHAN_SUBJECT_HAK, YUHAN_SUBJECT_PRO, proEmail, proName
+		FROM yuhan_subject_table, yuhan_professor
+		WHERE yuhan_subject_table.yuhan_subject_pro = yuhan_professor.proNo
+		AND YUHAN_SUBJECT_NUMBER = #{subjectID}
+	</select>
+	
+	<select id="selectHomeworkData" resultType="kr.yuhan.domain.YuhanHomeworkVO">
+		select YUHAN_HOMEWORK_TITLE as title, YUHAN_HOMEWORK_START_DATE as totalStart, YUHAN_HOMEWORK_END_DATE as totalEnd, YUHAN_HOMEWORK_CONTENT as content, YUHAN_SUBJECT_NUMBER as subjectID, YUHAN_SUBJECT_CLASS as subjectClass
+		from yuhan_homework_table
+		where yuhan_homework_number = #{hwno}
+	</select>
+	
+	<update id="updateHomework">
+		update yuhan_homework_table set YUHAN_HOMEWORK_TITLE = #{title} , YUHAN_HOMEWORK_START_DATE = #{totalStart} ,YUHAN_HOMEWORK_END_DATE = #{totalEnd},
+		YUHAN_HOMEWORK_CONTENT = #{content}
+		where yuhan_homework_number = #{hwno}
+	</update>
+	
+	<update id="deleteHomework">
+		update yuhan_homework_table set YUHAN_HOMEWORK_DELETE_STATUS = 'Y'
+		where yuhan_homework_number = #{hwno}
+	</update>
+	
+	<insert id="insertReport">
+		insert into yuhan_student_report(homeworkNo, studentID, content)
+		values(#{homeworkNo}, #{studentID}, #{content})
+	</insert>
+	
+	<select id="selectReportInfo" resultType="kr.yuhan.domain.ReportVO">
+		select content from yuhan_student_report
+		where homeworkNo = #{homeworkNo} and studentID = #{studentID}
+	</select>
+	
+	<select id="reportContentCount"	resultType="int">
+		select count(content) from yuhan_student_report
+		where homeworkNo = #{hwno} and studentID = #{studentID}
+	</select>
+	
+	<select id="selectHak" resultType = "int">
+		select distinct yuhan_subject_hak
+		from yuhan_subject_table, yuhan_professor
+		where yuhan_subject_table.YUHAN_SUBJECT_PRO = yuhan_professor.proNo
+		and yuhan_subject_table.YUHAN_SUBJECT_PRO = #{professorNum}
+		order by YUHAN_SUBJECT_HAK desc
+	</select>
+	
+<!-- 	<select id="selectClass" resultType = "int">
+		select distinct memberClass
+		from yuhan_taking_class, yuhanmember, yuhan_subject_table
+		where yuhan_taking_class.memberID = yuhanmember.memberID 
+		and yuhan_subject_table.YUHAN_SUBJECT_NUMBER = yuhan_taking_class.subjectNO 
+		and yuhan_subject_table.YUHAN_SUBJECT_NUMBER = #{subjectID}
+		and yuhan_subject_table.YUHAN_SUBJECT_HAK = #{yuhan_subject_hak}
+		order by memberClass desc
+	</select> -->
+	
+	<select id="selectClass" resultType="kr.yuhan.domain.YuhanClass">
+		select distinct yuhan_subject_name as subjectName, yuhan_subject_number as subjectID, yuhan_subject_hak, memberClass
+		from yuhan_subject_table, yuhan_professor, yuhanmember, yuhan_taking_class
+		where yuhan_subject_table.YUHAN_SUBJECT_PRO = yuhan_professor.proNo
+		and yuhan_taking_class.memberID = yuhanmember.memberID 
+		and yuhan_subject_table.YUHAN_SUBJECT_NUMBER = yuhan_taking_class.subjectNO
+		and yuhan_professor.proNo = #{memberNum}
+		order by yuhan_subject_hak desc, subjectID asc, memberClass asc
+	</select>
+</mapper>

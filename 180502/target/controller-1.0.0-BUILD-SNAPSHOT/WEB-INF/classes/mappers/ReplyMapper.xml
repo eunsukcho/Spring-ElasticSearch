@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.yuhan.mapper.ReplyMapper">
+
+	<insert id="insertRep">
+		insert into yuhan_homework_comment_table (YUHAN_HOMEWORK_COMMENT_HOMEWORK_NUMBER, YUHAN_HOMEWORK_COMMENT_MEMBER_PROFESSOR_MEMBER_NUMBER, YUHAN_HOMEWORK_COMMENT_CONTENT, PROFESSOR_NAME, studentID) 
+		values (#{hwno}, #{professorNO}, #{comment}, #{professorName}, #{studentID})
+	</insert>
+	
+	<select id="selectRep" resultType="kr.yuhan.domain.ReplyVO">
+		select YUHAN_HOMEWORK_COMMENT_NUMBER as repNo, YUHAN_HOMEWORK_COMMENT_CONTENT as comment, date_format(YUHAN_HOMEWORK_COMMENT_DATE , "%Y-%m-%d") as repDate, PROFESSOR_NAME as professorName
+		from yuhan_homework_comment_table 
+		where YUHAN_HOMEWORK_COMMENT_HOMEWORK_NUMBER = #{hwno}
+		order by YUHAN_HOMEWORK_COMMENT_NUMBER desc, YUHAN_HOMEWORK_COMMENT_DATE desc
+		
+	</select>
+	
+	<select id="selectRepPage" resultType = "kr.yuhan.domain.ReplyVO">
+		<![CDATA[
+			select YUHAN_HOMEWORK_COMMENT_NUMBER as repNo, YUHAN_HOMEWORK_COMMENT_CONTENT as comment, date_format(YUHAN_HOMEWORK_COMMENT_DATE , "%Y-%m-%d") as repDate, PROFESSOR_NAME as professorName
+			from yuhan_homework_comment_table 
+			where YUHAN_HOMEWORK_COMMENT_HOMEWORK_NUMBER = #{hwno} and studentID = #{studentID} and YUHAN_HOMEWORK_COMMENT_NUMBER > 0
+			order by YUHAN_HOMEWORK_COMMENT_NUMBER desc, YUHAN_HOMEWORK_COMMENT_DATE desc
+			limit #{repPageStart}, #{repPerPageNum}  
+		]]>
+	</select>
+	
+	<delete id="deleteRep">
+		delete from yuhan_homework_comment_table where YUHAN_HOMEWORK_COMMENT_NUMBER = #{repNo}
+	</delete>
+	
+	<select id = "totalRep" resultType = "int">
+		select count(*) from yuhan_homework_comment_table 
+		where YUHAN_HOMEWORK_COMMENT_HOMEWORK_NUMBER = #{hwno}
+	</select>
+	
+	<update id="updateRep">
+		update yuhan_homework_comment_table set YUHAN_HOMEWORK_COMMENT_CONTENT = #{comment} 
+		where YUHAN_HOMEWORK_COMMENT_NUMBER = #{repNo}
+	</update>
+	
+	<select id="listPage" resultType="kr.yuhan.domain.ReplyVO">
+		select * from yuhan_homework_comment_table
+		where YUHAN_HOMEWORK_COMMENT_HOMEWORK_NUMBER = #{hwno} and YUHAN_HOMEWORK_COMMENT_NUMBER > 0
+		order by YUHAN_HOMEWORK_COMMENT_NUMBER desc, YUHAN_HOMEWORK_COMMENT_DATE desc
+		limit #{cri.pageStart}, #{cri.perpageNum}  
+	</select>
+	
+	<select id="count" resultType="int">
+		select count(*) from yuhan_homework_comment_table
+		where YUHAN_HOMEWORK_COMMENT_HOMEWORK_NUMBER = #{hwno} and studentID = #{studentID}
+	</select>
+</mapper>

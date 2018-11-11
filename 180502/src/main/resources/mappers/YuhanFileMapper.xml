@@ -51,4 +51,8 @@
 		from yuhan_report_data_table
 		where YUHAN_HOMEWORK_DATA_HOMEWORK_NUMBER = #{hwno} and YUHAN_MEMBER_ID = #{studentID}
 	</select>
+	
+	<delete id="reportFileDelete">
+		delete from yuhan_report_data_table where SAVE_FILE_NAME = #{saveFileName}
+	</delete>
 </mapper>

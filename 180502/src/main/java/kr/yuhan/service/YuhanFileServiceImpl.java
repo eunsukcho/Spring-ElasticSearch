@@ -69,4 +69,14 @@ public class YuhanFileServiceImpl implements YuhanFileService{
 		return dao.selectReportFileInfo(hwno, studentID);
 	}
 
+	@Override
+	public void reportDeleteFile(String saveFileName, String filePath) {
+		dao.reportDeleteFile(saveFileName, filePath);
+	}
+
+	@Override
+	public void reportAllDelete(int homeworkNo, String studentID) {
+		dao.reportAllDelete(homeworkNo, studentID);
+	}
+
 }
