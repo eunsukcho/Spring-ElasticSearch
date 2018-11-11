@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import kr.yuhan.domain.ReportVO;
 import kr.yuhan.domain.YuhanFileVO;
 import kr.yuhan.service.YuhanFileService;
 
@@ -79,6 +83,24 @@ public class FileController {
 			e.printStackTrace();
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
+		return entity;
+	}
+	
+	@RequestMapping(value="/deleteServerReport" , method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public ResponseEntity<?> deleteReport(@RequestBody ReportVO vo){
+		
+		ResponseEntity<?> entity;
+		Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
+
+		System.out.println("과제 파일 삭제 정보");
+		try {
+			service.reportAllDelete(vo.getHomeworkNo(), vo.getStudentID(), reportFilePath);
+			entity = new ResponseEntity<Object>("SUCCESS", HttpStatus.OK);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		
 		return entity;
 	}
 	

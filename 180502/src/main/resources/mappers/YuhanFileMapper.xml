@@ -55,4 +55,14 @@
 	<delete id="reportFileDelete">
 		delete from yuhan_report_data_table where SAVE_FILE_NAME = #{saveFileName}
 	</delete>
+	
+	<delete id="reportFileDeleteAll">
+		delete from yuhan_report_data_table 
+		where YUHAN_HOMEWORK_DATA_HOMEWORK_NUMBER = #{hwno} and YUHAN_MEMBER_ID = #{studentID}
+	</delete>
+	
+	<select id="deleteFileName" resultType="String">
+		select SAVE_FILE_NAME from yuhan_report_data_table 
+		where YUHAN_HOMEWORK_DATA_HOMEWORK_NUMBER = #{hwno} and YUHAN_MEMBER_ID = #{studentID}
+	</select>
 </mapper>

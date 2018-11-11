@@ -216,8 +216,7 @@ public class HomeworkDataController {
 		System.out.println("과제 삭제 정보");
 		try {
 			reportService.reportDelete(vo.getNo());
-			
-			entity = new ResponseEntity<Object>(reportService.selectReportInfo(vo), HttpStatus.OK);
+			entity = new ResponseEntity<Object>("SUCCESS", HttpStatus.OK);
 		}catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);

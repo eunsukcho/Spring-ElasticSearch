@@ -75,8 +75,8 @@ public class YuhanFileServiceImpl implements YuhanFileService{
 	}
 
 	@Override
-	public void reportAllDelete(int homeworkNo, String studentID) {
-		dao.reportAllDelete(homeworkNo, studentID);
+	public void reportAllDelete(int homeworkNo, String studentID, String filePath) {
+		dao.reportAllDelete(homeworkNo, studentID, filePath);
 	}
 
 }

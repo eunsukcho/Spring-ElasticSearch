@@ -27,5 +27,5 @@ public interface YuhanFileService {
 	public int ReportCount(int hwno, String studentID);
 	public List<YuhanReportFileVO> selectReportFileInfo(int hwno, String studentID);
 	public void reportDeleteFile(String saveFileName, String filePath);
-	public void reportAllDelete(int homeworkNo, String studentID);
+	public void reportAllDelete(int homeworkNo, String studentID, String filePath);
 }

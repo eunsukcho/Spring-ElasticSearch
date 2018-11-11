@@ -217,6 +217,37 @@ $(document).ready(function(){
 		});
 	}
 	
+	var deleteFileServer = function(hwno, studentID){
+		var frm = $("form[role = 'form']"); 
+		var jsonData;
+    	
+    	reportVO = new Object();
+    	reportVO.homeworkNo = hwno;
+    	reportVO.studentID = studentID;
+    	
+    	jsonData = JSON.stringify(reportVO);
+    	
+    	$.ajax({
+			type : "POST",
+			url : "/deleteServerReport", //Delete URL
+			data : jsonData,
+			dataType : "text",
+			contentType : "application/json; charset=utf-8",
+			success : function(data) {
+				if(data == 'SUCCESS'){
+					alert("과제를 삭제하였습니다.");
+					$("reportNo").val("");
+					frm.attr("action", "/hwread");
+					frm.attr("method", "get"); 
+					frm.submit();
+				}
+			},
+			error : function(){
+				alert("글 등록 실패")
+			}
+		});
+	}
+	
     $("#addReport").click(function(){ //버튼 누르기
 		fd.append('subjectID', $('#subjectID').val()); //지금은 임의로 설정해준다. 나중에 바꿀것
 		sendData(); // 과제 등록
@@ -225,7 +256,7 @@ $(document).ready(function(){
     
     $("#deleteReport").click(function(){
     	var no = '${no}';
-    	var hwno = $("#hwno").val;
+    	var hwno = $("#hwno").val();
     	var studentID = '${studentID}';
     	var jsonData;
     	
@@ -245,7 +276,7 @@ $(document).ready(function(){
 			contentType : "application/json; charset=utf-8",//보내는 타입
 			success : function(data){ //받는 데이터
 				if(data == 'SUCCESS'){
-					alert("정상적으로 과제가 삭제되었습니다.");
+					deleteFileServer(hwno, studentID);
 				}
 			},
 			error : function(){
