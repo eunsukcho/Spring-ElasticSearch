@@ -10,9 +10,9 @@
 	</insert>
 	
 	<select id="selectRep" resultType="kr.yuhan.domain.ReplyVO">
-		select YUHAN_HOMEWORK_COMMENT_NUMBER as repNo, YUHAN_HOMEWORK_COMMENT_CONTENT as comment, date_format(YUHAN_HOMEWORK_COMMENT_DATE , "%Y-%m-%d") as repDate, PROFESSOR_NAME as professorName
-		from yuhan_homework_comment_table 
-		where YUHAN_HOMEWORK_COMMENT_HOMEWORK_NUMBER = #{hwno}
+		select YUHAN_HOMEWORK_COMMENT_NUMBER as repNo, YUHAN_HOMEWORK_COMMENT_CONTENT as comment, date_format(YUHAN_HOMEWORK_COMMENT_DATE , "%Y-%m-%d") as repDate, proName as professorName
+		from yuhan_homework_comment_table, yuhan_professor
+		where yuhan_homework_comment_table.YUHAN_HOMEWORK_COMMENT_MEMBER_PROFESSOR_MEMBER_NUMBER = yuhan_professor.proNo and YUHAN_HOMEWORK_COMMENT_HOMEWORK_NUMBER = #{hwno}
 		order by YUHAN_HOMEWORK_COMMENT_NUMBER desc, YUHAN_HOMEWORK_COMMENT_DATE desc
 		
 	</select>

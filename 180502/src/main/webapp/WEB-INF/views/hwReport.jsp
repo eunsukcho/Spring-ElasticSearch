@@ -231,7 +231,8 @@ $(document).ready(function(){
 		
 		var professorNo = parseInt('${professorNo}');
 		var subjectID = $("#subjectID").val();
-		
+		var selectClass = $("#selectClass").val();
+		alert("반 : " + selectClass);
 		alert("교수 번호 : " + professorNo);
 		var jsonData;
 		var file;
@@ -242,9 +243,9 @@ $(document).ready(function(){
 			file = 'N';
 		
 		reportVO.homeworkNo = hwno;
-		
 		reportVO.content = content;
-		
+		reportVO.subjectID = subjectID
+		reportVO.selectClass = selectClass;
 		jsonData = JSON.stringify(reportVO);
 		
 		console.log(jsonData);

@@ -24,5 +24,7 @@ public interface YuhanMemberCheckDAO
 	public int loginPro(YuhanMemberVO vo);
 	public YuhanProfessorVO professorNum(String id);
 	/*******************************************************/
-
+	
+	public String idcheck(String memberID);
+	public String idcheckP(String proID);
 }

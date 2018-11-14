@@ -41,7 +41,7 @@ StringBuffer.prototype.toString = function() {
 $(document).ready(function(){
 	var frm = $("form[role = 'form']"); 
 	console.log(frm);
-	
+	firstLoad();
 	var replyPage = 1;
 	
 	$("#paging").on("click", "li a", function(event){
@@ -54,22 +54,9 @@ $(document).ready(function(){
 		firstLoad();
 	}
 	
-	$("#modify").on("click", function(){
-		alert("수정")
-		frm.attr("action", "/hwUpdate");
-		frm.attr("method", "get"); //수정은 get 방식으로한다.
-		frm.submit();
-	});
-	
-	$("#delete").on("click", function(){
-		frm.attr("action", "/hwDelete");
-		frm.attr("method", "get");
-		frm.submit(); //post방식 사용해줄것이기 때문에 메소드는 추가할 필요가없다.
-	});
-	
 	$("#list").on("click", function(){
 		frm.attr("method", "get");
-		frm.attr("action", "/hwList");
+		frm.attr("action", "/hwread");
 		frm.submit();
 	}); 
 	
@@ -77,8 +64,8 @@ $(document).ready(function(){
 		replyVO = new Object();
 		var comment = $("#commentArea").val();
 		var hwno = $('input[name="hwno"]').val();
-		var professorNo = $("#professorNo").val();
-		var proName = $("#proName").val();
+		var professorNo = ${professorNo};
+		var proName = '${proName}';
 		var studentID = '${studentID}';
 		
 		if(comment == null || $.trim(comment) == ""){
@@ -232,16 +219,15 @@ function printPaging(pageMaker){
 </script>
 </head>
 <form role="form" method = "post" action="#">
-	    <input type = "hidden" name = "hwno" value = "${hwno}" id = "hwno">
-	    <input type = "hidden" name = "professorNo" value = "${professorNo }" id = "professorNo">
-	    <input type = "hidden" name = "proName" value = "${proName }" id = "proName">
-	    <input type = "hidden" name = "subjectID" value = "${subjectID }">
-	    <input type = "hidden" name = "_id" value = "${_id}">
 	    <input type = "hidden" name = "page" value = "${cri.page}">
 	    <input type = "hidden" name = "perPageNum" value = "${cri.perPageNum}">
 	    <input type = "hidden" name = "searchType" value = "${cri.searchType }">
 	    <input type = "hidden" name = "keyword" value = "${cri.keyword }">
-	    <input type = "hidden" name = "file" value = "${file}">
+	    <input type = "hidden" name = "_id" value = "${_id}">
+	    <input type = "hidden" name = "hwno" value = "${hwno}" id = "hwno">
+	    <input type = "hidden" name = "subjectID" value = "${subjectID }">
+	    <input type = "hidden" name = "selectClass" value = "${selectClass }" id = "selectClass">
+	    <input type = "hidden" name = "reportNo" id="reportNo">
 </form>
 <!-- Page Container -->
 <div class="w3-content w3-margin-top" style="max-width:1400px;">
@@ -343,8 +329,6 @@ function printPaging(pageMaker){
 		   <div class="w3-container">
 		    <p>
 			    <button class="w3-button w3-teal" id = "list">List</button>
-			   	<button class="w3-button w3-right w3-teal" id="delete">Delete</button>
-			   	<button class="w3-button w3-right w3-teal" id="modify">Update</button>
 		   	</p>
 		   </div>
         </div>

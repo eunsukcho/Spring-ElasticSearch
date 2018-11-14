@@ -3,101 +3,108 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.yuhan.mapper.YuhanMessageMapper">
-	<select id="findUser" resultType="kr.yuhan.domain.YuhanMemberVO">
-		SELECT memberHak, memberName, memberGrade, memberClass
-		FROM yuhanmember
-        ORDER BY memberGrade DESC, memberClass ASC;
-	</select>
-	
-	<select id="selectUser" resultType="kr.yuhan.domain.YuhanMemberVO">
-		SELECT memberHak, memberName, memberGrade, memberClass
-		FROM yuhanmember
+   <select id="findUser" resultType="kr.yuhan.domain.YuhanMemberVO">
+      SELECT memberHak, memberName, memberGrade, memberClass
+      FROM yuhanmember
+        ORDER BY memberGrade DESC, memberClass ASC
+   </select>
+   
+   <select id="selectUser" resultType="kr.yuhan.domain.YuhanMemberVO">
+      SELECT memberID, memberHak, memberName, memberGrade, memberClass
+      FROM yuhanmember
         WHERE memberid = #{memberID}
-	</select>
-	
-	<select id="selectHak" resultType="String">
-		SELECT memberHak
-		FROM yuhanmember
-		WHERE memberid = #{sessionID}
-	</select>
-	
-	<insert id="sendMessage">
-		INSERT INTO YUHAN_MESSAGE_TABLE(YUHAN_MESSAGE_FROM_MEMBER_NUMBER, YUHAN_MESSAGE_TO_MEMBER_NUMBER, YUHAN_MESSAGE_SUBJECT, YUHAN_MESSAGE_CONTENT, YUHAN_MESSAGE_SEND_DATE, YUHAN_MESSAGE_READ_STATUS)
-		VALUES (#{YUHAN_MESSAGE_FROM_MEMBER_NUMBER}, #{YUHAN_MESSAGE_TO_MEMBER_NUMBER}, #{YUHAN_MESSAGE_SUBJECT}, #{YUHAN_MESSAGE_CONTENT}, NOW(), 'N')
-	</insert>
-	
-	<select id="selectMessage" resultType="kr.yuhan.domain.YuhanMessageVO">
-		<!-- SELECT YUHAN_MESSAGE_NUMBER, YUHAN_MESSAGE_FROM_MEMBER_NUMBER, YUHAN_MESSAGE_TO_MEMBER_NUMBER, YUHAN_MESSAGE_SUBJECT, YUHAN_MESSAGE_CONTENT, YUHAN_MESSAGE_SEND_DATE, YUHAN_MESSAGE_READ_STATUS, YUHAN_MESSAGE_READ_DATE, YUHAN_MESSAGE_STATUS
-		FROM YUHAN_MESSAGE_TABLE
-		WHERE YUHAN_MESSAGE_TO_MEMBER_NUMBER = #{memberHak}
-		ORDER BY YUHAN_MESSAGE_NUMBER DESC; -->
-		
-		<![CDATA[
-  		SELECT *
-  		FROM YUHAN_MESSAGE_TABLE
-  		WHERE YUHAN_MESSAGE_NUMBER > 0
-  		AND YUHAN_MESSAGE_TO_MEMBER_NUMBER = #{memberHak}
-  		ORDER BY YUHAN_MESSAGE_NUMBER DESC, YUHAN_MESSAGE_SEND_DATE DESC
-  		LIMIT #{pageStart},#{perPageNum}
-  		]]>
-	</select>
-	
-	<select id="selectMessageOne" resultType="kr.yuhan.domain.YuhanMessageVO">
-		SELECT *
-		FROM YUHAN_MESSAGE_TABLE
-		WHERE YUHAN_MESSAGE_NUMBER = #{YUHAN_MESSAGE_NUMBER}
-	</select>
-	
-	<select id="selectSendMessage" resultType="kr.yuhan.domain.YuhanMessageVO">
-	
-		<![CDATA[
-  		SELECT *
-  		FROM YUHAN_MESSAGE_TABLE
-  		WHERE YUHAN_MESSAGE_NUMBER > 0
-  		AND YUHAN_MESSAGE_FROM_MEMBER_NUMBER = #{YUHAN_MESSAGE_FROM_MEMBER_NUMBER}
-  		ORDER BY YUHAN_MESSAGE_NUMBER DESC, YUHAN_MESSAGE_SEND_DATE DESC
-  		LIMIT #{pageStart},#{perPageNum}
-  		]]>
-	</select>
-	
-	<update id="updateReadStatus">
-		UPDATE YUHAN_MESSAGE_TABLE
-		SET YUHAN_MESSAGE_READ_STATUS = 'Y', YUHAN_MESSAGE_READ_DATE = NOW()
-		WHERE YUHAN_MESSAGE_NUMBER = #{YUHAN_MESSAGE_NUMBER}
-	</update>
-	
-	<select id="selectNoReadMessageCount" resultType="String">
-		SELECT COUNT(*) 
-		FROM YUHAN_MESSAGE_TABLE
-		WHERE YUHAN_MESSAGE_TO_MEMBER_NUMBER = (SELECT memberHak
-											    FROM yuhanmember
-											    WHERE memberID = #{memberID})
-		AND YUHAN_MESSAGE_READ_STATUS = 'N'
-	</select>
-	
-	<select id="listPage" resultType="kr.yuhan.domain.YuhanMessageVO">
-	<![CDATA[
-		SELECT *
-		FROM YUHAN_MESSAGE_TABLE
-		WHERE YUHAN_MESSAGE_NUMBER > 0
-		ORDER BY YUHAN_MESSAGE_NUMBER DESC, YUHAN_MESSAGE_SEND_DATE DESC
-		LIMIT #{page}, 10
-	]]>
-	</select>
-	
-	<select id ="listCriteria" resultType = "kr.yuhan.domain.YuhanMessageVO">
-  	<![CDATA[
-  		SELECT *
-  		FROM YUHAN_MESSAGE_TABLE
-  		WHERE YUHAN_MESSAGE_NUMBER > 0
-  		ORDER BY YUHAN_MESSAGE_NUMBER DESC, YUHAN_MESSAGE_SEND_DATE DESC
-  		LIMIT #{pageStart},#{perPageNum}
-  	]]>
-  	</select>
-	
-	<select id="totalMessageCount" resultType = "int">
-  		SELECT COUNT(*)
-		FROM YUHAN_MESSAGE_TABLE
-		WHERE YUHAN_MESSAGE_TO_MEMBER_NUMBER = #{memberHak}
-  	</select>
+   </select>
+   
+   <select id="selectHak" resultType="String">
+      SELECT memberHak
+      FROM yuhanmember
+      WHERE memberid = #{sessionID}
+   </select>
+   
+   <insert id="sendMessage">
+      INSERT INTO yuhan_message_table(YUHAN_MESSAGE_FROM_MEMBER_NUMBER, YUHAN_MESSAGE_TO_MEMBER_NUMBER, YUHAN_MESSAGE_SUBJECT, YUHAN_MESSAGE_CONTENT, YUHAN_MESSAGE_SEND_DATE, YUHAN_MESSAGE_READ_STATUS)
+      VALUES (#{YUHAN_MESSAGE_FROM_MEMBER_NUMBER}, #{YUHAN_MESSAGE_TO_MEMBER_NUMBER}, #{YUHAN_MESSAGE_SUBJECT}, #{YUHAN_MESSAGE_CONTENT}, NOW(), 'N')
+   </insert>
+   
+   <select id="selectMessage" resultType="kr.yuhan.domain.YuhanMessageVO">
+      <!-- SELECT YUHAN_MESSAGE_NUMBER, YUHAN_MESSAGE_FROM_MEMBER_NUMBER, YUHAN_MESSAGE_TO_MEMBER_NUMBER, YUHAN_MESSAGE_SUBJECT, YUHAN_MESSAGE_CONTENT, YUHAN_MESSAGE_SEND_DATE, YUHAN_MESSAGE_READ_STATUS, YUHAN_MESSAGE_READ_DATE, YUHAN_MESSAGE_STATUS
+      FROM YUHAN_MESSAGE_TABLE
+      WHERE YUHAN_MESSAGE_TO_MEMBER_NUMBER = #{memberHak}
+      ORDER BY YUHAN_MESSAGE_NUMBER DESC; -->
+      
+      <![CDATA[
+        SELECT *
+        FROM yuhan_message_table
+        WHERE YUHAN_MESSAGE_NUMBER > 0
+        AND YUHAN_MESSAGE_STATUS = 'I'
+        AND YUHAN_MESSAGE_TO_MEMBER_NUMBER = #{memberHak}
+        ORDER BY YUHAN_MESSAGE_NUMBER DESC, YUHAN_MESSAGE_SEND_DATE DESC
+        LIMIT #{pageStart},#{perPageNum}
+        ]]>
+   </select>
+   
+   <select id="selectMessageOne" resultType="kr.yuhan.domain.YuhanMessageVO">
+      SELECT *
+      FROM yuhan_message_table
+      WHERE YUHAN_MESSAGE_NUMBER = #{YUHAN_MESSAGE_NUMBER}
+   </select>
+   
+   <select id="selectSendMessage" resultType="kr.yuhan.domain.YuhanMessageVO">
+   
+      <![CDATA[
+        SELECT *
+        FROM yuhan_message_table
+        WHERE YUHAN_MESSAGE_NUMBER > 0
+        AND YUHAN_MESSAGE_FROM_MEMBER_NUMBER = #{YUHAN_MESSAGE_FROM_MEMBER_NUMBER}
+        ORDER BY YUHAN_MESSAGE_NUMBER DESC, YUHAN_MESSAGE_SEND_DATE DESC
+        LIMIT #{pageStart},#{perPageNum}
+        ]]>
+   </select>
+   
+   <update id="updateReadStatus">
+      UPDATE YUHAN_MESSAGE_TABLE
+      SET YUHAN_MESSAGE_READ_STATUS = 'Y', YUHAN_MESSAGE_READ_DATE = NOW()
+      WHERE YUHAN_MESSAGE_NUMBER = #{YUHAN_MESSAGE_NUMBER}
+   </update>
+   
+   <select id="selectNoReadMessageCount" resultType="String">
+      SELECT COUNT(*) 
+      FROM yuhan_message_table
+      WHERE YUHAN_MESSAGE_TO_MEMBER_NUMBER = (SELECT memberHak
+                                     FROM yuhanmember
+                                     WHERE memberID = #{memberID})
+      AND YUHAN_MESSAGE_READ_STATUS = 'N'
+   </select>
+   
+   <select id="listPage" resultType="kr.yuhan.domain.YuhanMessageVO">
+   <![CDATA[
+      SELECT *
+      FROM yuhan_message_table
+      WHERE YUHAN_MESSAGE_NUMBER > 0
+      ORDER BY YUHAN_MESSAGE_NUMBER DESC, YUHAN_MESSAGE_SEND_DATE DESC
+      LIMIT #{page}, 10
+   ]]>
+   </select>
+   
+   <select id ="listCriteria" resultType = "kr.yuhan.domain.YuhanMessageVO">
+     <![CDATA[
+        SELECT *
+        FROM yuhan_message_table
+        WHERE YUHAN_MESSAGE_NUMBER > 0
+        ORDER BY YUHAN_MESSAGE_NUMBER DESC, YUHAN_MESSAGE_SEND_DATE DESC
+        LIMIT #{pageStart},#{perPageNum}
+     ]]>
+     </select>
+   
+   <select id="totalMessageCount" resultType = "int">
+        SELECT COUNT(*)
+      FROM yuhan_message_table
+      WHERE YUHAN_MESSAGE_TO_MEMBER_NUMBER = #{memberHak}
+     </select>
+     
+     <update id="updateDeleteMessageStatus">
+      UPDATE yuhan_message_table
+      SET YUHAN_MESSAGE_STATUS = 'C'
+      WHERE YUHAN_MESSAGE_NUMBER = #{YUHAN_MESSAGE_NUMBER}
+   </update>
 </mapper>

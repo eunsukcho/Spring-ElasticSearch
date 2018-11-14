@@ -65,27 +65,36 @@
 						<th>title</th>
 						<th>regdate</th>
 					</tr>
-					<c:forEach begin="1" end="${elastic.size()-1 }" var="idx"> 
-					<tr>
-						<td>${((totalCount-idx)-(maker.cri.page-1)*10)+1 }</td>
-						<td><a href="/hwread${maker.makeSearch(maker.cri.page) }&_id=${elastic.get(idx-1)._id }&hwno=${hw.get(idx-1).hwno}&subjectID=${subjectID}&selectClass=${selectClass }">${elastic.get(idx-1)._source.title}</a></td>
-						<td>${elastic.get(idx-1)._source.date}</td>
-					</tr>
-					</c:forEach>
+					<c:set var = "totalCount" value="${totalCount}" />
+			    	<c:choose>
+			    		<c:when test="${totalCount eq 0 }">
+			    			<div>글이 없습니다.</div>
+			    		</c:when>
+			    		<c:otherwise>
+			    			<c:forEach begin="1" end="${elastic.size()-1 }" var="idx"> 
+							<tr>
+								<td>${((totalCount-idx)-(maker.cri.page-1)*10)+1 }</td>
+								<td><a href="/hwread${maker.makeSearch(maker.cri.page) }&_id=${elastic.get(idx-1)._id }&hwno=${hw.get(idx-1).hwno}&subjectID=${subjectID}&selectClass=${selectClass }">${elastic.get(idx-1)._source.title}</a></td>
+								<td>${elastic.get(idx-1)._source.date}</td>
+							</tr>
+							</c:forEach>
+			    		</c:otherwise>
+			    	</c:choose>
+					
 				  </table>  
 				  </div>
 				  <div class="w3-main" style="margin:auto">
 					  <div class="w3-bar">
 					  <c:if test="${maker.prev}">
-						<a href="hwList${maker.makeSearch(maker.startPage-1) }&subjectID=${subjectID}" class="w3-button">Previous</a>
+						<a href="hwList${maker.makeSearch(maker.startPage-1) }&subjectID=${subjectID}&selectClass=${selectClass}" class="w3-button">Previous</a>
 					  </c:if>
 					  <c:forEach begin = "${maker.startPage }" end = "${maker.endPage }" var = "i">
 						<li <c:out value = "${maker.cri.page==i?'class=active':''}"/>>
-							<a href = "hwList${maker.makeSearch(i)}&subjectID=${subjectID}" class="w3-button pageingBtn">${i }</a>
+							<a href = "hwList${maker.makeSearch(i)}&subjectID=${subjectID}&selectClass=${selectClass}" class="w3-button pageingBtn">${i }</a>
 						</li>
 					  </c:forEach>
 					  <c:if test="${maker.next && maker.endPage > 0}">
-						<a href="hwList${maker.makeSearch(maker.endPage+1)}&subjectID=${subjectID}" class="w3-button">Next</a>
+						<a href="hwList${maker.makeSearch(maker.endPage+1)}&subjectID=${subjectID}&selectClass=${selectClass}" class="w3-button">Next</a>
 					  </c:if>
 					  </div>
 				  </div>
@@ -99,6 +108,10 @@
 <script type="text/javascript">
 $(document).ready(function(){ 
 	$('#searchBtn').click(function() {
+		if($("select option:selected").val() == 'null'){
+			alert("검색 카테로리를 설정해주세요");
+			return;
+		}
 		alert("안녕");
 		self.location = "hwList?page=1&subjectID="
 						+'${subjectID}'

@@ -58,7 +58,7 @@ if(loginCheck == "Fail")
 			</p>
 			</form>
 			<p>
-				<span class="w3-right w3-padding w3-hide-small"><a href="#">Sign up here</a></span>
+				<span class="w3-right w3-padding w3-hide-small"><a href="joinType">Sign up here</a></span>
 			</p>
 			</div>
 	</div>

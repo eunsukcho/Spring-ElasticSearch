@@ -143,6 +143,7 @@ public class HomeworkViewController {
 		model.addAttribute("elastic", searchList.get(0).get_source());
 		model.addAttribute("studentID", session.getAttribute("sessionID")); 
 		model.addAttribute("selectClass", (String) session.getAttribute("memberClass"));
+		
 		System.out.println("리포트 : " + session.getAttribute("sessionID"));
 		
 		String elstart = searchList.get(0).get_source().getStartdate();
@@ -171,6 +172,7 @@ public class HomeworkViewController {
 		System.out.println("교수이름 : " + list.get(0).getProName());
 
 		model.addAttribute("professorNo", list.get(0).getYUHAN_SUBJECT_PRO()); 
+		model.addAttribute("proName", list.get(0).getProName());
 		model.addAttribute("_id", request.getParameter("_id"));
 		model.addAttribute("hwno", request.getParameter("hwno"));
 		model.addAttribute("subjectID", subjectID);
@@ -181,6 +183,7 @@ public class HomeworkViewController {
 		model.addAttribute("elastic", searchList.get(0).get_source());
 		model.addAttribute("studentID", vo.getStudentID()); 
 		model.addAttribute("reportNo", no);
+		model.addAttribute("selectClass", request.getParameter("selectClass"));
 		
 		model.addAttribute("reportInfo", vo);
 		
@@ -303,6 +306,7 @@ public class HomeworkViewController {
 		model.addAttribute("selectClass", request.getParameter("selectClass"));
 		model.addAttribute("subjectID", subjectID);
 		model.addAttribute("professorNo", list.get(0).getYUHAN_SUBJECT_PRO());
+		model.addAttribute("proName", list.get(0).getProName());
 		model.addAttribute("page", cri.getPage());
 		model.addAttribute("perPageNum", cri.getPerPageNum());
 		model.addAttribute("searchType", cri.getSearchType());

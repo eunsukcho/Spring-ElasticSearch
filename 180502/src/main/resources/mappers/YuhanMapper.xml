@@ -23,14 +23,14 @@
 	
 	<insert id="insertMember">
 		INSERT INTO yuhanmember(memberHak, memberID, memberPW, memberName, memberGrade, memberClass)
-		VALUES (#{memberHak}, #{memberID}, #{memberPW}, #{memberName}, #{memberGrade}, #{memberClass})
+		VALUES (#{memberHak}, #{memberID}, HEX(AES_ENCRYPT(#{memberPW}, SHA2('zinzo',512))), #{memberName}, #{memberGrade}, #{memberClass})
 	</insert>
 	
 	<select id="selectIDPW" resultType="int">
 		SELECT COUNT(*)
 		FROM yuhanmember
 		WHERE memberID = #{memberID} 
-		AND memberPW = #{memberPW}
+		AND memberPW = HEX(AES_ENCRYPT(#{memberPW}, SHA2('zinzo',512)))
 	</select>
 	
 	<select id="select_Member" resultType="kr.yuhan.domain.YuhanMemberVO">
@@ -41,7 +41,7 @@
 	
 	<insert id="insertPro">
 		INSERT INTO yuhan_professor(proNo, proID, ProPW, proName, proEmail)
-		VALUES (#{proNo}, #{proID}, #{ProPW}, #{proName}, #{proEmail} )
+		VALUES (#{proNo}, #{proID}, HEX(AES_ENCRYPT(#{ProPW}, SHA2('zinzo',512))), #{proName}, #{proEmail} )
 	</insert>
 	
 	<select id="professor_check" resultType="kr.yuhan.domain.YuhanProfessorVO">
@@ -59,11 +59,24 @@
 		SELECT COUNT(*)
 		FROM yuhan_professor
 		WHERE proID = #{memberID}
-		AND proPW = #{memberPW}
+		AND proPW = HEX(AES_ENCRYPT(#{memberPW}, SHA2('zinzo',512)))
 		AND proRating = 'p'
 	</select>
 	
 	<select id="professorNum" resultType="kr.yuhan.domain.YuhanProfessorVO">
 		select proNo, proName from yuhan_professor WHERE proID = #{id}
+	</select>
+	
+	
+	<select id="idcheck" resultType="String">
+      SELECT COUNT(*) FROM yuhanmember
+      WHERE
+          memberID = #{memberID}
+	</select>
+	
+	<select id="idcheckP" resultType="String">
+      SELECT COUNT(*) FROM yuhan_professor
+      WHERE
+          proID = #{proID}
 	</select>
 </mapper>

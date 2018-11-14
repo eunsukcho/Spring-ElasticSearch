@@ -78,4 +78,16 @@ public class YuhanMemberCheckServiceImpl implements YuhanMemberCheckService {
 	public YuhanProfessorVO professorNum(String id) {
 		return dao.professorNum(id);
 	}
+
+	@Override
+	public String idcheck(String memberID) {
+		// TODO Auto-generated method stub
+		return dao.idcheck(memberID);
+	}
+
+	@Override
+	public String idcheckP(String proID) {
+		// TODO Auto-generated method stub
+		return dao.idcheckP(proID);
+	}
 }

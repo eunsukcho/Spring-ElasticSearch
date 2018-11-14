@@ -36,6 +36,11 @@ public class YuhanReportServiceImpl implements YuhanReportService{
 	}
 
 	@Override
+	public List<ReportVO> reportStudentCheckNO(int subjectID, String selectClass) {
+		return dao.reportStudentCheckNO(subjectID, selectClass);
+	}
+	
+	@Override
 	public ReportVO reportDetailView(int no) {
 		return dao.reportDetailView(no);
 	}
@@ -54,4 +59,5 @@ public class YuhanReportServiceImpl implements YuhanReportService{
 	public void reportDelete(int no) {
 		dao.reportDelete(no);
 	}
+
 }

@@ -4,8 +4,8 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.yuhan.mapper.YuhanReportMapper">
 	<insert id="insertReport">
-		insert into yuhan_student_report(homeworkNo, studentID, content)
-		values(#{homeworkNo}, #{studentID}, #{content})
+		insert into yuhan_student_report(homeworkNo, studentID, content, subjectID, selectClass)
+		values(#{homeworkNo}, #{studentID}, #{content}, #{subjectID}, #{selectClass})
 	</insert>
 	
 	<select id="selectReportInfo" resultType="kr.yuhan.domain.ReportVO">
@@ -20,8 +20,17 @@
 	</select>
 	
 	<select id="reportStudentCheck" resultType="kr.yuhan.domain.ReportVO">
-		select * from yuhan_student_report
-		where homeworkNo = #{hwno}
+		select no, member.memberName as name, member.memberHak as hak, date_format(date , "%Y-%m-%d %H:%i:%s") as reportDate 
+		from yuhan_student_report as report, yuhanmember as member
+		where homeworkNo = #{hwno} and report.studentID = member.memberID
+	</select>
+	
+	<select id="reportStudentCheckNO" resultType="kr.yuhan.domain.ReportVO">
+		select yuhan_taking_class.memberID as studentID, yuhanmember.memberName as name, yuhanmember.memberHak as hak
+		from yuhan_taking_class, yuhanmember
+		where yuhan_taking_class.memberID = yuhanmember.memberID 
+		and yuhan_taking_class.subjectNO = #{subjectID} 
+		and yuhanmember.memberClass = #{selectClass}
 	</select>
 	
 	<select id="reportDetailView" resultType="kr.yuhan.domain.ReportVO">

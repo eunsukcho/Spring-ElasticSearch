@@ -31,7 +31,7 @@
 		 	<th colspan="2"><b>전체 보내기</b></th>
 		 </tr>
 			<c:forEach items="${userList }" varStatus="cnt" var="userList">
-				<tr>
+				<%-- <tr>
 					<td colspan="3"><b class="text-center">
 						<c:set var="name" value="홍길동" />
 					<c:choose>
@@ -58,7 +58,7 @@
 					    </c:otherwise>
 					</c:choose>
 					::</b>
-					</td>
+					</td> --%>
 				</tr>
 				<tr>
 					<td><input type="checkbox" id="checkBox" name="checkBox" onclick="check(${cnt.count}, this)"></td>

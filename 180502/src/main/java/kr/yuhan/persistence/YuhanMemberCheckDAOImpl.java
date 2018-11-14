@@ -90,4 +90,16 @@ public class YuhanMemberCheckDAOImpl implements YuhanMemberCheckDAO
 	public YuhanProfessorVO professorNum(String id) {
 		return sqlSession.selectOne(NAMESPACE + ".professorNum", id);
 	}
+
+	@Override
+	public String idcheck(String memberID) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(NAMESPACE + ".idcheck", memberID);
+	}
+
+	@Override
+	public String idcheckP(String proID) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(NAMESPACE + ".idcheckP", proID);
+	}
 }

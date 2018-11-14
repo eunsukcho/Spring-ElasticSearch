@@ -107,4 +107,9 @@ public class YuhanMessageDAOImpl implements YuhanMessageDAO
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne(NAMESPACE + ".selectUser", memberID);
 	}
+
+	@Override
+	public void updateDeleteMessageStatus(String messageNum) {
+		sqlSession.update(NAMESPACE + ".updateDeleteMessageStatus", messageNum);
+	}
 }

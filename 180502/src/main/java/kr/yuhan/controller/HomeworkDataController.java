@@ -190,6 +190,27 @@ public class HomeworkDataController {
 		return entity;
 	}
 	
+	@RequestMapping(value="/reportStudentCheckNo/{subjectID}/{selectClass}" , method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+	public ResponseEntity<?> reportStudentCheckNo(@PathVariable("subjectID") String subjectID, @PathVariable("selectClass") String selectClass){
+		
+		ResponseEntity<?> entity;
+		Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
+
+		System.out.println("제출안한 학생 정보");
+		
+		int isubjectID = Integer.parseInt(subjectID);
+		
+		try {
+			System.out.println("===================================");
+			System.out.println(gson.toJson(reportService.reportStudentCheckNO(isubjectID, selectClass)));
+			entity = new ResponseEntity<Object>(gson.toJson(reportService.reportStudentCheckNO(isubjectID, selectClass)), HttpStatus.OK);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
+	
 	@RequestMapping(value="/updateReport/{no}" , method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public ResponseEntity<?> reportStudentUpdate(@PathVariable("no") int no, @RequestBody ReportVO vo){
 		

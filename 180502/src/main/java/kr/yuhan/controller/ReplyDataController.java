@@ -36,7 +36,7 @@ public class ReplyDataController {
 	public ResponseEntity<?> addRep(@RequestBody ReplyVO repVo, @ModelAttribute("cri") ReplyCriteria cri) {
 		ResponseEntity<?> entity;
 		Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
-		
+		System.out.println("addRep : " + repVo.getProfessorNO());
 		cri.setHwno(repVo.getHwno());
 		service.insertRep(repVo);
 		
@@ -76,7 +76,6 @@ public class ReplyDataController {
 		
 		try {
 			entity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-			//entity = new ResponseEntity<Object>(gson.toJson(service.selectRepPage(repVo)), HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);

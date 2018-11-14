@@ -27,11 +27,16 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.CookieGenerator;
 
@@ -39,6 +44,7 @@ import kr.yuhan.domain.YuhanMemberVO;
 import kr.yuhan.domain.YuhanNoticeVO;
 import kr.yuhan.domain.YuhanProfessorVO;
 import kr.yuhan.service.YuhanMemberCheckService;
+
 
 @Controller
 public class YuhanMainController 
@@ -117,197 +123,199 @@ public class YuhanMainController
 	}
 	
 	@RequestMapping(value = "/login", method=RequestMethod.POST)
-	public String headerPost(@RequestParam("id") String id, @RequestParam("password") String password, Model model, HttpServletResponse cookieResponse, YuhanMemberVO vo, HttpSession session)
-	{
-		vo.setMemberID(id);
-		vo.setMemberPW(password);
-		String professorNum = "";
-		String proName = "";
-		
-		//교수로그인처리
-		if(service.loginPro(vo) == 1){
-			professorNum =  String.valueOf(service.professorNum(id).getProNo());
-			proName = service.professorNum(id).getProName();
-			System.out.println("Main Num : " + professorNum);
-			System.out.println("Main Name : " + proName);
-			session.setAttribute("sessionID", id);
-			session.setAttribute("Rate", "P");
-			session.setAttribute("professorNum", service.professorNum(id).getProNo());
-			session.setAttribute("proName", service.professorNum(id).getProName());
+	   public String headerPost(@RequestParam("id") String id, @RequestParam("password") String password, Model model, HttpServletResponse cookieResponse, YuhanMemberVO vo, HttpSession session) 
+	   {
+	      vo.setMemberID(id);
+	        vo.setMemberPW(password);
+	        String professorNum = "";
+	      String proName = "";
 
-			return "/main";
-		}
+	      if(service.selectIDPW(vo) == 0)
+	      {
+	         System.out.println("id : " + id);
+	         System.out.println("pw : " + password);
+	         
+	         model.addAttribute("IDPWCheck", "No");
+	         
+	         //교수로그인처리
+	         if(service.loginPro(vo) == 1)
+	         {
+	            professorNum =  String.valueOf(service.professorNum(id).getProNo());
+	            proName = service.professorNum(id).getProName();
+	            System.out.println("Main Num : " + professorNum);
+	            System.out.println("Main Name : " + proName);
+	            session.setAttribute("sessionID", id);
+	            session.setAttribute("Rate", "P");
+	            session.setAttribute("professorNum", service.professorNum(id).getProNo());
+	            session.setAttribute("proName", service.professorNum(id).getProName());
+	            
+	            
+	            return "/main";
+	         }
+	         
+	         if(service.selectMember(id) == null)
+	         {
+	            Map<String, String> loginTryCookie = getDivCookiee();
+	            Map<String, String> loginCookie = new HashMap<String, String>();
 
-		if(service.selectIDPW(vo) == 0)
-		{
-			System.out.println("id : " + id);
-			System.out.println("pw : " + password);
-			
-			model.addAttribute("IDPWCheck", "No");
-			
-			if(service.selectMember(id) == null)
-			{
-				Map<String, String> loginTryCookie = getDivCookiee();
-				Map<String, String> loginCookie = new HashMap<String, String>();
+	            String userAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
+	            
+	            Map<String, String> data = new HashMap<>();
+	            data.put("userId", id);
+	            data.put("password", password);
+	            
+	            TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() 
+	            {
+	               @Override
+	               public X509Certificate[] getAcceptedIssuers() 
+	               {
+	                  // TODO Auto-generated method stub
+	                  return new X509Certificate[0];
+	               }
+	               
+	               @Override
+	               public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException 
+	               {
+	                  // TODO Auto-generated method stub
+	                  
+	               }
+	               
+	               @Override
+	               public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException 
+	               {
+	                  // TODO Auto-generated method stub
+	                  
+	               }
+	            }};
 
-				String userAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-				
-				Map<String, String> data = new HashMap<>();
-				data.put("userId", id);
-				data.put("password", password);
-				
-				TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() 
-				{
-					@Override
-					public X509Certificate[] getAcceptedIssuers() 
-					{
-						// TODO Auto-generated method stub
-						return new X509Certificate[0];
-					}
-					
-					@Override
-					public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException 
-					{
-						// TODO Auto-generated method stub
-						
-					}
-					
-					@Override
-					public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException 
-					{
-						// TODO Auto-generated method stub
-						
-					}
-				}};
+	              SSLContext sc;
+	            try 
+	            {
+	               sc = SSLContext.getInstance("TLS");
+	               sc.init(null, trustAllCerts, new SecureRandom());
+	               
+	               HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+	            } 
+	            catch (NoSuchAlgorithmException e1) 
+	            {
+	               // TODO Auto-generated catch block
+	               e1.printStackTrace();
+	            }
+	            catch (KeyManagementException e1) 
+	            {
+	               // TODO Auto-generated catch block
+	               e1.printStackTrace();
+	            }
+	            
+	            Connection.Response response;
+	            
+	            try 
+	            {
+	               response = Jsoup.connect("https://portal.yuhan.ac.kr/user/loginProcess.face")
+	                       .userAgent(userAgent)
+	                       .timeout(3000)
+	                       .header("Origin", "https://portal.yuhan.ac.kr")
+	                       .header("Referer", "https://portal.yuhan.ac.kr/user/login.face")
+	                       .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
+	                       .header("Content-Type", "application/x-www-form-urlencoded")
+	                       .header("Accept-Encoding", "gzip, deflate, br")
+	                       .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
+	                       .cookies(loginTryCookie)
+	                       .data(data)
+	                       .method(Connection.Method.POST)
+	                       .execute();
+	               
+	               loginCookie = response.cookies();
+	               
+	               System.out.println("Login Check " + loginCookie);
+	               
+	               if(loginCookie.get("EnviewSessionId") == null)
+	               {
+	                  System.out.println("濡쒓렇�씤 ��由�");
+	                  
+	                  model.addAttribute("loginCheck", "Fail");
+	                  
+	                  return "/header";
+	               }
+	               else
+	               {
+	                  System.out.println("濡쒓렇�씤 �꽦怨�");
+	                  model.addAttribute("id", id);
+	                  
+	                  /* ================= 濡쒓렇�씤 �꽦怨듯썑 荑좏궎 �깮�꽦 ==================== */
+	                  Iterator<String>iter = loginCookie.keySet().iterator();
+	                  while(iter.hasNext())
+	                  {
+	                     String keys = (String)iter.next();
+	                     String keyVal = loginCookie.get(keys).toString();
+	                     switch (keys) 
+	                     {
+	                        case "EnviewSessionId":
+	                           CookieGenerator EnviewSessionId = new CookieGenerator();
+	                           EnviewSessionId.setCookieName("EnviewSessionId");
+	                           EnviewSessionId.addCookie(cookieResponse, keyVal);
+	                           //System.out.println("EnviewSessionId Cookie OK");
+	                           break;
+	                        case "EnviewLangKnd":
+	                           CookieGenerator EnviewLangKnd = new CookieGenerator();
+	                           EnviewLangKnd.setCookieName("EnviewLangKnd");
+	                           EnviewLangKnd.addCookie(cookieResponse, keyVal);
+	                           //System.out.println("EnviewLangKnd Cookie OK");
+	                           break;
+	                        case "JSESSIONID":
+	                           CookieGenerator JSESSIONID = new CookieGenerator();
+	                           JSESSIONID.setCookieName("JSESSIONID");
+	                           JSESSIONID.addCookie(cookieResponse, keyVal);
+	                           //System.out.println("JSESSIONID Cookie OK");
+	                           break;
+	                        case "ENPASSTGC":
+	                           CookieGenerator ENPASSTGC = new CookieGenerator();
+	                           ENPASSTGC.setCookieName("ENPASSTGC");
+	                           ENPASSTGC.addCookie(cookieResponse, keyVal);
+	                           //System.out.println("ENPASSTGC Cookie OK");
+	                           break;
+	                        default:
+	                           break;
+	                     }
+	                     System.out.println("�궎媛� = " + keys);
+	                     System.out.println("諛몃쪟媛� = " + loginCookie.get(keys));
+	                  }
+	                  
+	                  /* ============================================================= */
+	                  model.addAttribute("loginCheck", "Success");
 
-		        SSLContext sc;
-				try 
-				{
-					sc = SSLContext.getInstance("TLS");
-					sc.init(null, trustAllCerts, new SecureRandom());
-					
-					HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-				} 
-				catch (NoSuchAlgorithmException e1) 
-				{
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				catch (KeyManagementException e1) 
-				{
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-				Connection.Response response;
-				
-				try 
-				{
-					response = Jsoup.connect("https://portal.yuhan.ac.kr/user/loginProcess.face")
-					        .userAgent(userAgent)
-					        .timeout(3000)
-					        .header("Origin", "https://portal.yuhan.ac.kr")
-					        .header("Referer", "https://portal.yuhan.ac.kr/user/login.face")
-					        .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
-					        .header("Content-Type", "application/x-www-form-urlencoded")
-					        .header("Accept-Encoding", "gzip, deflate, br")
-					        .header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
-					        .cookies(loginTryCookie)
-					        .data(data)
-					        .method(Connection.Method.POST)
-					        .execute();
-					
-					loginCookie = response.cookies();
-					
-					System.out.println("Login Check " + loginCookie);
-					
-					if(loginCookie.get("EnviewSessionId") == null)
-					{
-						System.out.println("로그인 틀림");
-						
-						model.addAttribute("loginCheck", "Fail");
-						
-						return "/header";
-					}
-					else
-					{
-						System.out.println("로그인 성공");
-						model.addAttribute("id", id);
-						
-						/* ================= 로그인 성공후 쿠키 생성 ==================== */
-						Iterator<String>iter = loginCookie.keySet().iterator();
-						while(iter.hasNext())
-						{
-							String keys = (String)iter.next();
-							String keyVal = loginCookie.get(keys).toString();
-							switch (keys) 
-							{
-								case "EnviewSessionId":
-									CookieGenerator EnviewSessionId = new CookieGenerator();
-									EnviewSessionId.setCookieName("EnviewSessionId");
-									EnviewSessionId.addCookie(cookieResponse, keyVal);
-									//System.out.println("EnviewSessionId Cookie OK");
-									break;
-								case "EnviewLangKnd":
-									CookieGenerator EnviewLangKnd = new CookieGenerator();
-									EnviewLangKnd.setCookieName("EnviewLangKnd");
-									EnviewLangKnd.addCookie(cookieResponse, keyVal);
-									//System.out.println("EnviewLangKnd Cookie OK");
-									break;
-								case "JSESSIONID":
-									CookieGenerator JSESSIONID = new CookieGenerator();
-									JSESSIONID.setCookieName("JSESSIONID");
-									JSESSIONID.addCookie(cookieResponse, keyVal);
-									//System.out.println("JSESSIONID Cookie OK");
-									break;
-								case "ENPASSTGC":
-									CookieGenerator ENPASSTGC = new CookieGenerator();
-									ENPASSTGC.setCookieName("ENPASSTGC");
-									ENPASSTGC.addCookie(cookieResponse, keyVal);
-									//System.out.println("ENPASSTGC Cookie OK");
-									break;
-								default:
-									break;
-							}
-							System.out.println("키값 = " + keys);
-							System.out.println("밸류값 = " + loginCookie.get(keys));
-						}
-						
-						/* ============================================================= */
-						model.addAttribute("loginCheck", "Success");
-
-						if(service.selectMember(id) != null)
-						{
-							model.addAttribute("joinCheck", "joinOk");
-							
-							vo.setMemberID(id);
-							vo.setMemberPW(password);
-						}
-						else
-						{
-							model.addAttribute("joinCheck", "joinNo");
-						}
-					
-					}
-				} 
-				catch (IOException e) 
-				{
-					
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		else
-		{
-			model.addAttribute("IDPWCheck", "Ok");
-			
-			System.out.println("id: " + vo.getMemberID());
-			session.setAttribute("sessionID", vo.getMemberID());
-			session.setAttribute("sessionHak", vo.getMemberHak());
-		}
-			return "/login";
-	}
+	                  if(service.selectMember(id) != null)
+	                  {
+	                     model.addAttribute("joinCheck", "joinOk");
+	                     
+	                     vo.setMemberID(id);
+	                     vo.setMemberPW(password);
+	                  }
+	                  else
+	                  {
+	                     model.addAttribute("joinCheck", "joinNo");
+	                  }
+	               
+	               }
+	            } 
+	            catch (IOException e) 
+	            {
+	               
+	               // TODO Auto-generated catch block
+	               e.printStackTrace();
+	            }
+	         }
+	      }
+	      else
+	      {
+	         model.addAttribute("IDPWCheck", "Ok");
+	         
+	         System.out.println("id: " + vo.getMemberID());
+	         session.setAttribute("sessionID", vo.getMemberID());
+	         session.setAttribute("sessionHak", vo.getMemberHak());
+	      }
+	         return "/login";
+	   }
 	
 	@RequestMapping(value = "/main", method=RequestMethod.GET)
 	public void main(HttpServletRequest request, Model model, HttpSession session)
@@ -376,9 +384,9 @@ public class YuhanMainController
 			list.add(vo);
 			
 			
-			System.out.println("title : " + list.get(i).getSubject());
-			System.out.println("url : " + urlSub[1]);
-			System.out.println("date : " + list.get(i).getDate());
+//			System.out.println("title : " + list.get(i).getSubject());
+//			System.out.println("url : " + urlSub[1]);
+//			System.out.println("date : " + list.get(i).getDate());
 		}
 		
 		
@@ -639,8 +647,12 @@ public class YuhanMainController
 
 		/* ==================== 로그인 세션 부분 ====================== */
 		
-		session.setAttribute("memberID", vo.getMemberID());
-		//학생 학번도 필요 - 조은숙
+		session.setAttribute("sessionID", vo.getMemberID());
+		session.setAttribute("memberClass", vo.getMemberClass());
+		session.setAttribute("Rate", "S");
+		System.out.println("sessionID : " + vo.getMemberID() );
+		System.out.println("memberClass : " + vo.getMemberClass() );
+		System.out.println("Rate : " + "S" );
 		/* ======================================================== */
 		
 		return "/studentJoin";
@@ -680,9 +692,12 @@ public class YuhanMainController
 		
 		model.addAttribute("joinCheck", "회원가입 되셨습니다.");
 		System.out.println("엉엉..2");
+		System.out.println("회원아이디 : " + vo.getMemberID());
 		/* ==================== 濡쒓렇�씤 �꽭�뀡 遺�遺� ====================== */
 		
-		session.setAttribute("memberID", vo.getMemberID());
+		session.setAttribute("sessionID", vo.getMemberID());
+		session.setAttribute("memberClass", vo.getMemberClass());
+		session.setAttribute("Rate", "S");
 		
 		/* ======================================================== */
 		
@@ -706,7 +721,9 @@ public class YuhanMainController
 		System.out.println("엉엉..2");
 		/* ==================== 濡쒓렇�씤 �꽭�뀡 遺�遺� ====================== */
 		
-		session.setAttribute("memberID", vo.getProID());
+		session.setAttribute("sessionID", vo.getProID());
+		session.setAttribute("professorNum", vo.getProNo());
+		session.setAttribute("Rate", "P");
 		
 		/* ======================================================== */
 		
@@ -730,6 +747,49 @@ public class YuhanMainController
 
 		return "redirect:/professor_check";
 	}
-	
+				
+    /*@RequestMapping(value = "/checkid/{memberID}", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> checkSignup(@PathVariable("memberID") String memberID) {
+    	ResponseEntity<Map<String, Object>> entity;
+    	
+        System.out.println(memberID);
+        
+        try {
+        	Map<String, Object> map = new HashMap<>();
+        	map.put("length", service.idcheck(memberID));
+        	entity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+        } catch(Exception e) {
+        	Map<String, Object> map = new HashMap<>();
+        	map.put("BAD", "BAD");
+        	e.printStackTrace();
+        	return new ResponseEntity<Map<String, Object>>(map, HttpStatus.BAD_REQUEST);
+        }
+        
+        return entity;
+//        
+//        String rowcount = service.idcheck(memberID);
+//        
+//       System.out.println(memberID);
+//       System.out.println(rowcount);
+//       
+//        return String.valueOf(rowcount);
+    }
+
+	@ResponseBody
+    @RequestMapping(value = "/checkidP", method = RequestMethod.POST)
+    public String checkSignupP(HttpServletRequest request, Model model) {
+        String proID = request.getParameter("proID");
+        String rowcount = service.idcheckP(proID);
+       
+        
+        
+       System.out.println(proID);
+       System.out.println(rowcount);
+       
+        return String.valueOf(rowcount);
+    }
+*/
+
 	/*****************************************************/
 }

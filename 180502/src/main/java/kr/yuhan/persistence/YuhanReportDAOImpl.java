@@ -41,6 +41,14 @@ public class YuhanReportDAOImpl implements YuhanReportDAO{
 	}
 
 	@Override
+	public List<ReportVO> reportStudentCheckNO(int subjectID, String selectClass) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("subjectID", subjectID);
+		map.put("selectClass", selectClass);
+		return sqlSession.selectList(NAMESPACE + ".reportStudentCheckNO", map);
+	}
+	
+	@Override
 	public ReportVO reportDetailView(int no) {
 		System.out.println("dao no : " + no);
 		return sqlSession.selectOne(NAMESPACE + ".reportDetailView", no);
@@ -60,4 +68,6 @@ public class YuhanReportDAOImpl implements YuhanReportDAO{
 	public void reportDelete(int no) {
 		sqlSession.delete(NAMESPACE + ".reportDelete", no);
 	}
+
+	
 }

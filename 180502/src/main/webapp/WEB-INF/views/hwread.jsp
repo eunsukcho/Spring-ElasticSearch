@@ -32,6 +32,62 @@ $(document).ready(function(){
 		firstLoad();
 	}
 	
+	studentListCheck();
+	studentListCheckNo();
+	var studentList = new Array();
+	var studentListNo = new Array();
+	
+	function studentListCheck(){ // 과제를 낸 사람
+		var hwno = $('input[name="hwno"]').val();
+		
+		alert(hwno);
+			
+		reportVO = new Object();
+		reportVO.homeworkNo = hwno;
+		jsonData = JSON.stringify(reportVO);
+			
+		$.ajax({
+			type : "GET",
+			url : "/homeworkdata/reportStudentCheck/"+hwno,
+			dataType : "json",
+			success : function(data){ 
+				studentList = data;
+				console.log("안녕");
+				console.log(studentList);
+			 	},
+				error : function(){
+					alert("댓글 로딩 실패")
+				}
+		});
+	}
+	
+	function studentListCheckNo(){ // 과목을 수강하는 전체 학생
+		var subjectID = $('input[name="subjectID"]').val();
+ 		var selectClass = $('input[name="selectClass"]').val();
+ 		var list
+ 		$.ajax({
+ 			type : "GET",
+ 			url : "/homeworkdata/reportStudentCheckNo/"+subjectID+"/"+selectClass,
+ 			dataType : "json",
+ 			success : function(data){ 
+ 				console.log("안낸사람");
+ 				studentListNo = data;
+ 				console.log(studentListNo);
+ 		 	},
+ 			error : function(){
+ 				alert("댓글 로딩 실패")
+ 			}
+ 		});
+	}
+	
+	function array_diff(a, b){
+		var tmp={}, res=[];
+		  for(var i=0;i<a.length;i++) tmp[a[i]]=1;
+		  for(var i=0;i<b.length;i++) { if(tmp[b[i]]) delete tmp[b[i]]; }
+		  for(var k in tmp) res.push(k);
+		  return res;
+	}
+		
 	$("#modify").on("click", function(){
 		alert("수정")
 		frm.attr("action", "/hwUpdate");
@@ -129,37 +185,76 @@ $(document).ready(function(){
  	});
  	
  	$("#studentCheck").on("click", function(){
+ 		$("#studentCheckList").html("");
+ 		$("#studentCheckListNo").html("");
+ 		
  		var hwno = $('input[name="hwno"]').val();
+ 		alert(hwno);
+ 		if(studentList.length == 0){
+ 			alert("제출안했엉")
+ 			var message = "과제를 제출한 학생이 없습니다.";
+ 			$("#studentCheckList").append(message);
+ 			return;
+ 		}
  		
-		reportVO = new Object();
- 		reportVO.homeworkNo = hwno;
- 		jsonData = JSON.stringify(reportVO);
- 		
- 		$.ajax({
- 			type : "GET",
- 			url : "/homeworkdata/reportStudentCheck/"+hwno,
- 			dataType : "json",
- 			success : function(data){ 
- 				console.log(data.length);
- 				$("#studentCheckList").html("");
- 				for (var i = 0; i < data.length; i++) {
- 					var result = parseInt(i)+parseInt(1);
-					var liTag = "<tr><td>" + result +"</td><td>" + data[i].studentID + "</td><td>" + data[i].date + "</td><td>" + data[i].content + "</td><td><button class='showDetail' value='"+data[i].no+"' onClick='showReportDetail(this)'>상세 내용 확인</button></td></tr><hr/>";
-					$("#studentCheckList").append(liTag);
-					console.log(liTag);
- 				}
- 				$("#studentCheck").hide();
- 				$("#studentCheckHide").show();
- 		 	},
- 			error : function(){
- 				alert("댓글 로딩 실패")
- 			}
- 		});
+ 		for (var i = 0; i < studentList.length; i++) {
+	 		var result = parseInt(i)+parseInt(1);
+			var liTag = "<tr><td>" + result +"</td><td>" + studentList[i].name + "</td><td>" + studentList[i].hak + "</td><td>" + studentList[i].reportDate + "</td><td><button class='showDetail' value='"+studentList[i].no+"' onClick='showReportDetail(this)'>상세 내용 확인</button></td></tr><hr/>";
+			$("#studentCheckList").append(liTag);
+			console.log(liTag);
+ 		}
+ 		$("#studentCheck").hide();
+ 		$("#studentCheckNo").show();
+ 		$("#studentCheckHide").show();
+ 	
  	});
+ 	
+ 	$("#studentCheckNo").on("click", function(){
+ 		var list = new Array();
+ 		$("#studentCheckList").html("");
+ 		$("#studentCheckListNo").html("");
+ 		$("#studentCheck").show();
+ 		$("#studentCheckHide").show();
+ 		$("#studentCheckNo").hide();
+ 		
+ 		if(studentList.length == 0){
+ 			alert("제출안했엉")
+ 			for (var i = 0; i < studentListNo.length; i++) {
+		 		var result = parseInt(i)+parseInt(1);
+				var liTag = "<tr><td>" + result +"</td><td>" + studentListNo[i].name + "</td><td>" + studentListNo[i].hak + "</td></tr><hr/>";
+				$("#studentCheckList").append(liTag);
+				console.log(liTag);
+ 			}
+ 			
+ 			return;
+ 		}
+ 
+ 		for (var i = 0; i < studentList.length; i++) {
+ 			for (var j = 0; j < studentListNo.length; j++) {
+ 				if(studentList[i].hak == studentListNo[j].hak){
+ 					console.log("없어");
+ 				}else{
+ 					list.push(studentListNo[j]);
+ 				}
+ 			}
+		}
+ 		console.log(list);
+ 		
+ 		for (var i = 0; i < list.length; i++) {
+		 	var result = parseInt(i)+parseInt(1);
+			var liTag = "<tr><td>" + result +"</td><td>" + list[i].name + "</td><td>" + list[i].hak + "</td></tr><hr/>";
+			$("#studentCheckListNo").append(liTag);
+			console.log(liTag);
+ 		}
+
+ 	});
+ 	
  	$("#studentCheckHide").on("click", function(){
  		$("#studentCheck").show();
+ 		$("#studentCheckNo").show();
 		$("#studentCheckHide").hide();
 		$("#studentCheckList").html("");
+		$("#studentCheckListNo").html("");
  	});
  	
  	
@@ -348,6 +443,7 @@ function printPaging(pageMaker){
 		  	<c:otherwise>
 		  			<div class="w3-right w3-container">
 						<p><button class="w3-button w3-teal" id="studentCheck">제출학생목록</button></p>
+						<p><button class="w3-button w3-teal" id="studentCheckNo">미제출학생목록</button></p>
 						<p><button class="w3-button w3-teal" id="studentCheckHide" style="display:none;">접기</button></p>
 					</div>
 		  	</c:otherwise>
@@ -355,6 +451,9 @@ function printPaging(pageMaker){
 		  <div class="bs-docs-example">
 				<table id="studentCheckList">
 		
+				</table>
+				<table id="studentCheckListNo">
+				
 				</table>
 		 </div>
 		 <c:set var = "rate" value = "${rate }" />
@@ -402,3 +501,4 @@ function printPaging(pageMaker){
       </div>
         </div>
         </div>
+<%@ include file = "./include/footer.jsp" %>

@@ -331,7 +331,7 @@ function FileDelete(e){
   <h2 class="w3-text-grey w3-padding-16"><i class="fa fa-code fa-fw w3-margin-right w3-xxlarge w3-text-teal"></i>Write Homework</h2>
   <div class="w3-row w3-container" style="margin-bottom: 7px">
   <input class="w3-input w3-border" type = "text" name = "title" id="title" value="${elastic.title}" style="margin-bottom: 7px">
-  <input class="w3-input w3-border" type = "text" name = "writer" id="writer" placeholder = "WRITER" style="margin-bottom: 7px; margin-right:7px">
+  <input class="w3-input w3-border" type = "text" name = "writer" id="writer" value="${proName}" placeholder = "WRITER" style="margin-bottom: 7px; margin-right:7px">
   <div class="w3-row" style="margin-bottom:7px">
 		<div class="w3-col m3 w3-center">
 			<input class="w3-input w3-border" type = "text" name = "startday" id="startday" placeholder = "START DATE" readonly="readonly" value="${start}">

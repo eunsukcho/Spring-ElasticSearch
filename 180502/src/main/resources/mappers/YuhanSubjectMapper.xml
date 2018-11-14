@@ -1,0 +1,78 @@
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.yuhan.mapper.YuhanSubjectMapper">
+   <select id="selectSubject" resultType="kr.yuhan.domain.YuhanSubjectVO">
+      SELECT *
+      FROM yuhan_subject_table
+      WHERE YUHAN_SUBJECT_HAK = #{memberGrade}
+   </select>
+   
+   <insert id="insertSubject">
+      INSERT INTO yuhan_taking_class(memberID, subjectNO, subjectStatus)
+      VALUES(#{memberID}, #{subjectNO}, 'Y')
+   </insert>
+   
+   <select id="selectSubjectList" resultType="kr.yuhan.domain.YuhanSubjectVO">
+      SELECT memberID, subjectNO, YUHAN_SUBJECT_NAME, subjectStatus
+      FROM yuhan_taking_class, yuhan_subject_table
+      WHERE yuhan_taking_class.subjectNO =  yuhan_subject_table.YUHAN_SUBJECT_NUMBER
+      AND yuhan_taking_class.memberID = #{memberID}
+      AND subjectStatus = 'Y'
+   </select>
+   
+   <select id="noSelectSubject" resultType="kr.yuhan.domain.YuhanSubjectVO">
+      SELECT * 
+      FROM yuhan_subject_table
+      WHERE YUHAN_SUBJECT_HAK = (SELECT memberGrade
+                           FROM yuhanmember
+                           WHERE memberID = #{memberID})
+      COLLATE utf8_general_ci
+   </select>
+   
+   <update id="updateSubject" parameterType="hashmap">
+      UPDATE yuhan_taking_class
+      SET subjectStatus = 'N'
+      WHERE subjectNO NOT IN
+      <foreach collection="whereString" item="type"  open="(" close=")" separator=",">
+         #{type.value}
+      </foreach>
+      AND memberID = #{memberID} 
+   </update>
+   
+   <select id="selectProNum" resultType="String">
+      SELECT proNo
+      FROM yuhan_professor
+      WHERE proID = #{memberID}
+   </select>
+   
+   <insert id="createSubject">
+      INSERT INTO yuhan_subject_table(YUHAN_SUBJECT_NAME, YUHAN_SUBJECT_CLASS_ROOM, YUHAN_SUBJECT_HAK, YUHAN_SUBJECT_PRO)
+      VALUES(#{YUHAN_SUBJECT_NAME}, #{YUHAN_SUBJECT_CLASS_ROOM}, #{YUHAN_SUBJECT_HAK}, #{YUHAN_SUBJECT_PRO})
+   </insert>
+   
+      <select id="ProSelectSubject" resultType="kr.yuhan.domain.YuhanSubjectVO">
+      SELECT *
+      FROM yuhan_subject_table
+      WHERE YUHAN_SUBJECT_PRO = #{memberID}
+      AND YUHAN_SUBJECT_STATUS = 'N'
+   </select>
+   
+   <select id="countStudent" resultType="int">
+      SELECT COUNT(*) AS countStudent
+      FROM yuhan_taking_class
+      WHERE subjectNO = #{subjectNo}
+   </select>
+   
+   <select id="proSearchSubject" resultType="kr.yuhan.domain.YuhanSubjectVO">
+      SELECT *
+      FROM yuhan_subject_table
+      WHERE YUHAN_SUBJECT_NUMBER = #{subjectNo}
+   </select>
+   
+   <update id="proUpdateSubject">
+      UPDATE yuhan_subject_table
+      SET YUHAN_SUBJECT_NAME = #{YUHAN_SUBJECT_NAME}, YUHAN_SUBJECT_CLASS_ROOM = #{YUHAN_SUBJECT_CLASS_ROOM}
+      WHERE YUHAN_SUBJECT_NUMBER = #{YUHAN_SUBJECT_NUMBER}
+   </update>
+</mapper>

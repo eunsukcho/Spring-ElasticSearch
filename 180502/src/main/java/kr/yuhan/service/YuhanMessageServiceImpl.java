@@ -93,4 +93,9 @@ public class YuhanMessageServiceImpl implements YuhanMessageService
 		// TODO Auto-generated method stub
 		return dao.selectUser(memberID);
 	}
+
+	@Override
+	public void updateDeleteMessageStatus(String messageNum) {
+		dao.updateDeleteMessageStatus(messageNum);
+	}
 }

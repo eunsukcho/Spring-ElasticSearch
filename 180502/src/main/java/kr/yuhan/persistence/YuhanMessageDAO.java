@@ -29,4 +29,6 @@ public interface YuhanMessageDAO
 	public List<YuhanMemberVO> listPage(int page);
 	public List<YuhanMemberVO> listCriteria(Criteria cri);
 	public int totalMessageCount(Criteria cri);
+	
+	public void updateDeleteMessageStatus(String messageNum); //2018-10-16
 }

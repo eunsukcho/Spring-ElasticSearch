@@ -10,6 +10,10 @@ public class ReportVO {
 	private Date date;
 	private String reportDate;
 	private String content;
+	private String name;
+	private String hak;
+	private String subjectID;
+	private String selectClass;
 
 	public ReportVO() {}
 	public ReportVO(int no, String studentID) {
@@ -23,7 +27,32 @@ public class ReportVO {
 		this.date = date;
 		this.content = content;
 	}
+
 	
+	public String getSelectClass() {
+		return selectClass;
+	}
+	public void setSelectClass(String selectClass) {
+		this.selectClass = selectClass;
+	}
+	public String getSubjectID() {
+		return subjectID;
+	}
+	public void setSubjectID(String subjectID) {
+		this.subjectID = subjectID;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getHak() {
+		return hak;
+	}
+	public void setHak(String hak) {
+		this.hak = hak;
+	}
 	public String getReportDate() {
 		return reportDate;
 	}
