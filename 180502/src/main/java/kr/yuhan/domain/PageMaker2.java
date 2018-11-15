@@ -15,7 +15,7 @@ public class PageMaker2
 	private boolean next;
 	
 	private int displayPageNum=10; //�븳�솕硫댁뿉 蹂댁뿬吏��뒗 �럹�씠吏� 媛쒖닔
-	private Criteria cri;//�쁽�옱 �럹�씠吏� 踰덊샇
+	private SearchCriteria2 cri;//�쁽�옱 �럹�씠吏� 踰덊샇
 	
 	
 	
@@ -56,10 +56,10 @@ public class PageMaker2
 	public void setDisplayPageNum(int displayPageNum) {
 		this.displayPageNum = displayPageNum;
 	}
-	public Criteria getCri() {
+	public SearchCriteria2 getCri() {
 		return cri;
 	}
-	public void setCri(Criteria cri) {
+	public void setCri(SearchCriteria2 cri) {
 		this.cri = cri;
 	}
 	
@@ -108,8 +108,8 @@ public class PageMaker2
 	{
 		  UriComponents uriComponents = UriComponentsBuilder.newInstance().queryParam("page", page)
 		          .queryParam("perPageNum", cri.getPerPageNum())
-		          .queryParam("searchType", ((SearchCriteria)cri).getSearchType())
-		          .queryParam("keyword", encoding(((SearchCriteria)cri).getKeyword()))
+		          .queryParam("searchType", ((SearchCriteria2)cri).getSearchType())
+		          .queryParam("keyword", encoding(((SearchCriteria2)cri).getKeyword()))
 		          .build();
 		   
 		  return uriComponents.toUriString();

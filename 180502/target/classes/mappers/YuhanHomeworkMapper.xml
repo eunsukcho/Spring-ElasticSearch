@@ -53,9 +53,10 @@
 		select memberID, yuhan_subject_name as subjectName, yuhan_subject_number as subjectID
 		from yuhan_taking_class, yuhan_subject_table												
 		where yuhan_subject_table.YUHAN_SUBJECT_NUMBER = yuhan_taking_class.SubjectNO
-		AND memberID = #{sessionID} 
+		AND memberID = #{sessionID}
+		AND yuhan_taking_class.subjectStatus = 'Y'
 	</select>
-	
+
 	<select id="readProfessorClass" resultType="kr.yuhan.domain.YuhanClass">
 		select yuhan_subject_name as subjectName, yuhan_subject_number as subjectID, YUHAN_SUBJECT_HAK
 		from yuhan_subject_table

@@ -75,7 +75,6 @@ $(document).ready(function(){
 	console.log(frm);
 	
 	$("#modify").on("click", function(){
-		alert("수정")
 		frm.attr("action", "/hwUpdate");
 		frm.attr("method", "get"); //수정은 get 방식으로한다.
 		frm.submit();
@@ -352,7 +351,6 @@ function cancle_onClick()
 }
 function FileDelete(e){
 	var file = $(e).val();
-	alert(file);
 	$.ajax({
 		type : "POST",
 		url : "/reportFileDelete",

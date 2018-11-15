@@ -9,7 +9,7 @@ import kr.yuhan.domain.YuhanMessageVO;
 
 public interface YuhanMessageDAO 
 {
-	public List<YuhanMemberVO> findUser(); //2018-10-11 이진주
+public List<YuhanMemberVO> findUser(); //2018-10-11 이진주
 	
 	public void sendMessage(YuhanMessageVO vo); //2018-10-13 이진주
 	
@@ -42,4 +42,7 @@ public interface YuhanMessageDAO
 	
 	public List<YuhanMessageVO> selectSaveMessage(Criteria cri);
 	public int totalSaveMessageCount(Criteria cri);
+	
+	/** @author 진주 @since 2018-11-28  */
+	public int selectMessageCount(String memberID);
 }

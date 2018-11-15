@@ -75,7 +75,6 @@ $(document).ready(function(){
 	console.log(frm);
 	
 	$("#modify").on("click", function(){
-		alert("수정")
 		frm.attr("action", "/hwUpdate");
 		frm.attr("method", "get"); //수정은 get 방식으로한다.
 		frm.submit();
@@ -232,8 +231,6 @@ $(document).ready(function(){
 		var professorNo = parseInt('${professorNo}');
 		var subjectID = $("#subjectID").val();
 		var selectClass = $("#selectClass").val();
-		alert("반 : " + selectClass);
-		alert("교수 번호 : " + professorNo);
 		var jsonData;
 		var file;
 

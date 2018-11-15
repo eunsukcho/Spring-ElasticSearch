@@ -97,6 +97,9 @@ public class HomeworkDataController {
 	@RequestMapping(value="/updatehw" , method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public ResponseEntity<?> updatehw(@RequestBody YuhanHomeworkVO vo , SearchCriteria cri, RedirectAttributes rttr) throws ParseException {
 		ResponseEntity<?> entity;
+		String content = vo.getContent();
+		String modiContent = content.replaceAll("\n", "").replaceAll("&nbsp;", "");
+		vo.setContent(modiContent);
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH); // DB, 엘라스틱 서치에 올릴 시작 날짜, 끝날짜
 		SimpleDateFormat formatTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH); // DB에 올릴 날짜
@@ -122,7 +125,6 @@ public class HomeworkDataController {
 		
 		GetElasticSearchVo elvo = new GetElasticSearchVo(vo.get_id(), source);
 		
-		//System.out.println("여기까지?");
 		try {
 			service.updateHomework(vo);
 			elservice.UpdateElastic(elvo);

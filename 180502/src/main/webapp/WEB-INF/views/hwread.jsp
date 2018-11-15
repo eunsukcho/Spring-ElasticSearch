@@ -38,9 +38,7 @@ $(document).ready(function(){
 	
 	function studentListCheck(){ // 과제를 낸 사람
 		var hwno = $('input[name="hwno"]').val();
-		
-		alert(hwno);
-			
+	
 		reportVO = new Object();
 		reportVO.homeworkNo = hwno;
 		jsonData = JSON.stringify(reportVO);
@@ -51,11 +49,9 @@ $(document).ready(function(){
 			dataType : "json",
 			success : function(data){ 
 				studentList = data;
-				console.log("안녕");
-				console.log(studentList);
 			 	},
 				error : function(){
-					alert("댓글 로딩 실패")
+					alert("로딩 실패")
 				}
 		});
 	}
@@ -69,26 +65,15 @@ $(document).ready(function(){
  			url : "/homeworkdata/reportStudentCheckNo/"+subjectID+"/"+selectClass,
  			dataType : "json",
  			success : function(data){ 
- 				console.log("안낸사람");
  				studentListNo = data;
- 				console.log(studentListNo);
  		 	},
  			error : function(){
- 				alert("댓글 로딩 실패")
+ 				alert("로딩 실패")
  			}
  		});
 	}
-	
-	function array_diff(a, b){
-		var tmp={}, res=[];
-		  for(var i=0;i<a.length;i++) tmp[a[i]]=1;
-		  for(var i=0;i<b.length;i++) { if(tmp[b[i]]) delete tmp[b[i]]; }
-		  for(var k in tmp) res.push(k);
-		  return res;
-	}
-		
+
 	$("#modify").on("click", function(){
-		alert("수정")
 		frm.attr("action", "/hwUpdate");
 		frm.attr("method", "get"); //수정은 get 방식으로한다.
 		frm.submit();
@@ -130,8 +115,6 @@ $(document).ready(function(){
  			dataType : "json",
  			contentType : "application/json; charset=utf-8",
  			success : function(data){ 
- 				alert(data.content);
-
  		 		var tag = "<p>"+data.content+"</p>";
  	 			$("#reportContent").html("");
  	 			$("#reportContent").append(tag);
@@ -163,7 +146,6 @@ $(document).ready(function(){
  			dataType : "json",
  			contentType : "application/json; charset=utf-8",
  			success : function(data){ 
- 				alert(data.no);
  				$("#reportNo").val(data.no);
  				
  				frm.attr("method", "get");
@@ -171,7 +153,7 @@ $(document).ready(function(){
  				frm.submit();
  		 	},
  			error : function(){
- 				alert("제출 내용 로딩 실패")
+ 				alert("로딩 실패")
  			}
  		});
  	});
@@ -188,9 +170,7 @@ $(document).ready(function(){
  		$("#studentCheckListNo").html("");
  		
  		var hwno = $('input[name="hwno"]').val();
- 		alert(hwno);
  		if(studentList.length == 0){
- 			alert("제출안했엉")
  			var message = "과제를 제출한 학생이 없습니다.";
  			$("#studentCheckList").append(message);
  			return;
@@ -198,9 +178,13 @@ $(document).ready(function(){
  		
  		for (var i = 0; i < studentList.length; i++) {
 	 		var result = parseInt(i)+parseInt(1);
-			var liTag = "<tr><td>" + result +"</td><td>" + studentList[i].name + "</td><td>" + studentList[i].hak + "</td><td>" + studentList[i].reportDate + "</td><td><button class='showDetail' value='"+studentList[i].no+"' onClick='showReportDetail(this)'>상세 내용 확인</button></td></tr><hr/>";
+	 		var text = studentList[i].content.replace(/<(\/)?([a-zA-Z]*)(\s[a-zA-Z]*=[^>]*)?(\s)*(\/)?>/ig, "");
+			var liTag = '<tr class="w3-teal"><td>No</td><td>작성자</td><td>내용</td><td>날짜</td><td>확인</td></tr>';
+			liTag +="<tr><td>" + result +"</td><td>" + studentList[i].name;
+			liTag += "</td><td>" + text + "</td><td>" + studentList[i].reportDate;
+			liTag += "</td><td><button class='showDetail w3-btn w3-teal' value='"+studentList[i].no;
+			liTag += "' onClick='showReportDetail(this)'>상세 내용 확인</button></td></tr><hr/>";
 			$("#studentCheckList").append(liTag);
-			console.log(liTag);
  		}
  		$("#studentCheck").hide();
  		$("#studentCheckNo").show();
@@ -217,33 +201,34 @@ $(document).ready(function(){
  		$("#studentCheckNo").hide();
  		
  		if(studentList.length == 0){
- 			alert("제출안했엉")
  			for (var i = 0; i < studentListNo.length; i++) {
 		 		var result = parseInt(i)+parseInt(1);
-				var liTag = "<tr><td>" + result +"</td><td>" + studentListNo[i].name + "</td><td>" + studentListNo[i].hak + "</td></tr><hr/>";
-				$("#studentCheckList").append(liTag);
-				console.log(liTag);
+				
+				var liTag = '<tr class="w3-teal"><td>No</td><td>이름</td><td>학번</td></tr>';
+				liTag +="<tr><td>" + result +"</td><td>" + studentListNo[i].name;
+				liTag += "</td><td>" + studentListNo[i].hak;
+				liTag += "</td></tr><hr/>";
+				$("#studentCheckListNo").append(liTag);
  			}
- 			
  			return;
  		}
  
  		for (var i = 0; i < studentList.length; i++) {
  			for (var j = 0; j < studentListNo.length; j++) {
  				if(studentList[i].hak == studentListNo[j].hak){
- 					console.log("없어");
  				}else{
  					list.push(studentListNo[j]);
  				}
  			}
 		}
- 		console.log(list);
- 		
+
  		for (var i = 0; i < list.length; i++) {
 		 	var result = parseInt(i)+parseInt(1);
-			var liTag = "<tr><td>" + result +"</td><td>" + list[i].name + "</td><td>" + list[i].hak + "</td></tr><hr/>";
+		 	var liTag = '<tr class="w3-teal"><td>No</td><td>이름</td><td>학번</td></tr>';
+			liTag +="<tr><td>" + result +"</td><td>" + studentListNo[i].name;
+			liTag += "</td><td>" + studentListNo[i].hak;
+			liTag += "</td></tr><hr/>";
 			$("#studentCheckListNo").append(liTag);
-			console.log(liTag);
  		}
 
  	});
@@ -259,7 +244,6 @@ $(document).ready(function(){
  	
 });
 function showReportDetail(e){
-	alert($(e).val());
 	var reportNo = $(e).val();
 	$("#reportNo").val(reportNo);
 	var frm = $("form[role = 'form']"); 
@@ -268,7 +252,6 @@ function showReportDetail(e){
 	frm.submit();
 }
 function firstLoad(page){
-	alert("로드");
 	var hwno = $('input[name="hwno"]').val();
 	var page;
 	var studentID = '${studentID}';
@@ -289,17 +272,16 @@ function firstLoad(page){
 		},
 		success : function(data){ 
 			var liTag = "";
-			console.log(data.length);
 			
 			$("#commentList").html("");
 			$(data.list).each(function(){
-				liTag = "<li data-rno='" + this.repNo + "' data-comment='"+this.comment+"'class='replyLi'>" + this.professorName + ":" + this.comment + ":" + this.repDate + "<button>MOD</button></li>";
+				liTag = "<li data-rno='" + this.repNo + "' data-comment='"+this.comment+"'class='replyLi'>" + this.professorName + ":" + this.comment + ":" + this.repDate + "</li>";
 				$("#commentList").append(liTag);
 			});
 			printPaging(data.pageMaker);
 		},
 		error : function(){
-			//alert("댓글 로딩 실패")
+			alert("댓글 로딩 실패")
 		}
 	});
 }
@@ -447,11 +429,11 @@ function printPaging(pageMaker){
 					</div>
 		  	</c:otherwise>
 		  </c:choose>
-		  <div class="bs-docs-example">
-				<table id="studentCheckList">
+		  <div class="bs-docs-example" style="margin-top:30px">
+				<table id="studentCheckList" class="w3-table w3-border">
 		
 				</table>
-				<table id="studentCheckListNo">
+				<table id="studentCheckListNo" class="w3-table w3-border">
 				
 				</table>
 		 </div>

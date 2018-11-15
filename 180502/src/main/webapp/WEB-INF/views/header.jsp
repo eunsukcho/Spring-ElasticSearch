@@ -5,6 +5,7 @@
 <head>
 <script type="text/javascript">
 var loginCheck = '${loginCheck}';
+
 if(loginCheck == "Fail")
 	{
 		alert("로그인 실패");

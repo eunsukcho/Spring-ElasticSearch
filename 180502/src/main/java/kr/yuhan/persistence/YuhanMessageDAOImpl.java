@@ -156,4 +156,10 @@ public class YuhanMessageDAOImpl implements YuhanMessageDAO
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne(NAMESPACE + ".totalSaveMessageCount", cri);
 	}
+
+	@Override
+	public int selectMessageCount(String memberID) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(NAMESPACE + ".selectMessageCount", memberID);
+	}
 }

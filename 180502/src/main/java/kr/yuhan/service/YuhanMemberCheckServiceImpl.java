@@ -90,4 +90,10 @@ public class YuhanMemberCheckServiceImpl implements YuhanMemberCheckService {
 		// TODO Auto-generated method stub
 		return dao.idcheckP(proID);
 	}
+
+	@Override
+	public List<YuhanMemberVO> selectUserGrade(String memberID) {
+		// TODO Auto-generated method stub
+		return dao.selectUserGrade(memberID);
+	}
 }

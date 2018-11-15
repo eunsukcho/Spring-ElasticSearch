@@ -148,6 +148,7 @@
   		select * 
   		from yuhan_message_table
   		where YUHAN_MESSAGE_NUMBER > 0
+  		AND YUHAN_MESSAGE_TO_MEMBER_NUMBER = #{memberID}
   	]]>
   	<include refid="search"></include>
   	<![CDATA[
@@ -180,4 +181,11 @@
 	  		</if>
 	  	</if>
   	</sql>
+  	
+  	<!-- 2018-11-15 JINJOO -->
+  	<select id="selectMessageCount" resultType="int">
+		SELECT COUNT(*) AS sendMessageCount
+		FROM yuhan_message_table
+		WHERE YUHAN_MESSAGE_FROM_MEMBER_NUMBER = #{memberID}
+	</select>
 </mapper>

@@ -19,22 +19,6 @@
 		var messageTo = "${messageTo}";
 		self.location="/reSendMessage?messageTo="+messageTo;
 	}
-	
-	$(function(){
-		  $("#saveStar").on({
-		   mouseenter: function(){
-		    $(this).attr('src','/resources/images/save/yello.png');
-		  } ,
-		  mouseleave: function(){
-		    $(this).attr('src','/resources/images/save/gray.png');
-		  } 
-		  });
-		  
-		});
-	
-	$('#saveStar').click(function(){
-		$("#saveStar").attr("src", 'resources/images/save/yello.png');
-	});
 			function cancelBtn_Click()
 			{
 				if(confirm("쪽지를 삭제하시겠습니까?"))
@@ -59,16 +43,15 @@
   <c:forEach items="${messageList }" varStatus="cnt" var="vo">
   <table class="w3-table w3-border" width="100%">
 				<tr>
-					<td><b>보낸 사람</b>&nbsp;&nbsp;|&nbsp;&nbsp;${vo.YUHAN_MESSAGE_FROM_MEMBER_NUMBER }</td>
-					<td rowspan="2"><img id="saveStar" src="/resources/images/save/gray.png" class="w3-right" style="width:50px; height:50px"></td>
+					<td colspan="2"><b>보낸 사람</b>&nbsp;&nbsp;|&nbsp;&nbsp;${vo.YUHAN_MESSAGE_FROM_MEMBER_NUMBER }</td>
 				</tr>
 				<tr>
+					<td><b>제목</b>&nbsp;&nbsp;|&nbsp;&nbsp;${vo.YUHAN_MESSAGE_SUBJECT }</td>
 					<td><b>보낸 시간</b>&nbsp;&nbsp;|&nbsp;&nbsp;<fmt:formatDate value="${vo.YUHAN_MESSAGE_SEND_DATE}" pattern="yyyy/MM/dd [HH:mm:ss]"/></td>
 				</tr>
-				<tr style="margin-bottom: 50%">
-					<td colspan="2">${vo.YUHAN_MESSAGE_CONTENT }</td>
+				<tr>
+					<td colspan="2"><div style="margin-bottom:120px">${vo.YUHAN_MESSAGE_CONTENT }</div></td>
 				</tr>
-				
 				</table>
 				<div class="w3-container" style="margin-bottom:7px; margin-top:20px">
 				<a href="/messageHome"><button type="button" class="w3-btn w3-white w3-left w3-border" style="width:120px; margin-right:7px" id="cancelBtn">목록으로</button></a>

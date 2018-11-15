@@ -102,11 +102,9 @@ $(document).ready(function(){
 	
 	$("#commentList").on("click", ".replyLi button", function(){
 		var reply = $(this).parent();
-		alert("reply : " + reply);
 		var rno = reply.attr("data-rno");
 		var replytext = reply.attr("data-comment");
 		
-		alert(rno + ":" + replytext);
 		$(".model-title").html(rno);
 		$("#replytext").val(replytext);
 		$("#modDiv").show("slow");
@@ -164,12 +162,16 @@ $(document).ready(function(){
 			}
 		});
 	});
+	
+	$("#closeBtn").on("click", function(){
+		$("#modDiv").hide("slow");
+	});
 });
 function firstLoad(page){
-	alert("로드");
 	var hwno = $('input[name="hwno"]').val();
 	var page;
 	var studentID = '${studentID}';
+	var rate = '${rate}';
 	
 	replyVO = new Object();
 	replyVO.hwno = hwno;
@@ -190,6 +192,7 @@ function firstLoad(page){
 			console.log(data.length);
 			
 			$("#commentList").html("");
+			
 			$(data.list).each(function(){
 				liTag = "<li data-rno='" + this.repNo + "' data-comment='"+this.comment+"'class='replyLi'>" + this.professorName + ":" + this.comment + ":" + this.repDate + "<button>MOD</button></li>";
 				$("#commentList").append(liTag);
@@ -197,7 +200,7 @@ function firstLoad(page){
 			printPaging(data.pageMaker);
 		},
 		error : function(){
-			//alert("댓글 로딩 실패")
+			alert("댓글 로딩 실패")
 		}
 	});
 }

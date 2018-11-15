@@ -4,7 +4,9 @@
     <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 	<%@ taglib uri = "http://java.sun.com/jsp/jstl/fmt" prefix = "fmt" %>
 	
-
+	<style>
+		a:link { text-decoration: none;}
+	</style>
 		<!-- Page Container -->
 <div class="w3-content w3-margin-top" style="max-width:1400px;">
 
@@ -64,20 +66,22 @@
 						<th width="10px">no</th>
 						<th>title</th>
 						<th>regdate</th>
-						<th>complete</th>
+						<c:set var = "rate" value = "${rate }" />
+						 <c:choose>
+						  	<c:when test="${rate eq 'S' }">
+						  		<th>complete</th>
+						  	</c:when>
+						 </c:choose>
 					</tr>
-					<c:set var = "totalCount" value="${totalCount}" />
-			    	<c:choose>
-			    		<c:when test="${totalCount eq 0 }">
-			    			<div>글이 없습니다.</div>
-			    		</c:when>
-			    		<c:otherwise>
-			    			<c:forEach begin="1" end="${elastic.size()-1 }" var="idx"> 
-							<tr>
-								<td>${((totalCount-idx)-(maker.cri.page-1)*10)+1 }</td>
-								<td><a href="/hwread${maker.makeSearch(maker.cri.page) }&_id=${elastic.get(idx-1)._id }&hwno=${hw.get(idx-1).hwno}&subjectID=${subjectID}&selectClass=${selectClass }">${elastic.get(idx-1)._source.title}</a></td>
-								<td>${elastic.get(idx-1)._source.date}</td>
-								<c:set var = "reportCount" value="${report}" />
+					<c:forEach begin="1" end="${elastic.size()-1 }" var="idx"> 
+					<tr>
+						<td>${((totalCount-idx)-(maker.cri.page-1)*10)+1 }</td>
+						<td><a href="/hwread${maker.makeSearch(maker.cri.page) }&_id=${elastic.get(idx-1)._id }&hwno=${hw.get(idx-1).hwno}&subjectID=${subjectID}&selectClass=${selectClass }">${elastic.get(idx-1)._source.title}</a></td>
+						<td>${elastic.get(idx-1)._source.date}</td>
+						<c:set var = "rate" value = "${rate }" />
+						 <c:choose>
+						  	<c:when test="${rate eq 'S' }">
+						  		<c:set var = "reportCount" value="${report}" />
 								  <c:choose>
 								  	<c:when test="${reportCount.get(idx-1) eq 1 }">
 									  	<td>O</td>
@@ -86,25 +90,22 @@
 									  	<td>X</td>
 								  	</c:otherwise>
 								  </c:choose>
-							</tr>
-							</c:forEach>
-			    		</c:otherwise>
-			    	</c:choose>
-					
+						  	</c:when>
+						 </c:choose>	
+					</tr>
+					</c:forEach>
 				  </table>  
 				  </div>
 				  <div class="w3-main" style="margin:auto">
 					  <div class="w3-bar">
 					  <c:if test="${maker.prev}">
-						<a href="hwList${maker.makeSearch(maker.startPage-1) }&subjectID=${subjectID}&selectClass=${selectClass}" class="w3-button">Previous</a>
+					  <span class="w3-button" onClick="location.href='hwList${maker.makeSearch(maker.startPage-1) }&subjectID=${subjectID}&selectClass=${selectClass}'">Previous</span>
 					  </c:if>
 					  <c:forEach begin = "${maker.startPage }" end = "${maker.endPage }" var = "i">
-						<li <c:out value = "${maker.cri.page==i?'class=active':''}"/>>
-							<a href = "hwList${maker.makeSearch(i)}&subjectID=${subjectID}&selectClass=${selectClass}" class="w3-button pageingBtn">${i }</a>
-						</li>
+							<span class="w3-button <c:out value = "${maker.cri.page==i?'w3-teal':''}"/>" onClick="location.href='hwList${maker.makeSearch(i)}&subjectID=${subjectID}&selectClass=${selectClass}'">${i }</span>
 					  </c:forEach>
 					  <c:if test="${maker.next && maker.endPage > 0}">
-						<a href="hwList${maker.makeSearch(maker.endPage+1)}&subjectID=${subjectID}&selectClass=${selectClass}" class="w3-button">Next</a>
+						<span class="w3-button" onClick="location.href='hwList${maker.makeSearch(maker.endPage+1)}&subjectID=${subjectID}&selectClass=${selectClass}'">Next</span>
 					  </c:if>
 					  </div>
 				  </div>
@@ -118,11 +119,6 @@
 <script type="text/javascript">
 $(document).ready(function(){ 
 	$('#searchBtn').click(function() {
-		if($("select option:selected").val() == 'null'){
-			alert("검색 카테로리를 설정해주세요");
-			return;
-		}
-		alert("안녕");
 		self.location = "hwList?page=1&subjectID="
 						+'${subjectID}'
 						+ "&selectClass="

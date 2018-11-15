@@ -28,4 +28,7 @@ public interface YuhanSubjectService
 	public List<YuhanSubjectVO> proSearchSubject(String subjectNo);
 	
 	public void proUpdateSubject(YuhanSubjectVO vo);
+	
+	//181116 이진주
+	public void updateAddSubject(HashMap map);
 }

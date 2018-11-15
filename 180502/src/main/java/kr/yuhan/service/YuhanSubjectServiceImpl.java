@@ -92,4 +92,11 @@ public class YuhanSubjectServiceImpl implements YuhanSubjectService
 		// TODO Auto-generated method stub
 		dao.proUpdateSubject(vo);
 	}
+	
+	@Override
+	public void updateAddSubject(HashMap map) 
+	{
+		// TODO Auto-generated method stub
+		dao.updateAddSubject(map);
+	}
 }

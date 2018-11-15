@@ -143,4 +143,10 @@ public class YuhanMessageServiceImpl implements YuhanMessageService
 		// TODO Auto-generated method stub
 		return dao.totalSaveMessageCount(cri);
 	}
+
+	@Override
+	public int selectMessageCount(String memberID) {
+		// TODO Auto-generated method stub
+		return dao.selectMessageCount(memberID);
+	}
 }

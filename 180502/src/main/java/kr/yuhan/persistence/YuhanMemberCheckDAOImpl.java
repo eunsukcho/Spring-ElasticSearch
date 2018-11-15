@@ -102,4 +102,10 @@ public class YuhanMemberCheckDAOImpl implements YuhanMemberCheckDAO
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne(NAMESPACE + ".idcheckP", proID);
 	}
+
+	@Override
+	public List<YuhanMemberVO> selectUserGrade(String memberID) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(NAMESPACE + ".selectUserGrade", memberID);
+	}
 }

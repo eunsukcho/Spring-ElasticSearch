@@ -14,11 +14,12 @@
    </insert>
    
    <select id="selectSubjectList" resultType="kr.yuhan.domain.YuhanSubjectVO">
-      SELECT memberID, subjectNO, YUHAN_SUBJECT_NAME, subjectStatus
+      SELECT memberID, subjectNO, YUHAN_SUBJECT_NAME, subjectStatus, YUHAN_SUBJECT_APPROVAL
       FROM yuhan_taking_class, yuhan_subject_table
       WHERE yuhan_taking_class.subjectNO =  yuhan_subject_table.YUHAN_SUBJECT_NUMBER
       AND yuhan_taking_class.memberID = #{memberID}
       AND subjectStatus = 'Y'
+      AND YUHAN_SUBJECT_APPROVAL = 'N'
    </select>
    
    <select id="noSelectSubject" resultType="kr.yuhan.domain.YuhanSubjectVO">
@@ -27,6 +28,7 @@
       WHERE YUHAN_SUBJECT_HAK = (SELECT memberGrade
                            FROM yuhanmember
                            WHERE memberID = #{memberID})
+      AND YUHAN_SUBJECT_APPROVAL = 'N'
       COLLATE utf8_general_ci
    </select>
    
@@ -39,6 +41,12 @@
       </foreach>
       AND memberID = #{memberID} 
    </update>
+   
+   <!-- 181116-이진주 -->
+	<update id="updateAddSubject" parameterType="hashmap">
+		INSERT INTO yuhan_taking_class VALUES(#{memberID}, #{subjectNO}, 'Y')
+		ON DUPLICATE KEY UPDATE subjectStatus = 'Y';
+	</update>
    
    <select id="selectProNum" resultType="String">
       SELECT proNo

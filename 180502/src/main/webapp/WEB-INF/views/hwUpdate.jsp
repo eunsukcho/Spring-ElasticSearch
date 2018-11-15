@@ -190,7 +190,6 @@ $(document).ready(function(){
 		fd.append('hwno', data);
 		fd.append('professorNo', '${professorNo}');
 		fd.append('subjectID', subjectID);
-		alert(professorno + subjectID);
 		$.ajax({
 			type : "POST",
 			url : "/fileUpload", //Upload URL
@@ -199,7 +198,7 @@ $(document).ready(function(){
 			processData : false,
 			cache : false,
 			success : function(data) {
-				/* alert('성공'); */
+				alert('성공! 글을 수정하였습니다.'); 
 				self.location="/hwList?subjectID="+subjectID + "&selectClass=${selectClass}";
 			},
 			error : function(){
@@ -236,7 +235,6 @@ $(document).ready(function(){
 		var jsonData;
 		var file;
 		var hwno = "${hwno}";
-		alert(new Date($.now()));
 		
 		if(title == null || $.trim(title) == ""){
 			alert("제목을 입력하세요");
@@ -304,7 +302,6 @@ function cancle_onClick()
 }
 function FileDelete(e){
 	var file = $(e).val();
-	alert(file);
 	$.ajax({
 		type : "POST",
 		url : "/fileDelete",

@@ -30,4 +30,7 @@ public interface YuhanMemberCheckService
 
 	public String idcheck(String memberID);
 	public String idcheckP(String proID);
+	
+	public List<YuhanMemberVO> selectUserGrade(String memberID);
+
 }

@@ -132,6 +132,7 @@ public class HomeworkViewController {
 		System.out.println("교수번호 : " + list.get(0).getYUHAN_SUBJECT_PRO());
 		System.out.println("교수이름 : " + list.get(0).getProName());
 		
+		model.addAttribute("loginMemberList", memberService.select_Member(session.getAttribute("sessionID").toString())); //메뉴바 접속 회원 이름 출력 서비스
 		List<GetElasticSearchVo> searchList = elservice.readElastic(request.getParameter("_id"));
 
 		model.addAttribute("professorNo", list.get(0).getYUHAN_SUBJECT_PRO());
@@ -172,7 +173,7 @@ public class HomeworkViewController {
 		String studentID = "";
 		System.out.println("교수번호 : " + list.get(0).getYUHAN_SUBJECT_PRO());
 		System.out.println("교수이름 : " + list.get(0).getProName());
-
+		
 		model.addAttribute("professorNo", list.get(0).getYUHAN_SUBJECT_PRO()); 
 		model.addAttribute("proName", list.get(0).getProName());
 		model.addAttribute("_id", request.getParameter("_id"));
@@ -200,6 +201,9 @@ public class HomeworkViewController {
 		}else {
 			model.addAttribute("reportFile", "제출 파일이 없습니다.");
 		}
+		
+		model.addAttribute("loginMemberList", memberService.select_Member(session.getAttribute("sessionID").toString())); //메뉴바 접속 회원 이름 출력 서비스
+		model.addAttribute("subjectList", service.selectSubjectData(Integer.toString(subjectID))); //과목 정보 출력 서비스
 	}
 	
 	@RequestMapping(value="/hwList", method = RequestMethod.GET)
@@ -385,7 +389,7 @@ public class HomeworkViewController {
 		model.addAttribute("keyword", cri.getKeyword());
 		model.addAttribute("no", no);
 		model.addAttribute("studentID", studentID);
-		
+		model.addAttribute("loginMemberList", memberService.select_Member(session.getAttribute("sessionID").toString())); //메뉴바 접속 회원 이름 출력 서비스
 		reportCount = fileService.ReportCount(hwno, studentID); // 학생이 해당 과제에 파일을 제출했을 경우
 		if(reportCount >= 1) {
 			System.out.println("학생의 과제 파일 제출 : " + reportCount);

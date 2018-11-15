@@ -3,15 +3,19 @@ package kr.yuhan.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.http.HttpRequest;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,30 +40,59 @@ public class YuhanMessageRestController
 	@Inject
 	YuhanMessageService messageService;
 	
-	@RequestMapping(value = "/messageHomeList", method=RequestMethod.GET)
+	/*@RequestMapping(value = "/messageHomeList", method=RequestMethod.GET)
 	public List<YuhanMessageVO> messageHomeList(Model model, HttpSession session, Criteria cri)
 	{
 		cri.setMemberID(session.getAttribute("sessionID").toString());
 		PageMaker maker = new PageMaker();
 		maker.setCri(cri);
 		maker.setTotalMessageCount(messageService.totalMessageCount(cri));
-		
-		model.addAttribute("maker", maker);
-		
+		//model.addAttribute("maker", maker);
 		
 		return messageService.selectMessage(cri);
-	}
-	
-	@RequestMapping(value = "/myMessageHomeList", method=RequestMethod.GET)
-	public List<YuhanMessageVO> myMessageHomeList(Model model, HttpSession session, Criteria cri)
+	}*/
+	@RequestMapping(value = "/messageHomeList", method=RequestMethod.GET)
+	public LinkedHashMap<String,Object> messageHomeList(HttpSession session, Criteria cri, HttpServletRequest request)
 	{
-		cri.setYUHAN_MESSAGE_FROM_MEMBER_NUMBER(session.getAttribute("sessionID").toString());
+		if(request.getParameter("page") == null)
+		{
+			cri.setPage(1);
+		}
+		else
+		{
+			cri.setPage(Integer.parseInt(request.getParameter("page")));
+		}
+		LinkedHashMap <String,Object> map =new LinkedHashMap<String,Object>();
+		cri.setMemberID(session.getAttribute("sessionID").toString());
 		PageMaker maker = new PageMaker();
 		maker.setCri(cri);
 		maker.setTotalMessageCount(messageService.totalMessageCount(cri));
+		map.put("maker", maker);		
+		map.put("data",messageService.selectMessage(cri));
 		
-		model.addAttribute("maker", maker);
-		return messageService.selectSendMessage(cri);
+		return map;
+	}
+	
+	@RequestMapping(value = "/myMessageHomeList", method=RequestMethod.GET)
+	public LinkedHashMap<String,Object> myMessageHomeList(HttpSession session, Criteria cri, HttpServletRequest request)
+	{
+		if(request.getParameter("page") == null)
+		{
+			cri.setPage(1);
+		}
+		else
+		{
+			cri.setPage(Integer.parseInt(request.getParameter("page")));
+		}
+		LinkedHashMap <String,Object> map =new LinkedHashMap<String,Object>();
+		cri.setYUHAN_MESSAGE_FROM_MEMBER_NUMBER(session.getAttribute("sessionID").toString());
+		PageMaker maker = new PageMaker();
+		maker.setCri(cri);
+		maker.setTotalMessageCount(messageService.selectMessageCount(session.getAttribute("sessionID").toString()));
+		System.out.println(maker.getTotalMessageCount());
+		map.put("maker", maker);		
+		map.put("data",messageService.selectSendMessage(cri));
+		return map;
 	}
 	
 	@RequestMapping(value = "/searchMessage", method=RequestMethod.GET)
@@ -81,7 +114,7 @@ public class YuhanMessageRestController
 		return messageService.listSearch(cri);
 	}
 	
-	@RequestMapping(value = "/messageSaveList", method=RequestMethod.GET)
+	/*@RequestMapping(value = "/messageSaveList", method=RequestMethod.GET)
 	public List<YuhanMessageVO> messageSaveList(Model model, HttpSession session, Criteria cri)
 	{
 		cri.setMemberID(session.getAttribute("sessionID").toString());
@@ -93,6 +126,28 @@ public class YuhanMessageRestController
 		
 		
 		return messageService.selectSaveMessage(cri);
+	}*/
+	
+	@RequestMapping(value = "/messageSaveList", method=RequestMethod.GET)
+	public LinkedHashMap<String,Object> messageSaveList(HttpSession session, Criteria cri, HttpServletRequest request)
+	{
+		if(request.getParameter("page") == null)
+		{
+			cri.setPage(1);
+		}
+		else
+		{
+			cri.setPage(Integer.parseInt(request.getParameter("page")));
+		}
+		LinkedHashMap <String,Object> map =new LinkedHashMap<String,Object>();
+		cri.setMemberID(session.getAttribute("sessionID").toString());
+		PageMaker maker = new PageMaker();
+		maker.setCri(cri);
+		maker.setTotalMessageCount(messageService.totalSaveMessageCount(cri));
+		map.put("maker", maker);		
+		map.put("data",messageService.selectSaveMessage(cri));
+		
+		return map;
 	}
 	
 	@RequestMapping(value = "/test", method=RequestMethod.GET)

@@ -42,7 +42,7 @@ public class YuhanSelectSubjectController
 	@RequestMapping(value = "/selectSubject", method=RequestMethod.POST)
 	public String selectSubjectPost(HttpServletRequest request, HttpSession session, YuhanSubjectVO vo, Model model)
 	{ 
-		// π∫∞° ¿ÃªÛ
+		// ÔøΩÔøΩÔøΩÔøΩ ÔøΩÃªÔøΩ
 		
 		HashMap<String, Object> parameter = new HashMap<String, Object>();
 		Set<Entry<String, Object>> set = parameter.entrySet();
@@ -81,42 +81,44 @@ public class YuhanSelectSubjectController
 	}
 	
 	@RequestMapping(value = "/updateSubject", method=RequestMethod.POST)
-	public String updateSubjectPost(HttpSession session, Model model, HttpServletRequest request)
-	{
-		HashMap<String, Object> parameter = new HashMap<String, Object>();
-	      Enumeration names = request.getParameterNames();
-	      List valueList = new ArrayList();
-	      HashMap map = new HashMap();
-	      while( names.hasMoreElements())
-	      {
-	         String key = names.nextElement().toString();
-	         String value = null;
-			try 
-			{
-				value = URLDecoder.decode(request.getParameter(key), "UTF-8");
-
-				
-			      
-			      
-			      valueList.add(Integer.parseInt(value));
-				
-			}
-			catch (UnsupportedEncodingException e) 
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	         
+	   public String updateSubjectPost(HttpSession session, Model model, HttpServletRequest request)
+	   {
+	      HashMap<String, Object> parameter = new HashMap<String, Object>();
+	         Enumeration names = request.getParameterNames();
+	         List valueList = new ArrayList();
+	         HashMap map = new HashMap();
+	         while( names.hasMoreElements())
+	         {
+	            String key = names.nextElement().toString();
+	            String value = null;
+	         try 
+	         {
+	            value = URLDecoder.decode(request.getParameter(key), "UTF-8");
+	            
+	            valueList.add(Integer.parseInt(value));
+	            
+	         }
+	         catch (UnsupportedEncodingException e) 
+	         {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+	         }
+	            
 	         parameter.put( key, value );
+	         map.put("memberID", session.getAttribute("sessionID").toString());
+	         map.put("subjectNO", value);
+	         subjectService.updateAddSubject(map);
+	         map.clear();
 	      }
 	      map.put("memberID", session.getAttribute("sessionID").toString());
 	      map.put("whereString", valueList);
 	      subjectService.updateSubject(map);
 	      
 	      
-	      
-	      return "/updateSubject";
-	}
+	      model.addAttribute("result", "ok");
+	         
+	         return "/updateSubject";
+	   }
 	
 	@RequestMapping(value = "/createSubject", method=RequestMethod.GET)
 	public void createSubject()
@@ -127,7 +129,7 @@ public class YuhanSelectSubjectController
 	@RequestMapping(value = "/createSubject", method=RequestMethod.POST)
 	public void createSubjectPost(@RequestParam("subjectName") String subjectName, @RequestParam("classNum") String classNum, @RequestParam("memberGrade") String memberGrade, YuhanSubjectVO vo, HttpSession session)
 	{
-		System.out.println("ùoπŸ");
+		System.out.println("ÔøΩoÔøΩÔøΩ");
 		
 		vo.setYUHAN_SUBJECT_NAME(subjectName);
 		vo.setYUHAN_SUBJECT_CLASS_ROOM(classNum);

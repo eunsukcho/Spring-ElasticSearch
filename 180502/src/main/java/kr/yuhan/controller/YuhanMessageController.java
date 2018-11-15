@@ -87,7 +87,7 @@ public class YuhanMessageController
 			
 			model.addAttribute("loginMemberList", memberService.select_Member(session.getAttribute("sessionID").toString()));
 			
-			model.addAttribute("userList", messageService.findUser());
+			model.addAttribute("userList", messageService.findUser()); 
 		}
 		/************************************************ 2018.10.11 이진주 */
 		
@@ -100,7 +100,7 @@ public class YuhanMessageController
 		int checkFlag = 0;
 		
 		StringTokenizer item = new StringTokenizer(YUHAN_MESSAGE_TO_MEMBER_NUMBER, "(|, |)");
-		
+		System.out.println( "yuhan_message_to_member sadf sd: " + YUHAN_MESSAGE_TO_MEMBER_NUMBER );
 		for (int i = 0; item.hasMoreTokens(); i++) 
 		{
 			if(checkFlag == 0)

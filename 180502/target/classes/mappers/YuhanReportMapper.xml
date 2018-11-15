@@ -20,7 +20,7 @@
 	</select>
 	
 	<select id="reportStudentCheck" resultType="kr.yuhan.domain.ReportVO">
-		select no, member.memberName as name, member.memberHak as hak, date_format(date , "%Y-%m-%d %H:%i:%s") as reportDate 
+		select no, member.memberName as name, member.memberHak as hak, date_format(date , "%Y-%m-%d %H:%i:%s") as reportDate, content
 		from yuhan_student_report as report, yuhanmember as member
 		where homeworkNo = #{hwno} and report.studentID = member.memberID
 	</select>

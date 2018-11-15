@@ -34,9 +34,16 @@
 	</select>
 	
 	<select id="select_Member" resultType="kr.yuhan.domain.YuhanMemberVO">
-		SELECT *
+		<!-- SELECT *
 		FROM yuhanmember
-		WHERE memberID = #{memberID}
+		WHERE memberID = #{memberID} -->
+		SELECT memberNum AS memberNum, memberID AS memberID, memberName AS memberName, memberStatus AS memberStatus
+		FROM yuhanmember
+        WHERE memberID = #{memberID}
+		UNION ALL
+		SELECT proNo AS memberNum, proID AS memberID, proName AS memberName, 'P' AS memberStatus 
+        FROM yuhan_professor
+        WHERE proID = #{memberID}
 	</select>
 	
 	<insert id="insertPro">
@@ -78,5 +85,15 @@
       SELECT COUNT(*) FROM yuhan_professor
       WHERE
           proID = #{proID}
+	</select>
+	
+	<select id="selectUserGrade" resultType="kr.yuhan.domain.YuhanMemberVO">
+		SELECT memberNum AS memberNum, memberID AS memberID, memberName AS memberName, memberStatus AS memberStatus
+		FROM yuhanmember
+        WHERE memberID = #{memberID}
+		UNION ALL
+		SELECT proNo AS memberNum, proID AS memberID, proName AS memberName, 'P' AS memberStatus 
+        FROM yuhan_professor
+        WHERE proID = #{memberID}
 	</select>
 </mapper>

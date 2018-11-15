@@ -93,6 +93,7 @@
 </form>
 
 <script>
+
 	var asdf = function() {
 		
 		var array = new Array();
@@ -128,6 +129,7 @@
 	      		$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
 	    	});
 	  	});
+
 	$("#cancelBtn").on("click", function() 
 	{
 		if (confirm("변경사항이 저장되지 않을 수 있습니다.") == true)
@@ -159,6 +161,8 @@
         // 클릭한 체크박스가 체크상태인지 체크해제상태인지 판단
         if($(this).is(":checked"))
         {
+        	var array = new Array();
+        	
             $(":checkBox", tbl).attr("checked", "checked");
             //var arr = $('input[name=checkBox]:checked').parent().child().serializeArray().map(function(item) { return item.value });
             
@@ -170,13 +174,35 @@
             	var hak = $("#myTable" + " tr:gt("+ (i) +")").find("td:eq(1)").html();
             	var name = $("#myTable" + " tr:gt("+(i)+")").find("td:eq(2)").html()
             	var tampStr = "("+hak+", "+name+") ";
-            	console.log("index : " + index + ", i : " + i + ", tampStr : " + tampStr );
+            	
+            	//console.log("index : " + index + ", i : " + i + ", tampStr : " + tampStr );
             	//console.log($("#myTable" + " tr:gt("+ index +")").find("td:eq(1)").html());
             	
-            	document.getElementById('messegeUser').value += tampStr;
+            	array.push(tampStr);
+            	
+            	//document.getElementById('messegeUser').value += tampStr;
             	tampStr = "";
             });
+            //console.log( array );
+            for( var i = 0; i < array.length; i++ ) {
+            	
+            	var word = array[i];
+            	
+            	if( array.length == i ) {
+            		break;
+            	}
+            	
+            	if( array[i + 1] == word ) {
+            		delete array[i + 1];
+            	}
+            }
             
+            var str = array.toString();
+            
+            str = str.replace(/,,/g, ", ").replace( / /g, "" );
+            str = str.replace( /,/g, ", " );
+            console.log( str );
+            $('#messegeUser').val(str);
         }
         else
         {
@@ -215,6 +241,7 @@
 	});
 	
 	
+
 	function check(val, checkBox)
 	{
 		var index = val + 1;
@@ -236,7 +263,7 @@
 				if( r == index - 1 ) {
 					break;
 				}
-				
+					
 	            /* for (var c = 0, m = table.rows[r].cells.length; c < m; c++) 
 	            {
 	                //var value = table.rows[index].cells[2].innerHTML;

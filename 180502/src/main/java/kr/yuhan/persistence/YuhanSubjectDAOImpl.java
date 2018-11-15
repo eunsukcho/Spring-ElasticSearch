@@ -93,4 +93,11 @@ public class YuhanSubjectDAOImpl implements YuhanSubjectDAO
 		// TODO Auto-generated method stub
 		sqlSession.update(NAMESPACE + ".proUpdateSubject", vo);
 	}
+	
+	@Override
+	public void updateAddSubject(HashMap map) 
+	{
+		// TODO Auto-generated method stub
+		sqlSession.update(NAMESPACE + ".updateAddSubject", map);
+	}
 }

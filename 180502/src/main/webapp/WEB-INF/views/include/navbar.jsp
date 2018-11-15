@@ -24,48 +24,49 @@
 </style>
 </head>
 <body>
+<div>
+
 	<div class="w3-container w3-padding-24 w3-center w3-white"> <!--  -->
   		<img src="/resources/images/logo/yuhanlogo.png">
 	</div>
+	<div>
+	<c:forEach items="${loginMemberList }" var="list">
 	<div class="w3-bar w3-border w3-teal w3-center w3-padding-16">
-		<a href="/hwPersonalList" class="w3-bar-item w3-wide w3-button">과제실</a>
-  		<div class="w3-dropdown-hover ">
-    		<button class="w3-button">자료실</button>
-    			<div class="w3-dropdown-content w3-bar-block w3-card-4">
-     				<a href="#" class="w3-bar-item w3-button">ASP.NET</a>
-      				<a href="#" class="w3-bar-item w3-button">JavaFramework</a>
-      				<a href="#" class="w3-bar-item w3-button">데이터베이스프로그래밍</a>
-      				<a href="#" class="w3-bar-item w3-button">모바일프로그래밍(2)</a>
-      				<a href="#" class="w3-bar-item w3-button">소프트웨어공학</a>
-      				<a href="#" class="w3-bar-item w3-button">진로탐색</a>
-      				<a href="#" class="w3-bar-item w3-button">취창업멘토링(5)</a>
-    			</div>
-    	</div>
+			<a href="/hwPersonalList" class="w3-bar-item w3-wide w3-button">과제실</a>
     	<div class="w3-dropdown-hover w3-right">
   			<button class="w3-button">
-  			<c:forEach items="${loginMemberList }" var="list">
 				${list.memberName }
 				<c:set var="name" value="홍길동" />
 					<c:choose>
 					    <c:when test="${list.memberStatus eq 'S'}">
 					        (학생)
 					    </c:when>
-					    <c:when test="${name eq 'P'}">
+					    <c:when test="${list.memberStatus eq 'P'}">
 					        (교수)
 					    </c:when>
-					    <c:otherwise>
+					    <c:when test="${list.memberStatus eq 'A'}">
 					        (관리자)
-					    </c:otherwise>
+					    </c:when>
 					</c:choose>
-				</c:forEach>
+				
 				</button>
     			<div class="w3-dropdown-content w3-bar-block w3-card-4">
-     				<a href="/MyPage_" class="w3-bar-item w3-button">마이페이지</a>
-      				<a href="/logout" class="w3-bar-item w3-button">로그아웃</a>
-      				<a href="/updateSubject" class="w3-bar-item w3-button">과목 수정</a>
-      				<a href="/createSubject" class="w3-bar-item w3-button">과목 생성</a>
+     				<a href="MyPage_" class="w3-bar-item w3-button">마이페이지</a>
+      				
+      				<c:choose>
+      				<c:when test="${list.memberStatus eq 'S'}">
+					        <a href="/updateSubject" class="w3-bar-item w3-button">과목 수정</a>
+					    </c:when>
+      				<c:when test="${list.memberStatus eq 'P'}">
+					        <a href="/createSubject" class="w3-bar-item w3-button">과목 생성</a>
+      						<a href="/manageSubject" class="w3-bar-item w3-button">과목 관리</a>
+					    </c:when>
+					 </c:choose>
+					 <a href="/logout" class="w3-bar-item w3-button">로그아웃</a>
     			</div>
     	</div>
     	<a href="/messageHome" class="w3-bar-item w3-wide w3-button w3-right">쪽지함</a>
 	</div>
-</body>
+	</c:forEach>
+	</div>
+</div>

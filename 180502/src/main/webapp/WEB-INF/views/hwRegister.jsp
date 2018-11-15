@@ -78,6 +78,7 @@ StringBuffer.prototype.toString = function() {
 </script>
 <script type="text/javascript">
 $(document).ready(function(){
+	var frm = $("form[role = 'form']"); 
     $( "#startday" ).datepicker({ dateFormat: "yy-mm-dd" });
     $( "#endday").datepicker({ dateFormat: "yy-mm-dd" });
     
@@ -183,11 +184,11 @@ $(document).ready(function(){
 		return file.format().tag();
 	}
 
-	var sendFileToServer = function(data, professorno, subjectID){ //파일 전송 함수
+	var sendFileToServer = function(data, professorno, subjectID){ // 파일 전송 함수
 		fd.append('hwno', data);
 		fd.append('professorNo', professorno);
 		fd.append('subjectID', subjectID);
-		alert(professorno + subjectID);
+		
 		$.ajax({
 			type : "POST",
 			url : "/fileUpload", //Upload URL
@@ -196,8 +197,9 @@ $(document).ready(function(){
 			processData : false,
 			cache : false,
 			success : function(data) {
-				/* alert('성공'); */
-				self.location="/hwList?subjectID="+subjectID+"&selectClass="+$("#selectClass").val();
+				frm.attr("method", "get");
+				frm.attr("action", "/hwList");
+				frm.submit();
 			},
 			error : function(){
 				alert("글 등록 실패")
@@ -212,9 +214,6 @@ $(document).ready(function(){
 	});
     
     function sendData(){
-    	alert( $("select[name=subjectClass]").val());
-    	
-
     	$("#content").val(CKEDITOR.instances.content.getData());
     	registerVO = new Object();
 		var title = $("#title").val();
@@ -229,14 +228,13 @@ $(document).ready(function(){
 		var selectClass = $("#selectClass").val();
 		var jsonData;
 		var file;
-		alert(new Date($.now()));
 		
 		if(title == null || $.trim(title) == ""){
 			alert("제목을 입력하세요");
 			return false;
 		}
 		if(startday > endday){
-			alert("시작날짜가 더 클 수 없다.")
+			alert("시작날짜가 더 클 수 없습니다.")
 		}
 		if(dataStatus >= 1)
 			file = 'Y';
@@ -268,8 +266,10 @@ $(document).ready(function(){
 				if (file == 'Y'){
 					sendFileToServer(data, professorNo, subjectID);
 				}
-				alert("과제 등록 성공")
-				self.location="/hwList?subjectID="+subjectID+"&selectClass="+selectClass;
+				alert("성공! 과제를 등록 하였습니다.")
+				frm.attr("method", "get");
+				frm.attr("action", "/hwList");
+				frm.submit();
 			},
 			error : function(){
 				alert("글 등록 실패")
@@ -290,6 +290,10 @@ function cancle_onClick()
 	}
 }
 </script>
+<form role="form" method = "post" action="#">
+	    <input type = "hidden" name = "subjectID" value = "${subjectID }">
+	    <input type = "hidden" name = "selectClass" value = "${selectClass }" id = "selectClass">
+</form>
 
 <!-- Page Container -->
 <div class="w3-content w3-margin-top" style="max-width:1400px;">

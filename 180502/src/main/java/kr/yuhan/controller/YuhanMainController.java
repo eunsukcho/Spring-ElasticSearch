@@ -149,7 +149,10 @@ public class YuhanMainController
 	            session.setAttribute("professorNum", service.professorNum(id).getProNo());
 	            session.setAttribute("proName", service.professorNum(id).getProName());
 	            
-	            
+	          //2018-11-16 이진주================================
+				model.addAttribute("IDPWCheck", "Ok");
+			  //===============================================
+				
 	            return "/main";
 	         }
 	         
@@ -331,7 +334,7 @@ public class YuhanMainController
 			String memberClass = service.selectMemberClass(sessionID);
 			String Rate = service.selectRate(sessionID);
 			
-			model.addAttribute("loginMemberList", service.select_Member(session.getAttribute("sessionID").toString()));
+			model.addAttribute("loginMemberList", service.select_Member(sessionID));
 			model.addAttribute("memberClass", memberClass);
 			session.setAttribute("memberClass", memberClass); // 학생의 반을 저장해둔다.
 			session.setAttribute("Rate", Rate); // 학생인지 교수인지를 판별
@@ -639,7 +642,7 @@ public class YuhanMainController
 	}
 	
 	@RequestMapping(value = "/studentJoin", method=RequestMethod.POST)
-	public String studentJoin(YuhanMemberVO vo, Model model, HttpSession session)
+	public String studentJoin(YuhanMemberVO vo, Model model, HttpSession session, @RequestParam("memberGrade") String memberGrade)
 	{
 		service.insertMember(vo);
 		
@@ -650,9 +653,13 @@ public class YuhanMainController
 		session.setAttribute("sessionID", vo.getMemberID());
 		session.setAttribute("memberClass", vo.getMemberClass());
 		session.setAttribute("Rate", "S");
+		model.addAttribute("joinCheck", "Success");
+	    model.addAttribute("memberGrade", memberGrade);
+
 		System.out.println("sessionID : " + vo.getMemberID() );
 		System.out.println("memberClass : " + vo.getMemberClass() );
 		System.out.println("Rate : " + "S" );
+		
 		/* ======================================================== */
 		
 		return "/studentJoin";
@@ -747,49 +754,5 @@ public class YuhanMainController
 
 		return "redirect:/professor_check";
 	}
-				
-    /*@RequestMapping(value = "/checkid/{memberID}", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> checkSignup(@PathVariable("memberID") String memberID) {
-    	ResponseEntity<Map<String, Object>> entity;
-    	
-        System.out.println(memberID);
-        
-        try {
-        	Map<String, Object> map = new HashMap<>();
-        	map.put("length", service.idcheck(memberID));
-        	entity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-        } catch(Exception e) {
-        	Map<String, Object> map = new HashMap<>();
-        	map.put("BAD", "BAD");
-        	e.printStackTrace();
-        	return new ResponseEntity<Map<String, Object>>(map, HttpStatus.BAD_REQUEST);
-        }
-        
-        return entity;
-//        
-//        String rowcount = service.idcheck(memberID);
-//        
-//       System.out.println(memberID);
-//       System.out.println(rowcount);
-//       
-//        return String.valueOf(rowcount);
-    }
-
-	@ResponseBody
-    @RequestMapping(value = "/checkidP", method = RequestMethod.POST)
-    public String checkSignupP(HttpServletRequest request, Model model) {
-        String proID = request.getParameter("proID");
-        String rowcount = service.idcheckP(proID);
-       
-        
-        
-       System.out.println(proID);
-       System.out.println(rowcount);
-       
-        return String.valueOf(rowcount);
-    }
-*/
-
 	/*****************************************************/
 }
