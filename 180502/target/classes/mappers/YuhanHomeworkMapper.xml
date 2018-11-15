@@ -192,19 +192,25 @@
    <select id="H_ListM" resultType = "kr.yuhan.domain.YuhanHomeworkVO">
    	  select distinct YUHAN_HOMEWORK_NUMBER as hwno, yuhan_subject_name as subject, yuhan_subject_table.yuhan_subject_number as subjectID,
       YUHAN_HOMEWORK_TITLE as title, date_format(YUHAN_HOMEWORK_DATE,"%Y-%m-%d %H:%i") as formatToday,date_format(YUHAN_HOMEWORK_START_DATE,"%Y-%m-%d %H:%i") as start, date_format(YUHAN_HOMEWORK_END_DATE , "%Y-%m-%d %H:%i")  as end
-
       from yuhan_taking_class, yuhan_subject_table,yuhan_homework_table,yuhan_student_report                                 
       where yuhan_subject_table.YUHAN_SUBJECT_NUMBER = yuhan_taking_class.SubjectNO
-      
       AND yuhan_homework_table.YUHAN_SUBJECT_NUMBER = yuhan_subject_table.YUHAN_SUBJECT_NUMBER
-      
-      AND yuhan_homework_table.YUHAN_HOMEWORK_NUMBER = yuhan_student_report.homeworkNo
-      
-       and( yuhan_homework_table.YUHAN_HOMEWORK_NUMBER not in (select homeworkNo from yuhan_student_report where yuhan_student_report.studentID = #{sessionID}  ))
-
-        AND memberID != #{sessionID} 
-
+      AND yuhan_homework_table.YUHAN_HOMEWORK_NUMBER = yuhan_student_report.homeworkNo  
+      and( yuhan_homework_table.YUHAN_HOMEWORK_NUMBER not in (select homeworkNo from yuhan_student_report where yuhan_student_report.studentID = #{sessionID}  ))
+      AND memberID != #{sessionID} 
       order by formatToday desc limit 3
+   </select>
+   
+   <select id="H_ListMore" resultType = "kr.yuhan.domain.YuhanHomeworkVO">
+   	  select distinct YUHAN_HOMEWORK_NUMBER as hwno, yuhan_subject_name as subject, yuhan_subject_table.yuhan_subject_number as subjectID,
+      YUHAN_HOMEWORK_TITLE as title, date_format(YUHAN_HOMEWORK_DATE,"%Y-%m-%d %H:%i") as formatToday,date_format(YUHAN_HOMEWORK_START_DATE,"%Y-%m-%d %H:%i") as start, date_format(YUHAN_HOMEWORK_END_DATE , "%Y-%m-%d %H:%i")  as end
+      from yuhan_taking_class, yuhan_subject_table,yuhan_homework_table,yuhan_student_report                                 
+      where yuhan_subject_table.YUHAN_SUBJECT_NUMBER = yuhan_taking_class.SubjectNO
+      AND yuhan_homework_table.YUHAN_SUBJECT_NUMBER = yuhan_subject_table.YUHAN_SUBJECT_NUMBER
+      AND yuhan_homework_table.YUHAN_HOMEWORK_NUMBER = yuhan_student_report.homeworkNo  
+      and( yuhan_homework_table.YUHAN_HOMEWORK_NUMBER not in (select homeworkNo from yuhan_student_report where yuhan_student_report.studentID = #{sessionID}  ))
+      AND memberID != #{sessionID} 
+      order by formatToday desc
    </select>
 	
 </mapper>

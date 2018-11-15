@@ -64,6 +64,7 @@
 						<th width="10px">no</th>
 						<th>title</th>
 						<th>regdate</th>
+						<th>complete</th>
 					</tr>
 					<c:set var = "totalCount" value="${totalCount}" />
 			    	<c:choose>
@@ -76,6 +77,15 @@
 								<td>${((totalCount-idx)-(maker.cri.page-1)*10)+1 }</td>
 								<td><a href="/hwread${maker.makeSearch(maker.cri.page) }&_id=${elastic.get(idx-1)._id }&hwno=${hw.get(idx-1).hwno}&subjectID=${subjectID}&selectClass=${selectClass }">${elastic.get(idx-1)._source.title}</a></td>
 								<td>${elastic.get(idx-1)._source.date}</td>
+								<c:set var = "reportCount" value="${report}" />
+								  <c:choose>
+								  	<c:when test="${reportCount.get(idx-1) eq 1 }">
+									  	<td>O</td>
+								  	</c:when>
+								  	<c:otherwise>
+									  	<td>X</td>
+								  	</c:otherwise>
+								  </c:choose>
 							</tr>
 							</c:forEach>
 			    		</c:otherwise>

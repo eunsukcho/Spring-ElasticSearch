@@ -4,6 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ include file = "./include/navbar.jsp" %>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
 	var noFromUser = "${noFromUser}";
 	
@@ -16,8 +17,35 @@
 	function sendBtn_onClick()
 	{
 		var messageTo = "${messageTo}";
-		self.location="/messageSend?messageTo="+messageTo;
+		self.location="/reSendMessage?messageTo="+messageTo;
 	}
+	
+	$(function(){
+		  $("#saveStar").on({
+		   mouseenter: function(){
+		    $(this).attr('src','/resources/images/save/yello.png');
+		  } ,
+		  mouseleave: function(){
+		    $(this).attr('src','/resources/images/save/gray.png');
+		  } 
+		  });
+		  
+		});
+	
+	$('#saveStar').click(function(){
+		$("#saveStar").attr("src", 'resources/images/save/yello.png');
+	});
+			function cancelBtn_Click()
+			{
+				if(confirm("쪽지를 삭제하시겠습니까?"))
+				{
+					self.location = "/deleteMessage?messageNum=" + document.getElementById("messageNum").value;
+				}
+				else
+					{
+					return;
+					}
+			}
 </script>
 
 <!-- Page Container -->
@@ -28,25 +56,36 @@
   <div class="w3-container w3-card w3-white w3-margin-bottom">
   <h2 class="w3-text-grey w3-padding-16"><i class="fa fa-code fa-fw w3-margin-right w3-xxlarge w3-text-teal"></i>Message</h2>
   <div class="w3-row w3-container" style="margin-bottom: 7px">
+  <c:forEach items="${messageList }" varStatus="cnt" var="vo">
   <table class="w3-table w3-border" width="100%">
-				<c:forEach items="${messageList }" varStatus="cnt" var="vo">
 				<tr>
 					<td><b>보낸 사람</b>&nbsp;&nbsp;|&nbsp;&nbsp;${vo.YUHAN_MESSAGE_FROM_MEMBER_NUMBER }</td>
+					<td rowspan="2"><img id="saveStar" src="/resources/images/save/gray.png" class="w3-right" style="width:50px; height:50px"></td>
 				</tr>
 				<tr>
 					<td><b>보낸 시간</b>&nbsp;&nbsp;|&nbsp;&nbsp;<fmt:formatDate value="${vo.YUHAN_MESSAGE_SEND_DATE}" pattern="yyyy/MM/dd [HH:mm:ss]"/></td>
 				</tr>
 				<tr style="margin-bottom: 50%">
-					<td>${vo.YUHAN_MESSAGE_CONTENT }</td>
+					<td colspan="2">${vo.YUHAN_MESSAGE_CONTENT }</td>
 				</tr>
-				</c:forEach>
+				
 				</table>
 				<div class="w3-container" style="margin-bottom:7px; margin-top:20px">
 				<a href="/messageHome"><button type="button" class="w3-btn w3-white w3-left w3-border" style="width:120px; margin-right:7px" id="cancelBtn">목록으로</button></a>
        		<button type="button" class="w3-btn w3-teal w3-right" style="width:120px" onClick="sendBtn_onClick()">답장 &nbsp; ❯</button>
-       		<a href="/messageDelete"><button type="button" class="w3-btn w3-gray w3-right" style="width:120px; margin-right:7px" id="cancelBtn">삭제하기</button></a>
-		   	
+     
+					<c:choose>
+						<c:when test="${vo.YUHAN_MESSAGE_STATUS eq 'I'}">
+							<button type="button" class="w3-btn w3-gray w3-right" style="width:120px; margin-right:7px" id="cancelBtn" onClick="cancelBtn_Click()">삭제하기</button>
+					        <a href="/saveMessage?messageNum=${vo.YUHAN_MESSAGE_NUMBER }"><button type="button" class="w3-btn w3-gray w3-right" style="width:120px; margin-right:7px">저장하기</button></a>
+					    </c:when>
+					    <c:when test="${vo.YUHAN_MESSAGE_STATUS eq 'S'}">
+					    	<a href="/messageDelete"><button type="button" class="w3-btn w3-gray w3-right" style="width:120px; margin-right:7px" id="cancelBtn" onClick="cancelBtn_Click()">삭제하기</button></a>
+					    </c:when>
+					</c:choose>
+					<input type="hidden" id="messageNum" value="${vo.YUHAN_MESSAGE_NUMBER }">
         	</div>
+  </c:forEach>
   </div>
   </div>
   </div>

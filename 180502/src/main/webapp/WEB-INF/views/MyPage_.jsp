@@ -1,34 +1,33 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file = "./include/navbar.jsp" %>
-
-
 <html>
 <style>
  a{ text-decoration:none;}
 </style>
-
+<script ></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	
+});
+</script>
 <div class="w3-content w3-margin-top" style="max-width:1400px;">
 
   <!-- The Grid -->
   <div class="w3-row-padding">
   
   <div class="w3-container w3-card w3-white w3-margin-bottom">
-        <h2 class="w3-text-grey w3-padding-16">미제출 과제</h2>
-        <div class="w3-container">
-         <!--  <h5 class="w3-opacity"><b>[데이터베이스프로그래밍] 데이터베이스 8주차</b></h5>
-          <h6 class="w3-text-teal">05.18 13:00 - 06.22 18.00</h6>
-          <hr>
-           <h5 class="w3-opacity"><b>[C#] C# 팀프로젝트</b></h5>
-          <h6 class="w3-text-teal">06.01 10:00 - 06.24 19:00</h6> -->
-          
+  <div class="w3-container">
+        <h2 class="w3-text-grey w3-padding-16" style="float:left;">미제출 과제</h2>
+  </div>
+        <div class="w3-container" id="noReport">
              <c:forEach items = "${listm }" var = "vo"> 
-                
-                        <a href  = "hwread"><h5 class="w3-opacity"><b>[ ${vo.subject } ] ${vo.title }</b></h5></a> <P>
+                        <a href  = "hwList?subjectID=${vo.subjectID}&selectClass=${selectClass}"><h5 class="w3-opacity"><b>[ ${vo.subject } ] ${vo.title }</b></h5></a> <P>
                         <h6 class="w3-text-teal">${vo.start } - ${vo.end }</h6>
                         <h7>등록일 : ${vo.formatToday } </h7>
                         <hr/>
-            
             </c:forEach>
         </div>
       </div>

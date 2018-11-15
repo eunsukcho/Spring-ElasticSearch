@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,6 +25,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.yuhan.domain.Criteria;
 import kr.yuhan.domain.PageMaker;
+import kr.yuhan.domain.PageMaker2;
+import kr.yuhan.domain.SearchCriteria2;
 import kr.yuhan.domain.YuhanMessageVO;
 import kr.yuhan.service.YuhanMessageService;
 
@@ -36,7 +39,7 @@ public class YuhanMessageRestController
 	@RequestMapping(value = "/messageHomeList", method=RequestMethod.GET)
 	public List<YuhanMessageVO> messageHomeList(Model model, HttpSession session, Criteria cri)
 	{
-		cri.setMemberHak(messageService.selectHak(session.getAttribute("sessionID").toString()));
+		cri.setMemberID(session.getAttribute("sessionID").toString());
 		PageMaker maker = new PageMaker();
 		maker.setCri(cri);
 		maker.setTotalMessageCount(messageService.totalMessageCount(cri));
@@ -57,6 +60,39 @@ public class YuhanMessageRestController
 		
 		model.addAttribute("maker", maker);
 		return messageService.selectSendMessage(cri);
+	}
+	
+	@RequestMapping(value = "/searchMessage", method=RequestMethod.GET)
+	public List<YuhanMessageVO> searchMessage(Model model, HttpSession session, @ModelAttribute("cri") SearchCriteria2 cri)
+	{
+		//model.addAttribute("list", service.listCriteria(cri));
+				PageMaker2 maker = new PageMaker2();
+				maker.setCri(cri);
+				//maker.setTotalCount(service.totalCount(cri));
+				
+				cri.setMemberID(session.getAttribute("sessionID").toString());
+				
+				maker.setTotalCount(messageService.listSearchCount(cri));
+				
+				model.addAttribute("maker",maker);
+				
+				System.out.println("ddddddddddddddd : " + messageService.listSearch(cri));
+				System.out.println("xxxxxxxxxxxxxxx : " + messageService.listSearchCount(cri));
+		return messageService.listSearch(cri);
+	}
+	
+	@RequestMapping(value = "/messageSaveList", method=RequestMethod.GET)
+	public List<YuhanMessageVO> messageSaveList(Model model, HttpSession session, Criteria cri)
+	{
+		cri.setMemberID(session.getAttribute("sessionID").toString());
+		PageMaker maker = new PageMaker();
+		maker.setCri(cri);
+		maker.setTotalMessageCount(messageService.totalSaveMessageCount(cri));
+		
+		model.addAttribute("maker", maker);
+		
+		
+		return messageService.selectSaveMessage(cri);
 	}
 	
 	@RequestMapping(value = "/test", method=RequestMethod.GET)

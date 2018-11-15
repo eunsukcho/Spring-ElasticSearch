@@ -136,5 +136,11 @@ public class YuhanHomeworkDAOImpl implements YuhanHomeworkDAO{
 		return sqlSession.selectList(NAMESPACE + ".H_ListM", memberID);
 	}
 
+	@Override
+	public List<YuhanHomeworkVO> H_ListMore(String memberID) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(NAMESPACE + ".H_ListMore", memberID);
+	}
+
 	
 }

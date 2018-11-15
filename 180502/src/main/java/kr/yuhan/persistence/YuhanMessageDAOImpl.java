@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
 import kr.yuhan.domain.Criteria;
+import kr.yuhan.domain.SearchCriteria2;
 import kr.yuhan.domain.YuhanMemberVO;
 import kr.yuhan.domain.YuhanMessageVO;
 
@@ -102,14 +103,57 @@ public class YuhanMessageDAOImpl implements YuhanMessageDAO
 	}
 
 	@Override
-	public String selectUser(String memberID) 
+	public List<YuhanMemberVO> selectUser(String memberID) 
 	{
 		// TODO Auto-generated method stub
-		return sqlSession.selectOne(NAMESPACE + ".selectUser", memberID);
+		return sqlSession.selectList(NAMESPACE + ".selectUser", memberID);
 	}
 
 	@Override
-	public void updateDeleteMessageStatus(String messageNum) {
+	public void updateDeleteMessageStatus(String messageNum) 
+	{
+		// TODO Auto-generated method stub
 		sqlSession.update(NAMESPACE + ".updateDeleteMessageStatus", messageNum);
+	}
+
+	@Override
+	public String selectID(String memberHak) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(NAMESPACE + ".selectID", memberHak);
+	}
+
+	@Override
+	public List<YuhanMessageVO> listSearch(SearchCriteria2 cri) 
+	{
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(NAMESPACE + ".listSearch", cri);
+	}
+
+	@Override
+	public int listSearchCount(SearchCriteria2 cri) 
+	{
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(NAMESPACE + ".listSearchCount", cri);
+	}
+
+	@Override
+	public void saveMessage(String messageNum) 
+	{
+		// TODO Auto-generated method stub
+		sqlSession.update(NAMESPACE + ".saveMessage", messageNum);
+	}
+
+	@Override
+	public List<YuhanMessageVO> selectSaveMessage(Criteria cri) 
+	{
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(NAMESPACE + ".selectSaveMessage", cri);
+	}
+
+	@Override
+	public int totalSaveMessageCount(Criteria cri) 
+	{
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(NAMESPACE + ".totalSaveMessageCount", cri);
 	}
 }

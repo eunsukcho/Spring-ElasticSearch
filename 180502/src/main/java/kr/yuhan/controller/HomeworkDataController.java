@@ -245,4 +245,21 @@ public class HomeworkDataController {
 		
 		return entity;
 	}
+	
+	@RequestMapping(value="/notMade/{sessionID}" , method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+	public ResponseEntity<?> notMade(@PathVariable("sessionID") String sessionID){
+		
+		ResponseEntity<?> entity;
+		Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
+
+		System.out.println("미제출 과제 더보기");
+		try {
+			entity = new ResponseEntity<Object>(service.H_ListMore(sessionID), HttpStatus.OK);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		
+		return entity;
+	}
 }

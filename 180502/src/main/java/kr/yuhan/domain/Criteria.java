@@ -4,16 +4,17 @@ public class Criteria
 {
 	private int page;
 	private int perPageNum;
-	private String memberHak;
+	private String memberID;
 	private String YUHAN_MESSAGE_FROM_MEMBER_NUMBER;
+	private String YUHAN_MESSAGE_TO_MEMBER_NUMBER;
 	
 	private int repPage;
 	private int repPageNum;
-
+	
 	public int getRepPage() {
 		return repPage;
 	}
-
+	
 	public void setRepPage(int repPage) {
 		if(repPage<=0) 
 		{
@@ -22,9 +23,19 @@ public class Criteria
 		}
 		this.repPage = repPage;
 	}
-
+	
 	public int getRepPageNum() {
 		return repPageNum;
+	}
+	
+	
+
+	public String getYUHAN_MESSAGE_TO_MEMBER_NUMBER() {
+		return YUHAN_MESSAGE_TO_MEMBER_NUMBER;
+	}
+
+	public void setYUHAN_MESSAGE_TO_MEMBER_NUMBER(String yUHAN_MESSAGE_TO_MEMBER_NUMBER) {
+		YUHAN_MESSAGE_TO_MEMBER_NUMBER = yUHAN_MESSAGE_TO_MEMBER_NUMBER;
 	}
 
 	public void setRepPageNum(int repPageNum) {
@@ -37,7 +48,7 @@ public class Criteria
 		
 		this.repPageNum = repPageNum;
 	}
-
+	
 	public String getYUHAN_MESSAGE_FROM_MEMBER_NUMBER() 
 	{
 		return YUHAN_MESSAGE_FROM_MEMBER_NUMBER;
@@ -48,14 +59,14 @@ public class Criteria
 		YUHAN_MESSAGE_FROM_MEMBER_NUMBER = yUHAN_MESSAGE_FROM_MEMBER_NUMBER;
 	}
 
-	public String getMemberHak() 
+	public String getMemberID() 
 	{
-		return memberHak;
+		return memberID;
 	}
 
-	public void setMemberHak(String memberHak)
+	public void setMemberID(String memberID)
 	{
-		this.memberHak = memberHak;
+		this.memberID = memberID;
 	}
 
 	public int getPage() 

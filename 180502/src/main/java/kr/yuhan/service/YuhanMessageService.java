@@ -4,6 +4,7 @@ import java.util.List;
 
 import kr.yuhan.domain.Criteria;
 import kr.yuhan.domain.PageMaker;
+import kr.yuhan.domain.SearchCriteria2;
 import kr.yuhan.domain.YuhanMemberVO;
 import kr.yuhan.domain.YuhanMessageVO;
 
@@ -25,10 +26,20 @@ public interface YuhanMessageService
 	
 	public String selectNoReadMessageCount(String memberID); //2018-10-14
 	
-	public String selectUser(String memberID); //2018-10-16
+	public List<YuhanMemberVO> selectUser(String memberID); //2018-10-16
+	
+	public void updateDeleteMessageStatus(String messageNum); //2018-10-16
 	
 	public List<YuhanMemberVO> listCriteria(Criteria cri);
 	public int totalMessageCount(Criteria cri);
 	
-	public void updateDeleteMessageStatus(String messageNum); //2018-10-16
+	public String selectID(String memberHak);
+	
+	public List<YuhanMessageVO> listSearch(SearchCriteria2 cri);
+	public int listSearchCount(SearchCriteria2 cri);
+	
+	public void saveMessage(String messageNum);
+	
+	public List<YuhanMessageVO> selectSaveMessage(Criteria cri);
+	public int totalSaveMessageCount(Criteria cri);
 }

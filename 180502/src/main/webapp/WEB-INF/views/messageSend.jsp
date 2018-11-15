@@ -16,7 +16,7 @@
         <h2 class="w3-text-grey w3-padding-16"><i class="fa fa-code fa-fw w3-margin-right w3-xxlarge w3-text-teal"></i>Send Message</h2>
         <div class="w3-row w3-container">
         <div class="w3-threequarter w3-container">
-        <input class="w3-input w3-border" type="text" style="margin-bottom: 7px; background-color: #EAEAEA" id="messegeUser" name="YUHAN_MESSAGE_TO_MEMBER_NUMBER" readonly value="">
+        <input class="w3-input w3-border" type="text" style="margin-bottom: 7px; background-color: #EAEAEA" id="messegeUser" name="YUHAN_MESSAGE_TO_MEMBER_NUMBER" readonly>
         	<input class="w3-input w3-border" type="text" style="margin-bottom: 7px" name="YUHAN_MESSAGE_SUBJECT" placeholder="Insert Message Subject...">
         	<textarea rows="10" class="w3-input w3-border" style="resize:none; margin-bottom: 7px;" name="YUHAN_MESSAGE_CONTENT"></textarea>
        
@@ -31,34 +31,36 @@
 		 	<th colspan="2"><b>전체 보내기</b></th>
 		 </tr>
 			<c:forEach items="${userList }" varStatus="cnt" var="userList">
-				<%-- <tr>
+				<tr data-type="userType">
 					<td colspan="3"><b class="text-center">
 						<c:set var="name" value="홍길동" />
 					<c:choose>
+						<c:when test="${userList.memberGrade eq '4'}">
+					        교수
+					    </c:when>
 					    <c:when test="${userList.memberGrade eq '3'}">
 					        3학년
 					    </c:when>
 					    <c:when test="${userList.memberGrade eq '2'}">
 					        2학년
 					    </c:when>
-					    <c:otherwise>
+					    <c:when test="${userList.memberGrade eq '1'}">
 					        1학년
-					    </c:otherwise>
+					    </c:when>
 					</c:choose>
-					
 					<c:choose>
 					    <c:when test="${userList.memberClass eq '1'}">
 					        1반
 					    </c:when>
-					    <c:when test="${userList.memberGrade eq '2'}">
+					    <c:when test="${userList.memberClass eq '2'}">
 					        2반
 					    </c:when>
-					    <c:otherwise>
+					    <c:when test="${userList.memberClass eq '3'}">
 					        3반
-					    </c:otherwise>
+					    </c:when>
 					</c:choose>
 					::</b>
-					</td> --%>
+					</td>
 				</tr>
 				<tr>
 					<td><input type="checkbox" id="checkBox" name="checkBox" onclick="check(${cnt.count}, this)"></td>
@@ -91,16 +93,32 @@
 </form>
 
 <script>
+	var asdf = function() {
+		
+		var array = new Array();
+		
+		for( var i = 0; i < $("#myTable tr[data-type='userType']").length; i++ ) {
+			array.push( $("#myTable tr[data-type='userType']")[i] );
+		}
+		
+		for( var i = 0; i < array.length; i++ ) {
+			var word = $(array[i]).text();
+			
+			if( i == array.length )
+				{
+				
+					return;
+				}
+			
+			if( word == $(array[i + 1]).text() ) {
+				$(array[i + 1]).remove();
+			}
+		}
+	}
+	
 	$(document).ready(function()
 	{
-		var seen = {}; 
-		$('table tr').each(function() { 
-		    var txt = $(this).text(); 
-		    if (seen[txt]) 
-		     $(this).remove(); 
-		    else 
-		     seen[txt] = true; 
-		}); 
+		asdf();
 		
 		$("#myInput").on("keyup", function() 
 		{
@@ -110,7 +128,6 @@
 	      		$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
 	    	});
 	  	});
-
 	$("#cancelBtn").on("click", function() 
 	{
 		if (confirm("변경사항이 저장되지 않을 수 있습니다.") == true)
@@ -145,21 +162,21 @@
             $(":checkBox", tbl).attr("checked", "checked");
             //var arr = $('input[name=checkBox]:checked').parent().child().serializeArray().map(function(item) { return item.value });
             
+            
             $(":checkBox:not(:first)", tbl).each(function(i,elements)
             {
             	index = $(elements).index(":checkBox:not(:first)", tbl); 
             	
-            	var hak = $("#myTable" + " tr:gt("+ (index) +")").find("td:eq(1)").html();
-            	var name = $("#myTable" + " tr:gt("+(index)+")").find("td:eq(2)").html()
+            	var hak = $("#myTable" + " tr:gt("+ (i) +")").find("td:eq(1)").html();
+            	var name = $("#myTable" + " tr:gt("+(i)+")").find("td:eq(2)").html()
             	var tampStr = "("+hak+", "+name+") ";
-            	
-            	console.log($("#myTable" + " tr:gt("+ index +")").find("td:eq(1)").html());
-            	
+            	console.log("index : " + index + ", i : " + i + ", tampStr : " + tampStr );
+            	//console.log($("#myTable" + " tr:gt("+ index +")").find("td:eq(1)").html());
             	
             	document.getElementById('messegeUser').value += tampStr;
-            	
             	tampStr = "";
             });
+            
         }
         else
         {
@@ -198,21 +215,37 @@
 	});
 	
 	
-
 	function check(val, checkBox)
 	{
+		var index = val + 1;
+		
+		//console.log(index);
 		if (checkBox.checked == true)
 		{
 			var table = document.getElementById('myTable');
-	        for (var r = 0, n = table.rows.length; r < n; r++) 
+	        for (var r = 1, n = table.rows.length; r < n; r++) 
 	        {
-	            for (var c = 0, m = table.rows[r].cells.length; c < m; c++) 
+	        	if( $(table.rows[r]).attr("data-type") != undefined ) {
+	        		index++;
+	        		continue;
+	        	}
+	        	
+				var value = table.rows[r].cells[2].innerHTML;
+				var hak = table.rows[r].cells[1].innerHTML;
+				
+				if( r == index - 1 ) {
+					break;
+				}
+				
+	            /* for (var c = 0, m = table.rows[r].cells.length; c < m; c++) 
 	            {
-	                var value = table.rows[val].cells[2].innerHTML;
-	                var hak = table.rows[val].cells[1].innerHTML;
-	            }
+	                //var value = table.rows[index].cells[2].innerHTML;
+	                //var hak = table.rows[index].cells[1].innerHTML;
+	                
+	            } */
 	        }
 	        document.getElementById('messegeUser').value += "("+ hak + ", " + value + ") ";
+	        
 		}
 		else
 		{		
@@ -223,8 +256,9 @@
 	        {
 	            for (var c = 0, m = table.rows[r].cells.length; c < m; c++) 
 	            {
-	                var value = table.rows[val].cells[2].innerHTML;
-	                var hak = table.rows[val].cells[1].innerHTML;
+	                var value = table.rows[index].cells[2].innerHTML;
+	                var hak = table.rows[index].cells[1].innerHTML;
+	                
 				}
 	        }
 	        

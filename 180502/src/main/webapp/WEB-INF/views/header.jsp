@@ -5,7 +5,6 @@
 <head>
 <script type="text/javascript">
 var loginCheck = '${loginCheck}';
-
 if(loginCheck == "Fail")
 	{
 		alert("로그인 실패");
@@ -41,10 +40,10 @@ if(loginCheck == "Fail")
 		<img src="./resources/images/logo/yuhanlogo.png">
 	</div>
 	<div class="w3-display-middle">
-		<h1 class="w3-jumbo w3-animate-top">IT 사이버 강의실</h1>
+		<h1 class="w3-jumbo w3-animate-top">IT 종합 정보 시스템</h1>
 			<hr class="w3-border-grey" style="margin:auto;width:40%">
 			<div class="w3-container w3-teal">
-  				<h2>Input Form</h2>
+  				<h2>Sign In</h2>
 			</div>
 			<div class="w3-container w3-light-grey">
 			<form class="w3-container" action="/login" method="post">
@@ -58,7 +57,7 @@ if(loginCheck == "Fail")
 			</p>
 			</form>
 			<p>
-				<span class="w3-right w3-padding w3-hide-small"><a href="joinType">Sign up here</a></span>
+				<span class="w3-right w3-padding w3-hide-small"><a href="#">Sign up here</a></span>
 			</p>
 			</div>
 	</div>

@@ -76,9 +76,6 @@ public class HomeworkViewController {
 			@ModelAttribute("cri") SearchCriteria cri, @ModelAttribute("recri") ReplyCriteria recri, 
 			HttpSession session, HttpServletRequest request, Model model){
 		String _id = request.getParameter("_id");
-		if(_id == null) {
-			System.out.println("마이페이지에서 넘어왔습니다.");
-		}
 		model.addAttribute("loginMemberList", memberService.select_Member(session.getAttribute("sessionID").toString())); //메뉴바 접속 회원 이름 출력 서비스
 		List<YuhanSubjectVO> list = service.selectSubjectData(Integer.toString(subjectID));
 		String selectClass = "";
@@ -210,6 +207,8 @@ public class HomeworkViewController {
 		String selectClass = "";
 		int professorNum;
 		String sessionID = ""; // 학생 ID
+		ArrayList<Integer> list = new ArrayList<>();
+		ArrayList<Integer> list2 = new ArrayList<>();
 		
 		model.addAttribute("loginMemberList", memberService.select_Member(session.getAttribute("sessionID").toString())); //메뉴바 접속 회원 이름 출력 서비스
 		model.addAttribute("subjectList", service.selectSubjectData(Integer.toString(subjectID))); //과목 정보 출력 서비스
@@ -222,6 +221,16 @@ public class HomeworkViewController {
 			sessionID = (String) session.getAttribute("sessionID");
 			YuhanHomeworkVO vo = new YuhanHomeworkVO(subjectID, selectClass, sessionID); //회원 아이디와, 과목번호, 반으로 학생의 해당 과목의 과제 목록을 불러온다. 
 			model.addAttribute("hw", service.listHomework(vo)); //글 번호를 알기위해. hwread 페이지의 파라미터로 넘겨줄것임.
+			
+			for (int i = 0; i < service.listHomework(vo).size(); i++) {
+				list.add(i, service.listHomework(vo).get(i).getHwno());
+			}
+			for (int i = 0; i < list.size(); i++) {
+				list2.add(i, reportService.reportContentCount(list.get(i), sessionID));
+			}
+			System.out.println("과제 제출 여부");
+			System.out.println(list2);
+			model.addAttribute("report", list2);
 		}else {
 			professorNum = Integer.parseInt((String) session.getAttribute("professorNum")); // 접속 교수 번호
 			System.out.println("파라미터 반 : " + request.getParameter("selectClass"));
@@ -238,9 +247,7 @@ public class HomeworkViewController {
 
 		/** 밑 부분 검색 엔진 사용 (검색엔진에서는 교수이름, 과목 이름, 학생의 반으로 리스트를 가져옴) - 실제 데이터를 가져오는 부분  **/
 		String professorName = service.listHomeworkEla(String.valueOf(subjectID)).getProfessor(); // 검색엔진에서 필요한 정보를 가져옴
-		System.out.println("교수 이름 : " + professorName);
 		String subjectName = service.listHomeworkEla(String.valueOf(subjectID)).getSubject(); // 검색엔진에서 필요한 정보를 가져옴
-		//System.out.println("과목 이름 : " + subjectName);
 
 		ElasticVO elvo = new ElasticVO(subjectName, professorName, selectClass); // Vo에 저장
 		
@@ -410,7 +417,7 @@ public class HomeworkViewController {
 	         model.addAttribute("sessionID", sessionID);
 	         model.addAttribute("list", service.H_List(sessionID)); //학생 개인의 과목 목록 출력
 	         model.addAttribute("listc", service.H_ListC(sessionID));
-	         model.addAttribute("listm", service.H_ListM(sessionID));
+	         model.addAttribute("listm", service.H_ListM(sessionID)); //미제출 과제
 	      }
 	}
 }

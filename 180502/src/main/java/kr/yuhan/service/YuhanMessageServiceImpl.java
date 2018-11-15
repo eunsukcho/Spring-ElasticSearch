@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 
 import kr.yuhan.domain.Criteria;
+import kr.yuhan.domain.SearchCriteria2;
 import kr.yuhan.domain.YuhanMemberVO;
 import kr.yuhan.domain.YuhanMessageVO;
 import kr.yuhan.persistence.YuhanMessageDAO;
@@ -88,14 +89,58 @@ public class YuhanMessageServiceImpl implements YuhanMessageService
 	}
 
 	@Override
-	public String selectUser(String memberID) 
+	public List<YuhanMemberVO> selectUser(String memberID) 
 	{
 		// TODO Auto-generated method stub
 		return dao.selectUser(memberID);
 	}
 
 	@Override
-	public void updateDeleteMessageStatus(String messageNum) {
+	public void updateDeleteMessageStatus(String messageNum) 
+	{
+		// TODO Auto-generated method stub
 		dao.updateDeleteMessageStatus(messageNum);
+	}
+
+	@Override
+	public String selectID(String memberHak) 
+	{
+		// TODO Auto-generated method stub
+		return dao.selectID(memberHak);
+	}
+
+	@Override
+	public List<YuhanMessageVO> listSearch(SearchCriteria2 cri) 
+	{
+		// TODO Auto-generated method stub
+		return dao.listSearch(cri);
+	}
+
+	@Override
+	public int listSearchCount(SearchCriteria2 cri) 
+	{
+		// TODO Auto-generated method stub
+		return dao.listSearchCount(cri);
+	}
+
+	@Override
+	public void saveMessage(String messageNum) 
+	{
+		// TODO Auto-generated method stub
+		dao.saveMessage(messageNum);
+	}
+
+	@Override
+	public List<YuhanMessageVO> selectSaveMessage(Criteria cri) 
+	{
+		// TODO Auto-generated method stub
+		return dao.selectSaveMessage(cri);
+	}
+
+	@Override
+	public int totalSaveMessageCount(Criteria cri) 
+	{
+		// TODO Auto-generated method stub
+		return dao.totalSaveMessageCount(cri);
 	}
 }

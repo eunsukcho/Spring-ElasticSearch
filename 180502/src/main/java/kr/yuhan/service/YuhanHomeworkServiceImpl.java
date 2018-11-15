@@ -132,4 +132,10 @@ public class YuhanHomeworkServiceImpl implements YuhanHomeworkService {
 		// TODO Auto-generated method stub
 		return dao.H_ListM(memberID);
 	}
+
+	@Override
+	public List<YuhanHomeworkVO> H_ListMore(String memberID) {
+		// TODO Auto-generated method stub
+		return dao.H_ListMore(memberID);
+	}
 }

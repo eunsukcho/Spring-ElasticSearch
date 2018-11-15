@@ -39,4 +39,5 @@ public interface YuhanHomeworkDAO {
 	public List<YuhanHomeworkVO> H_List(String memberID);
 	public List<YuhanHomeworkVO> H_ListC(String memberID);
 	public List<YuhanHomeworkVO> H_ListM(String memberID);
+	public List<YuhanHomeworkVO> H_ListMore(String memberID);
 }
