@@ -60,7 +60,7 @@
 				</c:forEach>
 				</button>
     			<div class="w3-dropdown-content w3-bar-block w3-card-4">
-     				<a href="#" class="w3-bar-item w3-button">마이페이지</a>
+     				<a href="/MyPage_" class="w3-bar-item w3-button">마이페이지</a>
       				<a href="/logout" class="w3-bar-item w3-button">로그아웃</a>
       				<a href="/updateSubject" class="w3-bar-item w3-button">과목 수정</a>
       				<a href="/createSubject" class="w3-bar-item w3-button">과목 생성</a>

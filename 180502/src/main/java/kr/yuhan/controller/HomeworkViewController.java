@@ -72,9 +72,14 @@ public class HomeworkViewController {
 	}
 	
 	@RequestMapping(value="/hwread", method = {RequestMethod.GET})
-	public void hwread(@RequestParam ("_id") String _id, @RequestParam("hwno") int hwno, @RequestParam("subjectID") int subjectID, 
+	public void hwread( @RequestParam("hwno") int hwno, @RequestParam("subjectID") int subjectID, 
 			@ModelAttribute("cri") SearchCriteria cri, @ModelAttribute("recri") ReplyCriteria recri, 
 			HttpSession session, HttpServletRequest request, Model model){
+		String _id = request.getParameter("_id");
+		if(_id == null) {
+			System.out.println("마이페이지에서 넘어왔습니다.");
+		}
+		model.addAttribute("loginMemberList", memberService.select_Member(session.getAttribute("sessionID").toString())); //메뉴바 접속 회원 이름 출력 서비스
 		List<YuhanSubjectVO> list = service.selectSubjectData(Integer.toString(subjectID));
 		String selectClass = "";
 		String studentID = "";
@@ -386,5 +391,26 @@ public class HomeworkViewController {
 		model.addAttribute("studentReport", reportService.reportDetailView(no));
 		System.out.println("content : " + reportService.reportDetailView(no));
 		model.addAttribute("elastic",  elservice.readElastic(_id).get(0).get_source());
+	}
+	
+	@RequestMapping(value="/MyPage_", method = RequestMethod.GET) /**로그인한 사람의 수강, 담당 과목 **/
+	   public void MyPage_(Model model, HttpSession session, RedirectAttributes redir){
+	      String sessionID; //학생 아이디
+	      
+	      model.addAttribute("loginMemberList", memberService.select_Member(session.getAttribute("sessionID").toString())); //메뉴바 접속 회원 이름 출력 서비스
+	      
+	      String rate = (String) session.getAttribute("Rate"); //학생과 교수를 구분
+	      if(rate.equals("S")) { // 로그인한 사람이 학생일 경우
+	         System.out.println("학생 입니다.");
+	         String memberClass = (String) session.getAttribute("memberClass"); // 만약 학생이라면 반을 가져옴.
+	         System.out.println("학생의 반 : " + memberClass);
+	         sessionID = (String ) session.getAttribute("sessionID"); // 학생의 개인 과목 목록을 가져올 땐, 아이디를 사용하여 수강 테이블에서 검색한다.
+	         model.addAttribute("selectClass", memberClass);
+	         model.addAttribute("rate", rate);
+	         model.addAttribute("sessionID", sessionID);
+	         model.addAttribute("list", service.H_List(sessionID)); //학생 개인의 과목 목록 출력
+	         model.addAttribute("listc", service.H_ListC(sessionID));
+	         model.addAttribute("listm", service.H_ListM(sessionID));
+	      }
 	}
 }

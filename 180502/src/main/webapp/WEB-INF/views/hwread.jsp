@@ -22,7 +22,6 @@ StringBuffer.prototype.toString = function() {
 };
 </script>
 <script type="text/javascript">
-
 $(document).ready(function(){
 	var frm = $("form[role = 'form']"); 
 	console.log(frm);
@@ -459,20 +458,28 @@ function printPaging(pageMaker){
 		 <c:set var = "rate" value = "${rate }" />
 		 <c:choose>
 		  	<c:when test="${rate eq 'S' }">
-			  	<div class="w3-container">
-			  		<p>댓글</p>
-			  		<p><b></b></p>
-				  	<div class="bs-docs-example">
-						<table id="commentList">
-				
-						</table>
-					</div>
-					<div>
-						<ul id="paging">
+		  		<c:set var = "replyCount" value="${replyCount}" />
+		  		<c:choose>
+		  			<c:when test="${replyCount eq '0'}">
+		  				<p>등록된 댓글이 없습니다.</p>
+		  			</c:when>
+		  			<c:otherwise>
+		  				<div class="w3-container">
+				  		<p>댓글</p>
+				  		<p><b></b></p>
+						  	<div class="bs-docs-example">
+								<table id="commentList">
 						
-						</ul>
-					</div>
-				</div>
+								</table>
+							</div>
+							<div>
+								<ul id="paging">
+								
+								</ul>
+							</div>
+						</div>
+		  			</c:otherwise>
+		  		</c:choose>
 		  	</c:when>
 		  	<c:otherwise>
 		  		

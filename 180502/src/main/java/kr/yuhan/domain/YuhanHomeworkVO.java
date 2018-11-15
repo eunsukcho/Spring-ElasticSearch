@@ -29,6 +29,10 @@ public class YuhanHomeworkVO {
 	private Date totalEnd;
 	//직접 DB와 연결되는 변수
 	
+	private String subject;
+	private String memberClass;
+	
+	
 	public YuhanHomeworkVO() {}
 
 	public YuhanHomeworkVO(int subjectID, String subjectClass, String sessionID) {
@@ -46,8 +50,25 @@ public class YuhanHomeworkVO {
 
 
 	//이하 getter/setter
+	
 	public String get_id() {
 		return _id;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	public String getMemberClass() {
+		return memberClass;
+	}
+
+	public void setMemberClass(String memberClass) {
+		this.memberClass = memberClass;
 	}
 
 	public void set_id(String _id) {

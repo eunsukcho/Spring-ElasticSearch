@@ -36,4 +36,9 @@ public interface YuhanHomeworkService {
 	
 	public List<Object> selectHak(String professorNum); //교수일 경우 몇 학년까지 담당하는지 
 	public List<YuhanClass> selectClass(String memberNum); //해당 과목에 몇 반까지 있는지
+	
+	public List<YuhanHomeworkVO> H_List(String memberID);
+	public List<YuhanHomeworkVO> H_ListC(String memberID);
+	public List<YuhanHomeworkVO> H_ListM(String memberID);
+	
 }

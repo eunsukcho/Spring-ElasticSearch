@@ -114,4 +114,22 @@ public class YuhanHomeworkServiceImpl implements YuhanHomeworkService {
 	public List<YuhanClass> selectClass(String memberNum) {
 		return dao.selectClass(memberNum);
 	}
+
+	@Override
+	public List<YuhanHomeworkVO> H_List(String memberID) {
+		// TODO Auto-generated method stub
+		return dao.H_List(memberID);
+	}
+
+	@Override
+	public List<YuhanHomeworkVO> H_ListC(String memberID) {
+		// TODO Auto-generated method stub
+		 return dao.H_ListC(memberID);
+	}
+
+	@Override
+	public List<YuhanHomeworkVO> H_ListM(String memberID) {
+		// TODO Auto-generated method stub
+		return dao.H_ListM(memberID);
+	}
 }
