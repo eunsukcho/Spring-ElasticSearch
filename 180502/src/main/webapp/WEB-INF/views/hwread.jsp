@@ -272,12 +272,13 @@ function firstLoad(page){
 		},
 		success : function(data){ 
 			var liTag = "";
-			
 			$("#commentList").html("");
 			$(data.list).each(function(){
-				liTag = "<li data-rno='" + this.repNo + "' data-comment='"+this.comment+"'class='replyLi'>" + this.professorName + ":" + this.comment + ":" + this.repDate + "</li>";
-				$("#commentList").append(liTag);
+				//liTag = "<p data-rno='" + this.repNo + "' data-comment='"+this.comment+"'class='replyLi'>" + this.professorName + ":" + this.comment + ":" + this.repDate + "</p>";
+				liTag += '<tr><td>'+this.professorName+'</td><td>'+this.comment+'</td><td>'+this.repDate+'</td></tr>';
+				
 			});
+			$("#commentList").append(liTag);
 			printPaging(data.pageMaker);
 		},
 		error : function(){
@@ -285,20 +286,29 @@ function firstLoad(page){
 		}
 	});
 }
-function printPaging(pageMaker){
+function printPaging(pageMaker)
+{
 	var str = "";
 	
-	if(pageMaker.prev){
-		str += "<li><a href='"+(pageMaker.startPage-1)+"'> << </a></li>";
+	if(pageMaker.prev)
+	{
+		str += '<span class="w3-button" onClick="location.href='+(pageMaker.startPage-1)+'">';
+		//str += "<li><a href='"+(pageMaker.startPage-1)+"'> << </a></li>";
 	}
-	for (var i = pageMaker.startPage, len = pageMaker.endPage; i <= len; i++) {
-		var strClass = pageMaker.cri.pag == i ?'class=active':'';
-		str += "<li "+strClass+"><a href='"+i+"'>"+i+"</a></li>";
+	for (var i = pageMaker.startPage, len = pageMaker.endPage; i <= len; i++) 
+	{
+		var strClass = pageMaker.cri.page == i ?' w3-teal':'';
+		console.log(pageMaker.cri.page);
+		console.log(i)
+		//str += "<li "+strClass+"><a href='"+i+"'>"+i+"</a></li>";
+		str += '<span class="w3-button' + strClass + '" onClick="location.href=' + i + '">'+i+'</span>';
 	}
 	if(pageMaker.next){
-		str += "<li><a href='"+(pageMaker.endPage + 1)+"'> >> </a></li>";
+		//str += "<li><a href='"+(pageMaker.endPage + 1)+"'> >> </a></li>";
+	str += '<span class="w3-button" onClick="location.href='+(pageMaker.startPage+1)+'">';
 	}
-	$('#paging').html(str);
+	console.log(str);
+	$('#paging').append(str);
 }
 </script>
 <form role="form" method = "post" action="#">
@@ -321,7 +331,7 @@ function printPaging(pageMaker){
     <!-- Left Column -->
     <div class="w3-third">
     
-      <div class="w3-white w3-text-grey w3-card-4">
+      <div class="w3-white w3-text-grey w3-card-4" style="margin-bottom:20%">
         <div class="w3-container">
           <p><h1>${elastic.subject }</h1></p>
           <p><i class="fa fa-briefcase fa-fw w3-margin-right w3-large w3-text-teal"></i>${elastic.professor }</p>
@@ -450,14 +460,14 @@ function printPaging(pageMaker){
 				  		<p>댓글</p>
 				  		<p><b></b></p>
 						  	<div class="bs-docs-example">
-								<table id="commentList">
+								<table id="commentList" class="w3-table w3-border">
 						
 								</table>
 							</div>
 							<div>
-								<ul id="paging">
+								<div id="paging">
 								
-								</ul>
+								</div>
 							</div>
 						</div>
 		  			</c:otherwise>

@@ -39,9 +39,9 @@ public class YuhanMessageController
 		if(session.getAttribute("sessionID") == null)
 		{
 			model.addAttribute("model_SessionID", "No");
+			
+			return;
 		}
-		else
-		{
 			model.addAttribute("loginMemberList", memberService.select_Member(session.getAttribute("sessionID").toString()));
 			
 			/*************** 쪽지 불러오기 ************** 2018-10-13 이진주 */
@@ -58,7 +58,6 @@ public class YuhanMessageController
 			
 			model.addAttribute("noReadMessageCount", messageService.selectNoReadMessageCount(session.getAttribute("sessionID").toString()));
 			System.out.println(maker.getEndPage());
-		}
 	}/************************************************* 2018.10.09 이진주 */
 	
 	@RequestMapping(value = "/messageSend", method=RequestMethod.GET)

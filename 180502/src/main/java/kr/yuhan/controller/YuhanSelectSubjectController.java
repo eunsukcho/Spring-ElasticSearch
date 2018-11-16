@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.yuhan.domain.YuhanSubjectVO;
 import kr.yuhan.service.YuhanHomeworkService;
+import kr.yuhan.service.YuhanMemberCheckService;
 import kr.yuhan.service.YuhanSubjectService;
 
 @Controller
@@ -32,6 +33,9 @@ public class YuhanSelectSubjectController
 {
 	@Inject 
 	private YuhanSubjectService subjectService;
+	
+	@Inject
+	private YuhanMemberCheckService memberService;
 	
 	@RequestMapping(value = "/selectSubject", method=RequestMethod.GET)
 	public void selectSubject(Model model, @RequestParam("memberGrade") String memberGrade)
@@ -76,6 +80,13 @@ public class YuhanSelectSubjectController
 	@RequestMapping(value = "/updateSubject", method=RequestMethod.GET)
 	public void updateSubject(HttpSession session, Model model)
 	{
+		if(session.getAttribute("sessionID") == null)
+		{
+			model.addAttribute("model_SessionID", "No");
+			
+			return;
+		}
+		model.addAttribute("loginMemberList", memberService.select_Member(session.getAttribute("sessionID").toString()));
 		model.addAttribute("selectSubjectList", subjectService.selectSubjectList(session.getAttribute("sessionID").toString()));
 		model.addAttribute("noSelectSubjectList", subjectService.noSelectSubject(session.getAttribute("sessionID").toString()));
 	}
